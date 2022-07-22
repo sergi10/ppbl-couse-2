@@ -5,6 +5,7 @@ This repository consists of a series of a Plutus starter projects. Each project 
 
 ## Current List of Projects:
 - `/project-01`: The "Always Succeeds" contract, can be used as a starting template for substantive Plutus projects.
+- `/project-02`: Accompanies Module 201, "Three Ways to Mint a Token" on Canvas. Included here is documentation and example code to help you get started minting tokens on Cardano.
 
 ## Full Plutus PBL Course on Canvas
-[Link coming soon!]()
+[Click this link to enroll in Plutus PBL Summer 2022](https://gimbalabs.instructure.com/enroll/3CFNFB)
