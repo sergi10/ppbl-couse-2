@@ -41,8 +41,8 @@ common lang
 library
     import: lang
     exposed-modules:
-      Project02.MyFirstPlutusMintingCompiler
-      Project02.MyFirstPlutusMintingScript
+      Project02.PlutusMintingCompiler
+      Project02.PlutusMintingScript
     build-depends:
       base >= 4.9 && < 5,
       aeson -any,

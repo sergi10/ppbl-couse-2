@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Project02.MyFirstPlutusMintingScript where
+module Project02.PlutusMintingScript where
 
 import Ledger hiding (singleton)
 import qualified Ledger.Typed.Scripts as Scripts
