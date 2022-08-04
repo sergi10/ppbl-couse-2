@@ -74,7 +74,7 @@ mkValidator pp dat red ctx =
     
     Cancel     ->  traceIfFalse "Only Seller can Cancel Sale"             signedBySeller  &&
                     traceIfFalse "Cut Paid to Market Owner"               cutToOwner &&
-                    traceIfFalse "Buyer if paid the Cancellation Fee"     feesToBuyer
+                    traceIfFalse "Buyer is paid the Cancellation Fee"     feesToBuyer
                     
 
 
@@ -120,8 +120,8 @@ mkValidator pp dat red ctx =
     valueToBuyer = valuePaidTo info $ buyerAddress dat
 
 
-    -- The value sent to Funder must be equal to what they deposited at the UTXO
-    -- contributor must get tokenAmount bp of gimbals and lovelaceAmount bp...
+    -- The interests of users of the contract must  be considered
+    
     pricePaid :: Bool
     pricePaid = (getLovelace $ fromValue valueToSeller) >= (priceAmount dat)
 
