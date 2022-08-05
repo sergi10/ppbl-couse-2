@@ -3,22 +3,23 @@
 If you were able to mint a token with cardano-cli in **201.3 Minting Native Assets on cardano-cli** and to add metadata to a transaction in **203 Completion Assignment: Hello Testnet!**, then you've got the background knowledge necessary to mint a Cardano NFT.
 
 ## Review Cardano Improvement Proposal 25:
-- [https://cips.cardano.org/cips/cip25/](https://cips.cardano.org/cips/cip25/)
-- Use CIP-25 to create a `.json` file that adheres to the Cardano NFT Metatdata standard.
+- Start here: [https://cips.cardano.org/cips/cip25/](https://cips.cardano.org/cips/cip25/)
+- Then, use CIP-25 to create a `.json` file that adheres to the Cardano NFT Metatdata standard.
+- In the "721" metadata, you'll need to include a Policy Id and Asset Name for your NFT.
 
 ## Create a Policy ID
 - To see how, review lesson [201.3](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-02/docs/201-3.md)
 - Extension: [You can use scripts to create policies with additional parameters](https://github.com/input-output-hk/cardano-node/blob/master/doc/reference/simple-scripts.md).
 
 ## Set Variables
-- Remember that $TOKENNAME must a Hex string.
+- Remember that $ASSETNAME must be a Hex string.
 
 ```
 TXIN=""
 MINTERADDRESS=""
 MINTERKEY="path/to/payment.skey"
 POLICYID=""
-TOKENNAME=""
+ASSETNAME=""
 MINT_SCRIPT_FILE="/path/to/ppbl-nft.json"
 METADATA_JSON_FILE="/path/to/nft.json"
 ```
@@ -29,8 +30,8 @@ cardano-cli transaction build \
 --babbage-era \
 --testnet-magic 1097911063 \
 --tx-in $TXIN \
---tx-out $MINTERADDRESS+"2000000 + 1 $POLICYID.$TOKENNAME" \
---mint "1 $POLICYID.$TOKENNAME" \
+--tx-out $MINTERADDRESS+"2000000 + 1 $POLICYID.$ASSETNAME" \
+--mint "1 $POLICYID.$ASSETNAME" \
 --mint-script-file $MINT_SCRIPT_FILE \
 --change-address $MINTERADDRESS \
 --metadata-json-file $METADATA_JSON_FILE \
@@ -63,7 +64,7 @@ cardano-cli transaction build \
 --testnet-magic 1097911063 \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
---tx-out $ETERNL+"2000000 + 1 $POLICYID.$TOKENNAME" \
+--tx-out $ETERNL+"2000000 + 1 $POLICYID.$ASSETNAME" \
 --change-address $MINTERADDRESS \
 --out-file tx.draft
 
