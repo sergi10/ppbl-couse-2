@@ -7,7 +7,7 @@ If you were able to mint a token with cardano-cli in **201.3 Minting Native Asse
 - Use CIP-25 to create a `.json` file that adheres to the Cardano NFT Metatdata standard.
 
 ## Create a Policy ID
-- see lesson [201.3](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-02/docs/201-3.md)
+- To see how, review lesson [201.3](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-02/docs/201-3.md)
 - Extension: [You can use scripts to create policies with additional parameters](https://github.com/input-output-hk/cardano-node/blob/master/doc/reference/simple-scripts.md).
 
 ## Set Variables
@@ -53,7 +53,9 @@ cardano-cli transaction submit \
 - [Lesson 201.3](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-02/docs/201-3.md) shows you how to mint multiple tokens at once.
 - Try to mint several NFTs in one transaction - and bring your questions to Live Coding.
 
-## Send your NFT to a browser wallet to view:
+---
+
+## Tip: Send your NFT to a browser wallet to view:
 
 ```
 cardano-cli transaction build \
