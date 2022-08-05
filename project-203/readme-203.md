@@ -1,4 +1,6 @@
-#  Mint a Cardano NFT
+#  203.4 - Using CIP-25 to Mint a Cardano NFT
+
+If you were able to mint a token with cardano-cli in **201.3 Minting Native Assets on cardano-cli** and to add metadata to a transaction in **203 Completion Assignment: Hello Testnet!**, then you've got the background knowledge necessary to mint a Cardano NFT.
 
 ## Review Cardano Improvement Proposal 25:
 - [https://cips.cardano.org/cips/cip25/](https://cips.cardano.org/cips/cip25/)
