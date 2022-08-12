@@ -22,4 +22,5 @@ writeFaucetScript = writeValidator "output/ppbl-faucet.plutus" $ FaucetValidator
     , FaucetValidatorScript.accessTokenName       = "PPBLSummer2022"
     , FaucetValidatorScript.faucetTokenSymbol     = "6c57132fde399c9ea6e462c4214d164984891087922b6fa2472b175b"
     , FaucetValidatorScript.faucetTokenName       = "tpblTestGimbal"
+    , FaucetValidatorScript.withdrawalAmount      = 5000
     }

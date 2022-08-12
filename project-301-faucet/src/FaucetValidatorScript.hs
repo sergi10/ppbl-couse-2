@@ -48,6 +48,7 @@ data FaucetParams = FaucetParams
   , accessTokenName     :: !TokenName
   , faucetTokenSymbol   :: !CurrencySymbol
   , faucetTokenName     :: !TokenName
+  , withdrawalAmount    :: !Integer
   } deriving (Pr.Eq, Pr.Ord, Show, Generic, ToJSON, FromJSON, ToSchema)
 
 PlutusTx.makeLift ''FaucetParams
@@ -57,11 +58,14 @@ faucetValidator :: FaucetParams -> Integer -> Integer -> ScriptContext -> Bool
 faucetValidator faucet _ _ ctx =   traceIfFalse "Input needs PPBLSummer2022 token"    inputHasAccessToken &&
                             traceIfFalse "PPBLSummer2022 token must return to sender" outputHasAccessToken &&
                             traceIfFalse "Faucet token must be distributed to sender" outputHasFaucetToken &&
-                            traceIfFalse "Must return remaining tokens to contract"   contractGetsRemainingTokens &&
+                            traceIfFalse "Must return remaining tokens to contract"   faucetContractGetsRemainingTokens &&
                             traceIfFalse "Do we need to check datum"                  checkDatumIsOk
   where
     info :: TxInfo
     info = scriptContextTxInfo ctx
+
+    receiverPkh :: PubKeyHash
+    receiverPkh = head $ txInfoSignatories info
 
     allTokens :: [CurrencySymbol]
     allTokens = symbols $ valueSpent info
@@ -69,14 +73,35 @@ faucetValidator faucet _ _ ctx =   traceIfFalse "Input needs PPBLSummer2022 toke
     inputHasAccessToken :: Bool
     inputHasAccessToken = (accessTokenSymbol faucet) `elem` allTokens
 
+    valueToReceiver :: Value
+    valueToReceiver = valuePaidTo info receiverPkh
+
     outputHasAccessToken :: Bool
-    outputHasAccessToken = True
+    outputHasAccessToken = (valueOf valueToReceiver (accessTokenSymbol faucet) (accessTokenName faucet)) >= 1
 
     outputHasFaucetToken :: Bool
-    outputHasFaucetToken = True
+    outputHasFaucetToken = (valueOf valueToReceiver (accessTokenSymbol faucet) (accessTokenName faucet)) >= (withdrawalAmount faucet)
 
-    contractGetsRemainingTokens :: Bool
-    contractGetsRemainingTokens = True
+    -- The UTXO input from Faucet
+    ownInput :: TxOut
+    ownInput = case findOwnInput ctx of
+        Nothing -> traceError "faucet input missing"
+        Just i  -> txInInfoResolved i
+
+    -- The UTXO output back to Faucet
+    ownOutput :: TxOut
+    ownOutput = case getContinuingOutputs ctx of
+        [o] -> o -- There must be exactly ONE output UTXO
+        _   -> traceError "expected exactly one faucet output"
+
+    faucetInputValue :: Value
+    faucetInputValue = txOutValue ownInput
+
+    faucetOutputValue :: Value
+    faucetOutputValue = txOutValue ownOutput
+
+    faucetContractGetsRemainingTokens :: Bool
+    faucetContractGetsRemainingTokens = (valueOf faucetInputValue (faucetTokenSymbol faucet) (faucetTokenName faucet)) - (withdrawalAmount faucet) <= (valueOf faucetOutputValue (faucetTokenSymbol faucet) (faucetTokenName faucet))
 
     checkDatumIsOk :: Bool
     checkDatumIsOk = True
