@@ -12,7 +12,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
-module FaucetValidatorScriptUnit 
+module FaucetValidatorScriptUnit
   ( FaucetParams (..)
   , validator
   ) where
@@ -80,7 +80,7 @@ faucetValidator faucet _ _ ctx =   traceIfFalse "Input needs PPBLSummer2022 toke
     outputHasAccessToken = (valueOf valueToReceiver (accessTokenSymbol faucet) (accessTokenName faucet)) >= 1
 
     outputHasFaucetToken :: Bool
-    outputHasFaucetToken = (valueOf valueToReceiver (accessTokenSymbol faucet) (accessTokenName faucet)) >= (withdrawalAmount faucet)
+    outputHasFaucetToken = (valueOf valueToReceiver (faucetTokenSymbol faucet) (faucetTokenName faucet)) >= (withdrawalAmount faucet)
 
     -- The UTXO input from Faucet
     ownInput :: TxOut
