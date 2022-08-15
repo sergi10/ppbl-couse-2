@@ -145,6 +145,7 @@ where `datum.json` is
 {"constructor":0,"fields":[]}
 
 ```
+```
 cardano-cli transaction hash-script-data --script-data-file datum.json
 > 923918e403bf43c34b4ef6b48eb2ee04babed17320d8d1b9ff9ad086e86f44ec
 ```
