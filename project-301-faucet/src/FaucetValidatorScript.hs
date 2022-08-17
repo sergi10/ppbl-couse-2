@@ -12,7 +12,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
-module FaucetValidatorScriptInteger
+module FaucetValidatorScript
   ( FaucetParams (..)
   , validator
   ) where
