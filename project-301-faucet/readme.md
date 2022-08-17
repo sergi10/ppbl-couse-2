@@ -4,17 +4,15 @@
 
 ---
 
-### 3a. Compile `ppbl-faucet-integer.plutus`
-- In `ppbl-faucet.cabal`, look at Line 45, and make sure that `FaucetValidatorScriptInteger` is exported.
-- In `FaucetValidatorScriptCompiler.hs`, look at Line 12, make sure that `FaucetValidatorScriptInteger` is imported.
-- Follow the usual steps to compile a `.plutus` script (ie: run `cabal repl`, then run `writeFaucetScript`)
+### 3a. Compile `ppbl-faucet-<YOUR TOKEN>.plutus`
+- Follow the steps in `/project-301-faucet/src/FaucetValidatorScript` to compile your custom contract script.
 
 ### 3b. Build Address
 ```
 cardano-cli address build \
---payment-script-file ppbl-faucet-integer.plutus \
+--payment-script-file ppbl-faucet-<YOUR TOKEN>.plutus \
 --testnet-magic 1097911063 \
---out-file ppbl-faucet-integer.addr
+--out-file ppbl-faucet-<YOUR TOKEN>.addr
 ```
 
 ### 3c. Prepare Datum
@@ -48,17 +46,17 @@ cardano-cli transaction build \
 --tx-out $SENDER+"2000000 + 488000 $ASSET" \
 --change-address $SENDER \
 --protocol-params-file protocol.json \
---out-file tx-lock-integer.raw \
+--out-file tx-lock.raw \
 --testnet-magic 1097911063
 
 cardano-cli transaction sign \
 --signing-key-file $SENDERKEY \
 --testnet-magic 1097911063 \
---tx-body-file tx-lock-integer.raw \
---out-file tx-lock-integer.signed
+--tx-body-file tx-lock.raw \
+--out-file tx-lock.signed
 
 cardano-cli transaction submit \
---tx-file tx-lock-integer.signed \
+--tx-file tx-lock.signed \
 --testnet-magic 1097911063
 
 ```
@@ -70,7 +68,7 @@ Set Variables
 CONTRACT_TXIN=""
 AUTH_TOKEN_TXIN=""
 FEE_TXIN=""
-PLUTUS_SCRIPT_FILE="/path/to/ppbl-faucet-integer.plutus"
+PLUTUS_SCRIPT_FILE="/path/to/ppbl-faucet-<YOUR TOKEN>.plutus"
 COLLATERAL=""
 AUTH_TOKEN="1309921891e459c7e9acb338d5dae18f98d1c2f55c1852cd5cf341f9.5050424c53756d6d657232303232"
 SENDER_PKH=""
