@@ -103,3 +103,35 @@ cardano-cli transaction submit \
 --tx-file unlock.signed \
 --testnet-magic 1097911063
 ```
+
+
+### Extended Explorations:
+1. There is (at least one) major flaw in our Plutus Faucet Validator as it is currently written. Think about the Plutus logic and the requirements of our unlocking transaction. What edge cases can you find?
+
+2. It is possible to use the Redeemer to create a case where the maintainer of a Faucet can easily add additional tokens to the Contract UTxO. In this contract, there is no direct way to do so. Even so, we can build a transaction that provides this functionality. Here is an example:
+
+```
+cardano-cli transaction build \
+--babbage-era \
+--testnet-magic 1097911063 \
+--tx-in $AUTH_TOKEN_TXIN \
+--tx-in $FEE_TXIN \
+--tx-in $ADDITIONAL_TOKEN_TXIN \
+--tx-in $CONTRACT_TXIN \
+--tx-in-script-file $PLUTUS_SCRIPT_FILE \
+--tx-in-datum-value 1618 \
+--tx-in-redeemer-value 101 \
+--tx-in-collateral $COLLATERAL \
+--tx-out $CONTRACT_ADDR+"2000000 + $TOTAL $ASSET" \
+--tx-out-datum-hash $DATUMHASH \
+--tx-out $SENDER+"2000000 + $REMAINING $ASSET" \
+--tx-out $SENDER+"2000000 + 1 $AUTH_TOKEN" \
+--change-address $SENDER \
+--required-signer-hash $SENDER_PKH \
+--protocol-params-file protocol.json \
+--out-file unlock.raw
+```
+
+Try to define appropriate values for each of the variables in the Transaction template above. How would we calculate the value of `$TOTAL` in order make this transaction valid?
+
+* Hint: look up this transaction in a Testnet explorer: `5a2f5f2d814757e641b30363a90bef742c5bef6f4ba7f13b387c2ac618d667a1`
