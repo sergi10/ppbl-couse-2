@@ -29,6 +29,7 @@ Set Variables
 SENDER
 SENDERKEY
 TXIN1=""
+TXIN2=""
 CONTRACTADDR=""
 DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
 ASSET=""
@@ -38,26 +39,26 @@ ASSET=""
 Build Locking Transaction
 ```
 cardano-cli transaction build \
---babbage-era \
+--alonzo-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
 --tx-out $CONTRACTADDR+"2000000 + 12000 $ASSET" \
 --tx-out-datum-hash $DATUMHASH \
---tx-out $SENDER+"2000000 + 488000 $ASSET" \
+--tx-out $SENDER+"2000000 + 452000 $ASSET" \
 --change-address $SENDER \
---protocol-params-file protocol.json \
+--protocol-params-file protocol-preprod.json \
 --out-file tx-lock.raw \
---testnet-magic 1097911063
+--testnet-magic 1
 
 cardano-cli transaction sign \
 --signing-key-file $SENDERKEY \
---testnet-magic 1097911063 \
+--testnet-magic 1 \
 --tx-body-file tx-lock.raw \
 --out-file tx-lock.signed
 
 cardano-cli transaction submit \
 --tx-file tx-lock.signed \
---testnet-magic 1097911063
+--testnet-magic 1
 
 ```
 
@@ -68,40 +69,41 @@ Set Variables
 CONTRACT_TXIN=""
 AUTH_TOKEN_TXIN=""
 FEE_TXIN=""
-PLUTUS_SCRIPT_FILE="/path/to/ppbl-faucet-<YOUR TOKEN>.plutus"
+PLUTUS_SCRIPT_FILE="<path to...>/output/ppbl-pre-prod-faucet-tgimbal-pkh.plutus"
 COLLATERAL=""
-AUTH_TOKEN="1309921891e459c7e9acb338d5dae18f98d1c2f55c1852cd5cf341f9.5050424c53756d6d657232303232"
+AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
 SENDER_PKH=""
 ```
 
 Build Unlocking Transaction
 ```
 cardano-cli transaction build \
---babbage-era \
---testnet-magic 1097911063 \
+--alonzo-era \
+--testnet-magic 1 \
 --tx-in $AUTH_TOKEN_TXIN \
 --tx-in $FEE_TXIN \
 --tx-in $CONTRACT_TXIN \
 --tx-in-script-file $PLUTUS_SCRIPT_FILE \
 --tx-in-datum-value 1618 \
---tx-in-redeemer-value 101 \
+--tx-in-redeemer-file redeemer.json \
 --tx-in-collateral $COLLATERAL \
 --tx-out $SENDER+"2000000 + 3000 $ASSET" \
 --tx-out $SENDER+"2000000 + 1 $AUTH_TOKEN" \
+--tx-out $CONTRACTADDR+"2000000 + 9000 $ASSET" \
+--tx-out-datum-hash $DATUMHASH \
 --change-address $SENDER \
---required-signer-hash $SENDER_PKH \
 --protocol-params-file protocol.json \
 --out-file unlock.raw
 
 cardano-cli transaction sign \
 --signing-key-file $SENDERKEY \
---testnet-magic 1097911063 \
+--testnet-magic 1 \
 --tx-body-file unlock.raw \
 --out-file unlock.signed
 
 cardano-cli transaction submit \
 --tx-file unlock.signed \
---testnet-magic 1097911063
+--testnet-magic 1
 ```
 
 

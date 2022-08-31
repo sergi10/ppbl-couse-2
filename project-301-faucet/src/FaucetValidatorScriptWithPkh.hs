@@ -12,7 +12,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
-module FaucetValidatorScriptUnit
+module FaucetValidatorScriptWithPkh
   ( FaucetParams (..)
   , validator
   ) where
@@ -31,17 +31,18 @@ import              PlutusTx.Prelude    hiding (Semigroup (..), unless)
 import              Prelude             (Show (..))
 import qualified    Prelude                   as Pr
 
-
--- We're going to need some parameters - great chance to apply this concept!
-
--- The Redeemer could be irrelevant, or it could have one option: Withdraw
--- The Datum could be used just to show how it works. Could include some info about token, like withdrawal amount?
--- The context matters: we want to see that the PPBLSummer2022 token is in the transaction inputs and outputs.
+-- Simple Faucet validator script
 
 -- Usage:
--- One utxo at each contract.
+-- Expect one utxo at each contract.
 -- Take that utxo as input
--- Create a new one with the "change" as output
+-- Create a new utxo with the "change" as output
+
+-- This contract provides an example of using Validator Parameters.
+
+-- For now, the Datum and Redeemer are not used in contract logic
+-- Transactions will still have to match the type Integer for Datum and Redeemer
+-- The context matters: we want to see that the PPBLSummer2022 token is in the transaction inputs and outputs.
 
 data FaucetParams = FaucetParams
   { accessTokenSymbol   :: !CurrencySymbol
@@ -53,19 +54,24 @@ data FaucetParams = FaucetParams
 
 PlutusTx.makeLift ''FaucetParams
 
+newtype FaucetRedeemer = FaucetRedeemer {senderPkh :: PubKeyHash}
+
+PlutusTx.unstableMakeIsData ''FaucetRedeemer
+PlutusTx.makeLift ''FaucetRedeemer
+
 {-# INLINEABLE faucetValidator #-}
-faucetValidator :: FaucetParams -> () -> () -> ScriptContext -> Bool
-faucetValidator faucet _ _ ctx =   traceIfFalse "Input needs PPBLSummer2022 token"    inputHasAccessToken &&
-                            traceIfFalse "PPBLSummer2022 token must return to sender" outputHasAccessToken &&
-                            traceIfFalse "Faucet token must be distributed to sender" outputHasFaucetToken &&
-                            traceIfFalse "Must return remaining tokens to contract"   faucetContractGetsRemainingTokens &&
-                            traceIfFalse "Do we need to check datum"                  checkDatumIsOk
+faucetValidator :: FaucetParams -> Integer -> FaucetRedeemer -> ScriptContext -> Bool
+faucetValidator faucet _ receiver ctx =  traceIfFalse "Input needs PPBLSummer2022 token"           inputHasAccessToken &&
+                                                  traceIfFalse "PPBLSummer2022 token must return to sender" outputHasAccessToken &&
+                                                  traceIfFalse "Faucet token must be distributed to sender" outputHasFaucetToken &&
+                                                  traceIfFalse "Must return remaining tokens to contract"   faucetContractGetsRemainingTokens &&
+                                                  traceIfFalse "Do we need to check datum"                  checkDatumIsOk
   where
     info :: TxInfo
     info = scriptContextTxInfo ctx
 
     receiverPkh :: PubKeyHash
-    receiverPkh = head $ txInfoSignatories info
+    receiverPkh = senderPkh receiver
 
     allTokens :: [CurrencySymbol]
     allTokens = symbols $ valueSpent info
@@ -109,8 +115,8 @@ faucetValidator faucet _ _ ctx =   traceIfFalse "Input needs PPBLSummer2022 toke
 data FaucetTypes
 
 instance ValidatorTypes FaucetTypes where
-    type DatumType FaucetTypes = ()
-    type RedeemerType FaucetTypes = ()
+    type DatumType FaucetTypes = Integer
+    type RedeemerType FaucetTypes = FaucetRedeemer
 
 typedValidator :: FaucetParams -> TypedValidator FaucetTypes
 typedValidator faucet =
@@ -118,7 +124,7 @@ typedValidator faucet =
     ($$(PlutusTx.compile [||faucetValidator||]) `PlutusTx.applyCode` PlutusTx.liftCode faucet)
     $$(PlutusTx.compile [||wrap||])
   where
-    wrap = wrapValidator @() @()
+    wrap = wrapValidator @Integer @FaucetRedeemer
 
 
 validator :: FaucetParams -> Validator
