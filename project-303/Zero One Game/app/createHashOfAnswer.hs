@@ -1,10 +1,6 @@
-{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications  #-}
 
-import  qualified PlutusTx
-import            PlutusTx.Builtins.Internal
-
+import      PlutusTx.Builtins
 
 nonce :: BuiltinByteString
 nonce = "0123456789abcdef__"
