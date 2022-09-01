@@ -22,7 +22,7 @@ Mint an NFT which will work as **State NFT**. Obtain its **TokenName** and **Cur
 
 ### Step 2
 
-Provide 2 wallets if you want to play as both player and obtain its payment public hash to be used as `firstPlayerPKH` and `secondPlayerPKH` in `Game.GameComplier`.
+Provide 2 wallets if you want to play as both player and obtain its public key hash to be used as `firstPlayerPKH` and `secondPlayerPKH` in `Game.GameComplier`.
 
 ### Step 3
 
