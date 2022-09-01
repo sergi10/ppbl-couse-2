@@ -2,7 +2,7 @@
 
 ## Description
 
-- This package contains Plutus source code for Project 303 and related assignment.
+This package contains Plutus source code for Project 303 and related assignment.
   
 ## Installation
 
