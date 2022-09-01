@@ -84,10 +84,10 @@ faucetValidator faucet _ receiver ctx = traceIfFalse "Input needs PPBLSummer2022
         Just i  -> txInInfoResolved i
 
     -- The UTXO output back to Faucet
-    ownOutput :: TxOut
+    ownOutput :: Maybe TxOut
     ownOutput = case getContinuingOutputs ctx of
-        [o] -> o -- There must be exactly ONE output UTXO
-        _   -> traceError "expected exactly one faucet output"
+        [o] -> Just o -- There must be exactly ONE output UTXO
+        _   -> Nothing
 
     faucetInputValue :: Value
     faucetInputValue = txOutValue ownInput
