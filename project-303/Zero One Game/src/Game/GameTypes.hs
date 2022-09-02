@@ -7,7 +7,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE TypeFamilies #-}
 
-module Game.GameTypes
+module  Game.GameTypes
     ( GameParams (..)
     , PlayerChoice (..)
     , GameDatum (..)
@@ -15,15 +15,15 @@ module Game.GameTypes
     , GameTypes
     ) where
 
-import           Data.Aeson                 (ToJSON, FromJSON)
-import           GHC.Generics               (Generic)
-import           Schema                     (ToSchema)
-import           Ledger              hiding (singleton)
-import           Ledger.Typed.Scripts
-import qualified PlutusTx
-import           PlutusTx.Prelude    hiding (Semigroup (..), unless)
-import           Prelude                    (Show (..))
-import qualified Prelude                 as Pr
+import              Data.Aeson                  (ToJSON, FromJSON)
+import              GHC.Generics                (Generic)
+import              Schema                      (ToSchema)
+import              Ledger              hiding  (singleton)
+import              Ledger.Typed.Scripts
+import  qualified   PlutusTx
+import              PlutusTx.Prelude    hiding  (Semigroup (..), unless)
+import              Prelude                     (Show (..))
+import  qualified   Prelude                 as  Pr
 
 
 data GameParams = GameParams

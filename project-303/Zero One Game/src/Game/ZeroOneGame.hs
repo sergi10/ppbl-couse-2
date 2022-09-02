@@ -35,35 +35,35 @@ seek md = do
 {-# INLINABLE mkGameValidator #-}
 mkGameValidator :: GameParams -> BuiltinByteString -> BuiltinByteString -> GameDatum -> GameRedeemer -> ScriptContext -> Bool
 mkGameValidator gp bsZero' bsOne' dat red ctx =
-    traceIfFalse "token missing from input" (assetClassValueOf (txOutValue ownInput) (stateNFT gp) == 1) &&
+    traceIfFalse "State NFT Missing From Input" (assetClassValueOf (txOutValue ownInput) (stateNFT gp) == 1) &&
 
     case (dat, red) of
 
         (GameDatum bs Nothing, Play choice) ->
             traceIfFalse "Not Signed By Second Player"          (txSignedBy info (unPaymentPubKeyHash $ secondPlayerPaymentPKH gp)) &&
-            traceIfFalse "First Player's Bet Missing"           (lovelaces (txOutValue ownInput) == gBet gp)                        &&
-            traceIfFalse "Second Player's Bet Missing"          (lovelaces (txOutValue ownOutput) == (2 * gBet gp))                 &&
+            traceIfFalse "First Player's Bet UTxO is Wrong"     (lovelaces (txOutValue ownInput) == gBet gp)                        &&
+            traceIfFalse "Second Player's Bet Amount is Wrong"  (lovelaces (txOutValue ownOutput) == (2 * gBet gp))                 &&
             traceIfFalse "Wrong Output Datum"                   (outputDatum == GameDatum bs (Just choice))                         &&
-            traceIfFalse "Missed Deadline"                      (to (gPlayDeadline gp) `contains` txInfoValidRange info)            &&
+            traceIfFalse "Game Deadline Has Been Reached"       (to (gPlayDeadline gp) `contains` txInfoValidRange info)            &&
             traceIfFalse "State NFT Missing From Output"        (assetClassValueOf (txOutValue ownOutput) (stateNFT gp) == 1)
 
         (GameDatum bs (Just choice), Reveal nonce) ->
             traceIfFalse "Not Signed By First Player"           (txSignedBy info (unPaymentPubKeyHash $ firstPlayerPaymentPKH gp))  &&
             traceIfFalse "Commit Mismatch"                      (checkNonce bs nonce choice)                                        &&
-            traceIfFalse "Missed Deadline"                      (to (gRevealDeadline gp) `contains` txInfoValidRange info)          &&
-            traceIfFalse "Wrong Bet"                            (lovelaces (txOutValue ownInput) == (2 * gBet gp))                  &&
+            traceIfFalse "Reveal Deadline Has Been Reached"     (to (gRevealDeadline gp) `contains` txInfoValidRange info)          &&
+            traceIfFalse "Bet Amount Must Be Doubled or More"   (lovelaces (txOutValue ownInput) >= (2 * gBet gp))                  &&
             traceIfFalse "State NFT Must Go To First Player"    nftToFirst
 
         (GameDatum _ Nothing, ClaimByFirstPlayer) ->
             traceIfFalse "Not Signed By First Player"           (txSignedBy info (unPaymentPubKeyHash $ firstPlayerPaymentPKH gp))  &&
-            traceIfFalse "Game Deadline Has Not Been Reached"   (from (1 + gPlayDeadline gp) `contains` txInfoValidRange info)      &&
-            traceIfFalse "First Player's Bet Missing"           (lovelaces (txOutValue ownInput) == gBet gp)                        &&
+            traceIfFalse "Game Deadline Has NOT Been Reached"   (from (1 + gPlayDeadline gp) `contains` txInfoValidRange info)      &&
+            traceIfFalse "First Player's Bet UTxO is Wrong"     (lovelaces (txOutValue ownInput) == gBet gp)                        &&
             traceIfFalse "State NFT Must Go to First Player"    nftToFirst
 
         (GameDatum _ (Just _), ClaimBySecondPlayer) ->
             traceIfFalse "Not Signed By Second Player"          (txSignedBy info (unPaymentPubKeyHash $ secondPlayerPaymentPKH gp)) &&
-            traceIfFalse "Reveal Deadline Has Not Been Reached" (from (1 + gRevealDeadline gp) `contains` txInfoValidRange info)    &&
-            traceIfFalse "Wrong Bet"                            (lovelaces (txOutValue ownInput) == (2 * gBet gp))                  &&
+            traceIfFalse "Reveal Deadline Has NOT Been Reached" (from (1 + gRevealDeadline gp) `contains` txInfoValidRange info)    &&
+            traceIfFalse "Bet Amount Must Be Doubled or More"   (lovelaces (txOutValue ownInput) >= (2 * gBet gp))                  &&
             traceIfFalse "State NFT must go to first player"    nftToFirst
 
         _ -> False

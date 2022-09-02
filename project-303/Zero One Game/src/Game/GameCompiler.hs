@@ -2,19 +2,19 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 
-module Game.GameCompiler where
+module  Game.GameCompiler   where
 
-import Cardano.Api
-import Cardano.Api.Shelley (PlutusScript (..))
-import Codec.Serialise (serialise)
-import qualified Data.ByteString.Lazy as LBS
-import qualified Data.ByteString.Short as SBS
-import Ledger
+import              Cardano.Api
+import              Cardano.Api.Shelley             (PlutusScript (..))
+import              Codec.Serialise                 (serialise)
+import  qualified   Data.ByteString.Lazy    as  LBS
+import  qualified   Data.ByteString.Short   as  SBS
+import              Ledger
+import              Ledger.Value
 
-import Game.ZeroOneGame
-import Game.GameTypes
+import              Game.ZeroOneGame
+import              Game.GameTypes
 
-import           Ledger.Value
 
 writeValidator :: FilePath -> Ledger.Validator -> IO (Either (FileError ()) ())
 writeValidator file = writeFileTextEnvelope @(PlutusScript PlutusScriptV1) file Nothing . PlutusScriptSerialised . SBS.toShort . LBS.toStrict . serialise . Ledger.unValidatorScript

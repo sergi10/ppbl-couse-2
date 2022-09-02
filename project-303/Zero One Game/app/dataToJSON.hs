@@ -2,12 +2,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeApplications  #-}
 
-import            Cardano.Api (ScriptDataJsonSchema (ScriptDataJsonDetailedSchema), scriptDataToJson)
-import            Data.Aeson  (encode)
-import  qualified Data.ByteString.Lazy  as LBS
+import            Cardano.Api             (ScriptDataJsonSchema (ScriptDataJsonDetailedSchema), scriptDataToJson)
+import            Data.Aeson              (encode)
+import  qualified Data.ByteString.Lazy as LBS
 import  qualified PlutusTx
 import            PlutusTx.Builtins.Internal
-import            Cardano.Api.Shelley (fromPlutusData)
+import            Cardano.Api.Shelley     (fromPlutusData)
 
 import           Game.GameTypes
 
