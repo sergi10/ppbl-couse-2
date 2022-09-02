@@ -21,18 +21,18 @@ hash :: BuiltinByteString
 hash = sha2_256 $ nonce `appendByteString` playerChoice
 
 datum :: GameDatum
-datum = GameDatum hash $ Just One
+datum = GameDatum hash $ Just Zero
 
 redeemer :: GameRedeemer
-redeemer = ClaimByFirstPlayer
+redeemer = Play Zero
 
 writeJSON :: PlutusTx.ToData a => FilePath -> a -> IO ()
 writeJSON file = LBS.writeFile file . encode . scriptDataToJson ScriptDataJsonDetailedSchema . fromPlutusData . PlutusTx.toData
 
 main :: IO ()
 main = do
-      writeJSON "output/ZeroOneGame-Datum.json" datum
-      writeJSON "output/ZeroOneGame-Redeemer.json" redeemer
+      writeJSON "output/ZeroOneGame-Datum-jd-zero-zero.json" datum
+      writeJSON "output/ZeroOneGame-Redeemer-Play-jd-zero-zero.json" redeemer
       putStrLn "\n<---------------DONE--------------->"
       putStrLn "\nATTENTION: JSON flies were written at 'output' directory"
       putStrLn "\n<----------------------------------->"
