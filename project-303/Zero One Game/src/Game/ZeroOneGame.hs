@@ -22,15 +22,23 @@ import           PlutusTx.Prelude     hiding (Semigroup(..), unless)
 
 import           Game.GameTypes
 
+bsZero, bsOne :: BuiltinByteString
+bsZero = "0"
+bsOne  = "1"
+
 {-# INLINABLE lovelaces #-}
 lovelaces :: Value -> Integer
 lovelaces = Ada.getLovelace . Ada.fromValue
 
-{-# INLINABLE seek #-}
-seek :: Maybe Datum -> Maybe GameDatum
-seek md = do
+{-# INLINABLE seekDatum #-}
+seekDatum :: Maybe Datum -> Maybe GameDatum
+seekDatum md = do
     Datum d <- md
     PlutusTx.fromBuiltinData d
+
+{-# INLINABLE firstPlayerAdaForNFT #-}
+firstPlayerAdaForNFT :: Integer
+firstPlayerAdaForNFT = Ada.getLovelace minAdaTxOut
 
 {-# INLINABLE mkGameValidator #-}
 mkGameValidator :: GameParams -> BuiltinByteString -> BuiltinByteString -> GameDatum -> GameRedeemer -> ScriptContext -> Bool
@@ -40,31 +48,32 @@ mkGameValidator gp bsZero' bsOne' dat red ctx =
     case (dat, red) of
 
         (GameDatum bs Nothing, Play choice) ->
-            traceIfFalse "Not Signed By Second Player"          (txSignedBy info (unPaymentPubKeyHash $ secondPlayerPaymentPKH gp)) &&
-            traceIfFalse "First Player's Bet UTxO is Wrong"     (lovelaces (txOutValue ownInput) == gBet gp)                        &&
-            traceIfFalse "Second Player's Bet Amount is Wrong"  (lovelaces (txOutValue ownOutput) == (2 * gBet gp))                 &&
-            traceIfFalse "Wrong Output Datum"                   (outputDatum == GameDatum bs (Just choice))                         &&
-            traceIfFalse "Game Deadline Has Been Reached"       (to (gPlayDeadline gp) `contains` txInfoValidRange info)            &&
+            traceIfFalse "Not Signed By Second Player"          (txSignedBy info secondPlayerPaymentPKH)                                    &&
+            traceIfFalse "First Player's Bet UTxO is Wrong"     (lovelaces (txOutValue ownInput) == gBet gp + firstPlayerAdaForNFT)         &&
+            traceIfFalse "Second Player's Bet Amount is Wrong"  (lovelaces (txOutValue ownOutput) == (2 * gBet gp + firstPlayerAdaForNFT))  &&
+            traceIfFalse "Wrong Output Datum"                   (outputDatum == GameDatum bs (Just choice))                                 &&
+            traceIfFalse "Game Deadline Has Been Reached"       (to (gPlayDeadline gp) `contains` txInfoValidRange info)                    &&
             traceIfFalse "State NFT Missing From Output"        (assetClassValueOf (txOutValue ownOutput) (stateNFT gp) == 1)
 
         (GameDatum bs (Just choice), Reveal nonce) ->
-            traceIfFalse "Not Signed By First Player"           (txSignedBy info (unPaymentPubKeyHash $ firstPlayerPaymentPKH gp))  &&
-            traceIfFalse "Commit Mismatch"                      (checkNonce bs nonce choice)                                        &&
-            traceIfFalse "Reveal Deadline Has Been Reached"     (to (gRevealDeadline gp) `contains` txInfoValidRange info)          &&
-            traceIfFalse "Bet Amount Must Be Doubled or More"   (lovelaces (txOutValue ownInput) >= (2 * gBet gp))                  &&
-            traceIfFalse "State NFT Must Go To First Player"    nftToFirst
+            traceIfFalse "Not Signed By First Player"           (txSignedBy info firstPlayerPaymentPKH)                                     &&
+            traceIfFalse "Mismatch Choice, Second Player Won"   (checkNonce bs nonce choice)                                                &&
+            traceIfFalse "Reveal Deadline Has Been Reached"     (to (1 + gRevealDeadline gp) `contains` txInfoValidRange info)              &&
+            traceIfFalse "Second Player's Bet UTxO is Wrong"    (lovelaces (txOutValue ownInput) == (2 * gBet gp + firstPlayerAdaForNFT))   &&
+            traceIfFalse "State NFT Must Go To First Player"    nftToFirstPlayer
 
         (GameDatum _ Nothing, ClaimByFirstPlayer) ->
-            traceIfFalse "Not Signed By First Player"           (txSignedBy info (unPaymentPubKeyHash $ firstPlayerPaymentPKH gp))  &&
-            traceIfFalse "Game Deadline Has NOT Been Reached"   (from (1 + gPlayDeadline gp) `contains` txInfoValidRange info)      &&
-            traceIfFalse "First Player's Bet UTxO is Wrong"     (lovelaces (txOutValue ownInput) == gBet gp)                        &&
-            traceIfFalse "State NFT Must Go to First Player"    nftToFirst
+            traceIfFalse "Not Signed By First Player"           (txSignedBy info firstPlayerPaymentPKH)                                     &&
+            traceIfFalse "Game Deadline Has NOT Been Reached"   (from (gPlayDeadline gp) `contains` txInfoValidRange info)                  &&
+            traceIfFalse "First Player's Bet UTxO is Wrong"     (lovelaces (txOutValue ownInput) == gBet gp + firstPlayerAdaForNFT)         &&
+            traceIfFalse "State NFT Must Go to First Player"    nftToFirstPlayer
 
         (GameDatum _ (Just _), ClaimBySecondPlayer) ->
-            traceIfFalse "Not Signed By Second Player"          (txSignedBy info (unPaymentPubKeyHash $ secondPlayerPaymentPKH gp)) &&
-            traceIfFalse "Reveal Deadline Has NOT Been Reached" (from (1 + gRevealDeadline gp) `contains` txInfoValidRange info)    &&
-            traceIfFalse "Bet Amount Must Be Doubled or More"   (lovelaces (txOutValue ownInput) >= (2 * gBet gp))                  &&
-            traceIfFalse "State NFT must go to first player"    nftToFirst
+            traceIfFalse "Not Signed By Second Player"          (txSignedBy info secondPlayerPaymentPKH)                                    &&
+            traceIfFalse "Reveal Deadline Has NOT Been Reached" (from (1 + gRevealDeadline gp) `contains` txInfoValidRange info)            &&
+            traceIfFalse "Second Player's Bet UTxO is Wrong"    (lovelaces (txOutValue ownInput) == (2 * gBet gp + firstPlayerAdaForNFT))   &&
+            traceIfFalse "First Player Address Mismatch"        (checkOutputAddress $ firstPlayerAddress gp)                                &&
+            traceIfFalse "State NFT must go to first player"    (nftToFirstPlayer  &&  adaToFirstPlayer)
 
         _ -> False
 
@@ -84,7 +93,7 @@ mkGameValidator gp bsZero' bsOne' dat red ctx =
         _   -> traceError "Expected Exactly One Game Output"
 
     outputDatum :: GameDatum
-    outputDatum = case seek $ txOutDatumHash ownOutput >>= flip findDatum info of
+    outputDatum = case seekDatum $ txOutDatumHash ownOutput >>= flip findDatum info of
         Nothing -> traceError "Game Output Datum Not Found"
         Just d  -> d
 
@@ -96,12 +105,33 @@ mkGameValidator gp bsZero' bsOne' dat red ctx =
             Zero -> bsZero'
             One  -> bsOne'
 
-    nftToFirst :: Bool
-    nftToFirst = assetClassValueOf (valuePaidTo info $ unPaymentPubKeyHash $ firstPlayerPaymentPKH gp) (stateNFT gp) == 1
+    firstPlayerPaymentPKH :: PubKeyHash
+    firstPlayerPaymentPKH = case toPubKeyHash $ firstPlayerAddress gp of
+        Just pkh -> pkh
+        Nothing -> traceError "No Payment Public Key Hash"
 
-bsZero, bsOne :: BuiltinByteString
-bsZero = "0"
-bsOne  = "1"
+    secondPlayerPaymentPKH :: PubKeyHash
+    secondPlayerPaymentPKH = case toPubKeyHash $ secondPlayerAddress gp of
+        Just pkh -> pkh
+        Nothing -> traceError "No Payment Public Key Hash"
+
+    allTxOutputs :: [TxOut]
+    allTxOutputs = txInfoOutputs info
+
+    outputAddress :: Address -> TxOut
+    outputAddress addr = case [ o | o <- allTxOutputs , txOutAddress o == addr ] of
+        [o] -> o
+        _   -> traceError "Expected Address Is Missing"
+
+    checkOutputAddress :: Address -> Bool
+    checkOutputAddress addr = if addr == (txOutAddress $ outputAddress addr) then True else False
+
+    nftToFirstPlayer :: Bool
+    nftToFirstPlayer = assetClassValueOf (valuePaidTo info firstPlayerPaymentPKH) (stateNFT gp) == 1
+
+    adaToFirstPlayer :: Bool
+    adaToFirstPlayer = valuePaidTo info firstPlayerPaymentPKH  `geq` Ada.lovelaceValueOf firstPlayerAdaForNFT
+
 
 typedGameValidator :: GameParams -> Scripts.TypedValidator GameTypes
 typedGameValidator game = Scripts.mkTypedValidator @GameTypes

@@ -14,25 +14,68 @@ import           Game.GameTypes
 nonce :: BuiltinByteString
 nonce = "0123456789abcdef__"
 
-playerChoice :: BuiltinByteString
-playerChoice = "1"
+firstPlayerChoice :: BuiltinByteString
+firstPlayerChoice = "1"
 
 hash :: BuiltinByteString
-hash = sha2_256 $ nonce `appendByteString` playerChoice
+hash = sha2_256 $ nonce `appendByteString` firstPlayerChoice
 
-datum :: GameDatum
-datum = GameDatum hash $ Just One
 
-redeemer :: GameRedeemer
-redeemer = ClaimByFirstPlayer
+{-----------------FIRST PLAYER START THE GAME--------------------}
+
+startGameDATUM :: GameDatum
+startGameDATUM = GameDatum hash $ Nothing
+
+{----------------------------------------------------------------}
+
+{------------------SECOND PLAYER PLAY CHOICE---------------------}
+
+secondPlayerPlayChoiceDATUM :: GameDatum
+secondPlayerPlayChoiceDATUM = GameDatum hash $ Just Zero
+
+secondPlayerPlayChoiceREDEEMER :: GameRedeemer
+secondPlayerPlayChoiceREDEEMER = Play Zero
+
+{----------------------------------------------------------------}
+
+{------------------FIRST PLAYER REVEAL CHOICE--------------------}
+
+firstPlayerRevealChoiceREDEEMER :: GameRedeemer
+firstPlayerRevealChoiceREDEEMER = Reveal nonce
+
+{----------------------------------------------------------------}
+
+{---------------------FIRST PLAYER CLAIMS------------------------}
+
+firstPlayerClaimsREDEEMER :: GameRedeemer
+firstPlayerClaimsREDEEMER = ClaimByFirstPlayer
+
+{----------------------------------------------------------------}
+
+{---------------------SECOND PLAYER CLAIMS-----------------------}
+
+secondPlayerClaimsREDEEMER :: GameRedeemer
+secondPlayerClaimsREDEEMER = ClaimBySecondPlayer
+
+{----------------------------------------------------------------}
+
 
 writeJSON :: PlutusTx.ToData a => FilePath -> a -> IO ()
 writeJSON file = LBS.writeFile file . encode . scriptDataToJson ScriptDataJsonDetailedSchema . fromPlutusData . PlutusTx.toData
 
 main :: IO ()
 main = do
-      writeJSON "output/ZeroOneGame-Datum.json" datum
-      writeJSON "output/ZeroOneGame-Redeemer.json" redeemer
+      writeJSON "output/startGame-DATUM.json" startGameDATUM
+
+      writeJSON "output/secondPlayerPlayChoice-DATUM.json" secondPlayerPlayChoiceDATUM
+      writeJSON "output/secondPlayerPlayChoice-REDEEMER.json" secondPlayerPlayChoiceREDEEMER
+
+      writeJSON "output/firstPlayerRevealChoice-REDEEMER.json" firstPlayerRevealChoiceREDEEMER
+
+      writeJSON "output/firstPlayerClaims-REDEEMER.json" firstPlayerClaimsREDEEMER
+
+      writeJSON "output/secondPlayerClaims-REDEEMER.json" secondPlayerClaimsREDEEMER
+
       putStrLn "\n<---------------DONE--------------->"
       putStrLn "\nATTENTION: JSON flies were written at 'output' directory"
       putStrLn "\n<----------------------------------->"

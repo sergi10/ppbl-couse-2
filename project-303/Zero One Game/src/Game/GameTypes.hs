@@ -27,13 +27,13 @@ import  qualified   Prelude                 as  Pr
 
 
 data GameParams = GameParams
-    { firstPlayerPaymentPKH     :: !PaymentPubKeyHash
-    , secondPlayerPaymentPKH    :: !PaymentPubKeyHash
-    , gBet               :: !Integer
-    , gPlayDeadline      :: !POSIXTime
-    , gRevealDeadline    :: !POSIXTime
-    , stateNFT           :: !AssetClass
-    } deriving (Pr.Eq, Pr.Ord, Show, Generic, ToJSON, FromJSON, ToSchema)
+    {   firstPlayerAddress  ::  !Address
+    ,   secondPlayerAddress ::  !Address
+    ,   gBet                ::  !Integer
+    ,   gPlayDeadline       ::  !POSIXTime
+    ,   gRevealDeadline     ::  !POSIXTime
+    ,   stateNFT            ::  !AssetClass
+    }   deriving (Pr.Eq, Pr.Ord, Show, Generic, ToJSON, FromJSON)
 
 PlutusTx.makeLift ''GameParams
 
