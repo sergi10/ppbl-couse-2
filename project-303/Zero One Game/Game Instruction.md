@@ -24,7 +24,7 @@ And in this case first player would have won, however second player still has no
 
 ## How to Play
 
-After obtaining ans specifying the following, compile the game contract and get its address in order to start playing.
+After obtaining and specifying the following, compile the game contract and get its address in order to start playing.
 
 - Payment public key hash of first player and second player.
 - Stake public key hash of first player and second player.
@@ -32,15 +32,17 @@ After obtaining ans specifying the following, compile the game contract and get 
 - Time for **game deadline** and **reveal deadline**
 - Currency symbol and token name of state NFT
 
-- First, first player start the game by sending **bet amount** plus **state NFT** to game smart contract along with the hash of his nonce combined with the choice inside `startGame-DATUM.json` datum.
+Now you can choose to play as either both players (needs 2 wallet) or one player. In either case follow below process to have a unique on-chain fun :) .
 
-- Then if second player start playing before **game deadline**, he can take game UTxO inside game smart contract (which was sent by first player) and consume it and produce new UTxO with his own choice and send it back to game smart contract, by using these files `secondPlayerPlayChoice-DATUM.json` datum and `secondPlayerPlayChoice-REDEEMER.json` redeemer.
+1. First, first player start the game by sending **bet amount** plus **state NFT** to game smart contract along with the hash of his nonce combined with the choice inside `startGame-DATUM.json` datum.
 
-- If at this point, first player realizes that he has won depending on second player's choice, he will consume game UTxO and reveal his secret (nonce) which will be inside `firstPlayerRevealChoice-REDEEMER.json` and the game ends with his winning.
+2. Then if second player start playing before **game deadline**, he can take game UTxO inside game smart contract (which was sent by first player) and consume it and produce new UTxO with his own choice and send it back to game smart contract, by using these files `secondPlayerPlayChoice-DATUM.json` datum and `secondPlayerPlayChoice-REDEEMER.json` redeemer.
 
-- If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player.
+3. If at this point, first player realizes that he has won depending on second player's choice, he will consume game UTxO and reveal his secret (nonce) which will be inside `firstPlayerRevealChoice-REDEEMER.json` and the game ends with his winning.
 
-- One last thing, that after first player starts playing, second player simply is not interested and doesn't play. So, in that case, first player can get his own money back after **game deadline** has been reached, by using `firstPlayerClaims-REDEEMER.json`.
+4. If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player.
+
+5. One last thing, that after first player starts playing, second player simply is not interested and doesn't play. So, in that case, first player can get his own money back after **game deadline** has been reached, by using `firstPlayerClaims-REDEEMER.json`.
 
 ## First Player Start The Game
 
