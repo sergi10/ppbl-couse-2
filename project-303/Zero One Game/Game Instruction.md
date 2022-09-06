@@ -79,7 +79,7 @@ $MAGIC \
 cardano-cli transaction submit $MAGIC --tx-file tx.signed
 ```
 
-## Second Player Play Choice
+## Second Player Start to Play
 
 ```sh
 MAGIC=--testnet-magic 1
@@ -128,7 +128,7 @@ $MAGIC \
 cardano-cli transaction submit $MAGIC --tx-file tx.signed
 ```
 
-## First Player Reveal
+## First Player Reveal The Choice
 
 ```sh
 MAGIC=--testnet-magic 1
@@ -174,7 +174,7 @@ $MAGIC \
 cardano-cli transaction submit $MAGIC --tx-file tx.signed
 ```
 
-## First Player Claims
+## First Player Claims Its Own Amount
 
 ```sh
 MAGIC=--testnet-magic 1
@@ -218,7 +218,7 @@ $MAGIC \
 cardano-cli transaction submit $MAGIC --tx-file tx.signed
 ```
 
-## Second Player Claims
+## Second Player Claims Wining Amount
 
 ```sh
 MAGIC=--testnet-magic 1
