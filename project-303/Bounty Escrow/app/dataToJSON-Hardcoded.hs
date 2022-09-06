@@ -19,6 +19,9 @@ datum = BountyEscrowDatum
   , bedExpirationTime     = 1651252695000
   }
 
+redeemer :: BountyAction
+redeemer = Distribute
+
 dataToScriptData :: Data -> ScriptData
 dataToScriptData (Constr n xs) = ScriptDataConstructor n $ dataToScriptData <$> xs
 dataToScriptData (Map xs)      = ScriptDataMap [(dataToScriptData x, dataToScriptData y) | (x, y) <- xs]
@@ -31,7 +34,8 @@ writeJSON file = LBS.writeFile file . encode . scriptDataToJson ScriptDataJsonDe
 
 main :: IO ()
 main = do
-      writeJSON "output/BountyEscrowDatum-Hardcoded.json" datum
+      writeJSON "output/BountyEscrow-Datum-Hardcoded.json" datum
+      writeJSON "output/BountyEscrow-Redeemer-Hardcoded.json" redeemer
       putStrLn "\n<---------------DONE--------------->"
       putStrLn "\nATTENTION: JSON flies were written at 'output' directory"
       putStrLn "\n<----------------------------------->"

@@ -1,11 +1,11 @@
-Cabal-Version:       2.4
-Name:                zero-one-game
-Version:             1.0.0.0
-Author:              Gimbalabs
-Maintainer:          jdunseith@gimblabs.io
-Build-Type:          Simple
-License:             Apache-2.0
-License-files:       LICENSE
+Cabal-Version:        2.4
+Name:                 zero-one-game
+Version:              1.0.0.0
+Author:               Gimbalabs
+Maintainer:           jdunseith@gimblabs.io
+Build-Type:           Simple
+License:              Apache-2.0
+License-file:         LICENSE
 
 library
   hs-source-dirs:      src
@@ -48,6 +48,16 @@ executable             createHashOfAnswer
   main-is:             createHashOfAnswer.hs
   hs-source-dirs:      app
   build-depends:       base ^>=4.14.1.0
+                     , plutus-tx
+  default-language:    Haskell2010
+  ghc-options:        -Wall
+
+executable             addressInfo
+  main-is:             addressInfo.hs
+  hs-source-dirs:      app
+  build-depends:       base ^>=4.14.1.0
+                     , plutus-ledger
+                     , plutus-ledger-api
                      , plutus-tx
   default-language:    Haskell2010
   ghc-options:        -Wall
