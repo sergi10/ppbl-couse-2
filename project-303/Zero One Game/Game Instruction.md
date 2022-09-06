@@ -31,8 +31,12 @@ After obtaining and specifying the following, compile the game contract and get 
 - Game bet amount
 - Time for **game deadline** and **reveal deadline**
 - Currency symbol and token name of state NFT
+- Provide **nonce** and choose 0 or 1 at `dataToJSON.hs`
+- Change second player choice at `dataToJSON.hs` file from `Zero` to `One` or keep it unchanged.
+- Run `cabal run dataToJSON` to create redeemer and datum files
+- Transfer all files inside `output` folder to destination you want to run `cardano-cl` commands or start the game at `output` folder
 
-Now you can choose to play as either both players (needs 2 wallet) or one player. In either case follow below process to have a unique on-chain fun :) .
+Now you are ready to play so choose to play as either both players (needs 2 wallet) or one player. In either case follow below process to have a unique on-chain fun :) .
 
 1. First, first player start the game by sending **bet amount** plus **state NFT** to game smart contract along with the hash of his nonce combined with the choice inside `startGame-DATUM.json` datum.
 
