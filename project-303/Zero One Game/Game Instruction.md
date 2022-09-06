@@ -2,25 +2,25 @@
 
 ## Zero One Game Logic
 
-This game implement to be played between 2 player. It is a bit like rock paper scissors, but even simpler as there are only two options. First player and second player both have two options, they can either play 0 or 1. Depending on what they play, one of them wins.
+This game implement to be played between 2 players. It is a bit like rock paper scissors, but even simpler as there are only two options. First player and second player both have two options, they can either play 0 or 1. Depending on what they play, one of them wins.
 
 - If they both choose same option, either both choose 0 or both choose 1, then **first player** wins.
 
 - If the choices are different, then **second player** wins.
 
-First player can send his choice with **datum**, but datum in their default form is just plain text converted to `ByteString`. So this of course gives a very unfair advantage to second player. Second player now can check first player's submitted datum and sees what number first player was picked.
+First player can send his choice with **Datum**, but string inside **Datum** in their default format is just plain text converted to `ByteString`. So this of course gives a very unfair advantage to second player. Second player now can check first player's submitted **Datum** and sees what number first player was picked.
 
 We'll use a cryptographic protocol called commit schemes. The idea is that first player does not reveal his choice to second player, but he commits to his choice so that he later can not change his mind.
 
-We'll use hash functions. Hash functions in other words, are one way functions. It is difficult given a hash to reconstruct the original document or the original byte string that was hashed to this hash.
+We'll use hash functions and they are one way functions. So It is difficult given a hash to reconstruct the original document or the original byte string that was hashed to this hash.
 
-Looking at the game, first player, instead of putting his choice in plain text inside datum, he instead puts the hash of his choice and it is concatenate with some arbitrary text called **nonce**.
+Looking at the game, first player, instead of putting his choice in plain text inside **Datum**, he instead puts the hash of his choice while it was concatenate with some arbitrary text called **nonce**.
 
 Why you may ask, because hash of 0 or 1 will be always same which may look very cryptic to second player the first time they play. However, sooner or later he will notice that he always sees one of these two hashes and then he knows which choice first player made.
 
-So let's say first player puts the hash of his 0 concatenated with **nonce** at datum, which is just a cryptic byte string. So now second player sees this cryptic byte string and he has no idea whether first player picked, 0 or 1. But for second player there would be no need for him to use a hash, so he can just put the choice in plain text inside datum. And second player choice 0 as well.
+So let's say first player puts the hash of his 0 concatenated with **nonce** at **Datum**, which is just a cryptic byte string. So now second player sees this cryptic byte string and he has no idea whether first player picked, 0 or 1. But for second player there would be no need for him to use a hash, so he can just put the choice in plain text inside **Datum**. And second player choice 0 as well.
 
-And in this case first player would have won, however second player still has no proof that first player has won. So there is then one additional step, that first player has to show his actual choice with **nonce**, which he'll use **Redeemer** for that.
+In this case first player would have won, however second player still has no proof that first player has won. So there is then one additional step, that first player has to show his actual choice with **nonce**, which he'll use **Redeemer** for that.
 
 ## How to Play
 
@@ -79,7 +79,7 @@ $MAGIC \
 cardano-cli transaction submit $MAGIC --tx-file tx.signed
 ```
 
-## Second Player Start to Play
+## Second Player Start To Play
 
 ```sh
 MAGIC=--testnet-magic 1
