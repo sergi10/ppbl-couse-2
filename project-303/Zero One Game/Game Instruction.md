@@ -45,13 +45,13 @@ You are ready to play so choose to play as either both players (needs 2 wallet) 
 
 3. If at this point, first player realizes that he has won depending on second player's choice, he will consume game UTxO and reveal his secret (nonce) which will be inside `firstPlayerRevealChoice-REDEEMER.json` and the game ends with his winning.
 
-4. If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player.
+4. If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player and he has to provide **SHelly Era** address aka **Staking Address** of first player.
 
 5. One last thing, that after first player starts playing, second player simply is not interested and doesn't play. So, in that case, first player can get his own money back after **game deadline** has been reached, by using `firstPlayerClaims-REDEEMER.json`.
 
 ## First Player Start The Game
 
-```sh
+```bash
 MAGIC=--testnet-magic 1
 TXIN=
 NFT_TXIN=
@@ -64,7 +64,7 @@ STATE_NFT=
 FIRST_PLAYER=
 ```
   
-```sh
+```bash
 cardano-cli transaction build \
 --alonzo-era \
 $MAGIC \
@@ -86,7 +86,7 @@ cardano-cli transaction submit $MAGIC --tx-file tx.signed
 
 ## Second Player Start To Play
 
-```sh
+```bash
 MAGIC=--testnet-magic 1
 TXIN=
 CONTRACT_TXIN=
@@ -105,7 +105,7 @@ NOW_SLOT_NUM=
 GAME_DEADLINE_SLOT_NUM=$(expr $NOW_SLOT_NUM + 1800)
 ```
 
-```sh
+```bash
 cardano-cli transaction build \
 --alonzo-era \
 $MAGIC \
@@ -135,7 +135,7 @@ cardano-cli transaction submit $MAGIC --tx-file tx.signed
 
 ## First Player Reveal The Choice
 
-```sh
+```bash
 MAGIC=--testnet-magic 1
 TXIN=
 CONTRACT_TXIN=
@@ -152,7 +152,7 @@ NOW_SLOT_NUM=
 REVEAL_DEADLINE_SLOT_NUM=$(expr $NOW_SLOT_NUM + 900)
 ```
 
-```sh
+```bash
 cardano-cli transaction build \
 --alonzo-era \
 $MAGIC \
@@ -181,7 +181,7 @@ cardano-cli transaction submit $MAGIC --tx-file tx.signed
 
 ## First Player Claims Its Own Amount
 
-```sh
+```bash
 MAGIC=--testnet-magic 1
 TXIN=
 CONTRACT_TXIN=
@@ -197,7 +197,7 @@ FIRST_PLAYER=
 NOW_SLOT_NUM=
 ```
 
-```sh
+```bash
 cardano-cli transaction build \
 --alonzo-era \
 $MAGIC \
@@ -225,7 +225,7 @@ cardano-cli transaction submit $MAGIC --tx-file tx.signed
 
 ## Second Player Claims Wining Amount
 
-```sh
+```bash
 MAGIC=--testnet-magic 1
 TXIN=
 CONTRACT_TXIN=
@@ -241,7 +241,7 @@ FIRST_PLAYER=
 NOW_SLOT_NUM=
 ```
 
-```sh
+```bash
 cardano-cli transaction build \
 --alonzo-era \
 $MAGIC \
@@ -252,7 +252,7 @@ $MAGIC \
 --tx-in-redeemer-file $SECOND_CLAIMS_REDEEMER \
 --tx-in-collateral $COLLATERAL \
 --tx-out "$(cat $SECOND_PLAYER.addr) $(expr $WIN_AMOUNT - 2000000) lovelace" \
---tx-out "$(cat $FIRST_PLAYER.addr) $NFT_ADA_AMOUNT lovelace + 1 $STATE_NFT" \
+--tx-out "$(cat $FIRST_PLAYER.saddr) $NFT_ADA_AMOUNT lovelace + 1 $STATE_NFT" \
 --change-address $(cat $SECOND_PLAYER.addr) \
 --required-signer $SECOND_PLAYER.skey \
 --invalid-before $NOW_SLOT_NUM \

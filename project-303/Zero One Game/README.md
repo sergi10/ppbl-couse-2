@@ -108,7 +108,9 @@ cabal run <NAME_OF_THE_SCRIPT>
 - All existing values are just examples.
 - All output files will be written to `/Zero One Game/output`
 directory.
-- Feel free change, optimize and experiment with all these codes and scripts, especially try to create different **Datum** and **Redeemer**.
+- `output` folder consist of example redeemers and datums, so empty it first.
+- Feel free change, optimize and experiment with all these codes and scripts.
+- especially try to create different **Datum** and **Redeemer**.
 
 ## License
 
