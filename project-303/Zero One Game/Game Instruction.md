@@ -45,7 +45,7 @@ You are ready to play so choose to play as either both players (needs 2 wallet) 
 
 3. If at this point, first player realizes that he has won depending on second player's choice, he will consume game UTxO and reveal his secret (nonce) which will be inside `firstPlayerRevealChoice-REDEEMER.json` and the game ends with his winning.
 
-4. If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player and he has to provide **SHelly Era** address aka **Staking Address** of first player.
+4. If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player and he has to provide **Shelly Era Address** aka **Staking Address** of first player.
 
 5. One last thing, that after first player starts playing, second player simply is not interested and doesn't play. So, in that case, first player can get his own money back after **game deadline** has been reached, by using `firstPlayerClaims-REDEEMER.json`.
 
