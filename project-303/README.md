@@ -2,15 +2,15 @@
 
 ## Description
 
-This package contains Plutus source code for Project 303 and related assignment.
+This package contains Plutus source code for Project 303 and related assignments.
   
 ## Installation
 
-Once you have the development environment, follow the instructions provided inside the contract folders
+Once you have the development environment, follow the instructions provided inside the contract folders.
 
 ### Discussion
 
-To discuss the project and the content, join the discussion of module 303 at Canvas or join [Gimbalabs Discord](https://discord.gg/DDaWj6gN)
+To discuss the project and the content, join the discussion of module 303 at Canvas or join [Gimbalabs Discord](https://discord.gg/DDaWj6gN).
 
 ## Authors and acknowledgment
 

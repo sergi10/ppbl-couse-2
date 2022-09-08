@@ -45,10 +45,10 @@ gameBetAmount :: Integer
 gameBetAmount = 3000000
 
 gamePlayDeadline :: POSIXTime
-gamePlayDeadline = 1662420600000
+gamePlayDeadline = 1662637560000
 
 firstPlayerRevealDeadline :: POSIXTime
-firstPlayerRevealDeadline = 1662420000000
+firstPlayerRevealDeadline = 1662635760000
 
 {----------------------------------------------------------------}
 
