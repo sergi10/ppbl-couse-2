@@ -16,7 +16,7 @@ Create a file called `faucet-reg-metadata.json`, with the following contents:
 ```
 {
 	"1618033988": {
-		"contractAddress": "<ADDRESS OF YOUR FAUCET CONTRACT",
+		"contractAddress": "<ADDRESS OF YOUR FAUCET CONTRACT>",
 		"policyId": "<POLICY ID OF THE TOKEN DISTRIBUTED BY YOUR FAUCET>",
 		"tokenName": "<NAME OF YOUR TOKEN (PLAIN TEXT)>",
 		"datumInt": "<INTEGER USED AS DATUM IN YOUR CONTRACT>",
