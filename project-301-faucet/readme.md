@@ -19,12 +19,11 @@ cardano-cli transaction hash-script-data --script-data-value 1618
 4. Build an Unlocking Transaction to get some `tgimbal` tokens:
 #### Set Variables
 ```
-CONTRACT_TXIN=""
-AUTH_TOKEN_TXIN=""
-FEE_TXIN=""
-COLLATERAL=""
-DATUMHASH=""
-PLUTUS_SCRIPT_FILE="<path to...>/output/ppbl-pre-prod-faucet-tgimbal-pkh.plutus"
+CONTRACT_TXIN="db340b1dc87bee5c459517d8fb8c3b882defbf692ebe2929e1a588b8d66fb254#1"
+AUTH_TOKEN_TXIN="5a8d0667ff80644c9c1e1096d364e7d0e0b0dd5248fb702664214851208d67a6#14"
+FEE_TXIN="1d7618edb21d9025706cf04c4b5b26d3e66b3aff6c1b7f44917aa365a7fe224b#0"
+COLLATERAL="5a8d0667ff80644c9c1e1096d364e7d0e0b0dd5248fb702664214851208d67a6#9"
+PLUTUS_SCRIPT_FILE="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-301-faucet/output/ppbl-faucet-preprod-minimum.plutus"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
 ```
@@ -40,18 +39,18 @@ cardano-cli transaction build \
 --tx-in $CONTRACT_TXIN \
 --tx-in-script-file $PLUTUS_SCRIPT_FILE \
 --tx-in-datum-value 1618 \
---tx-in-redeemer-file redeemer.json \
+--tx-in-redeemer-value 101 \
 --tx-in-collateral $COLLATERAL \
---tx-out $YOURWALLET+"2000000 + 3000 $ASSET" \
---tx-out $YOURWALLET+"2000000 + 1 $AUTH_TOKEN" \
---tx-out $CONTRACTADDR+"2000000 + <NUMBER OF TOKENS TO RETURN TO CONTRACTADDR> $ASSET" \
+--tx-out $SENDER+"2000000 + 250 $ASSET" \
+--tx-out $SENDER+"2000000 + 1 $AUTH_TOKEN" \
+--tx-out $CONTRACTADDR+"2000000 + 24750 $ASSET" \
 --tx-out-datum-hash $DATUMHASH \
---change-address $YOURWALLET \
+--change-address $SENDER \
 --protocol-params-file protocol.json \
 --out-file unlock.raw
 
 cardano-cli transaction sign \
---signing-key-file $YOURWALLETKEY \
+--signing-key-file $SENDERKEY \
 --testnet-magic 1 \
 --tx-body-file unlock.raw \
 --out-file unlock.signed
@@ -87,14 +86,11 @@ Set Variables
 ```
 SENDER
 SENDERKEY
-TXIN1=""
-TXIN2=""
-CONTRACTTXIN=""
-CONTRACTADDR=""
-AUTH_TOKEN_TXIN=""
-DATUMHASH=""
-ASSET=""
-PLUTUS_SCRIPT_FILE=""
+TXIN1="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#2"
+TXIN2="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#0"
+CONTRACTADDR="addr_test1wpugeqglkwls7utfghgqtnjc2wgnylxkztrjvm00248skxqy8duax"
+DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
+ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 
 ```
 
@@ -104,16 +100,16 @@ cardano-cli transaction build \
 --alonzo-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
---tx-out $CONTRACTADDR+"2000000 + <NUMBER> $ASSET" \
+--tx-out $CONTRACTADDR+"2000000 + 25000 $ASSET" \
 --tx-out-datum-hash $DATUMHASH \
---tx-out $WALLET1+"2000000 + <NUMBER> $ASSET" \
---change-address $WALLET1 \
+--tx-out $SENDER+"2000000 + 136000 $ASSET" \
+--change-address $SENDER \
 --protocol-params-file protocol-preprod.json \
 --out-file tx-lock.raw \
 --testnet-magic 1
 
 cardano-cli transaction sign \
---signing-key-file $WALLET1KEY \
+--signing-key-file $SENDERKEY \
 --testnet-magic 1 \
 --tx-body-file tx-lock.raw \
 --out-file tx-lock.signed

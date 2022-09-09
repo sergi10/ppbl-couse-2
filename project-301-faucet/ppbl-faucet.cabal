@@ -42,7 +42,7 @@ library
     import: lang
     exposed-modules:
       FaucetValidatorCompiler
-      FaucetValidatorScriptWithPkh
+      FaucetValidatorScriptMinimumLogic
     build-depends:
       base >= 4.9 && < 5,
       aeson -any,
