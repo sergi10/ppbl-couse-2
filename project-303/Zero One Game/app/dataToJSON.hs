@@ -15,7 +15,7 @@ nonce :: BuiltinByteString
 nonce = "0123456789abcdef__"
 
 firstPlayerChoice :: BuiltinByteString
-firstPlayerChoice = "1"
+firstPlayerChoice = "0"
 
 hash :: BuiltinByteString
 hash = sha2_256 $ nonce `appendByteString` firstPlayerChoice
