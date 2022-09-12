@@ -22,7 +22,7 @@ import              PlutusTx.Prelude    hiding (Semigroup (..), unless)
 
 import              Escrow.BountyTypes
 
-{-# INLINEABLE mkValidator #-}
+{-# INLINABLE mkValidator #-}
 mkValidator :: BountyParam -> BountyEscrowDatum -> BountyAction -> ScriptContext -> Bool
 mkValidator bp dat action ctx =
   case action of

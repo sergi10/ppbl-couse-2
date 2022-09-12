@@ -25,7 +25,6 @@ import              PlutusTx.Prelude    hiding  (Semigroup (..), unless)
 import              Prelude                     (Show (..))
 import  qualified   Prelude                 as  Pr
 
-
 data GameParams = GameParams
     {   firstPlayerAddress  ::  !Address
     ,   secondPlayerAddress ::  !Address

@@ -3,15 +3,15 @@
 ## Description
 
 - This package contains Plutus source code for Zero One Game project.
-- After following **Installation** and **Preparation** steps, open **`Game Instruction.md`** file to know about how this game works and how to play it.
+- After following **Installation** and **Preparation** steps, open **`Game Instruction.md`** file to know, the game logic and how to play it.
   
 ## Installation
 
-Once you have Plutus development environment, to compile smart contract follow these instructions:
+Once you have Plutus development environment, to compile the smart contract follow these instructions:
   
-- Run `nix-shell` inside `plutus-app` folder
-- Change directory to `ppbl-course-02/project-303/Zero One Game`
-- Then execute `cabal update` command
+- Run `nix-shell` inside `plutus-app` folder.
+- Change directory to `ppbl-course-02/project-303/Zero One Game` folder.
+- Then execute `cabal update` command.
   
 ## Preparation
 
@@ -19,14 +19,16 @@ Follow these steps to make smart contract ready for compilation:
 
 ### Step 1
 
-Mint an NFT which will work as **State NFT**. Obtain its **TokenName** and **CurrencySymbol** and inside `Game.GameComplier.hs` file replace `nftCurrencySymbol` and `nftTokenName` values with the values you've obtained.  
+Mint an NFT or a token which it will work as **State NFT**, obtain its **TokenName** and **CurrencySymbol** and inside `Game.GameComplier.hs` file replace `nftCurrencySymbol` and `nftTokenName` values with the values you've obtained.  
+
+- Command to mint **State NFT**
 
 ```sh
 MAGIC=--testnet-magic 1
 TXIN=
 FIRST_PLAYER=
 POLICY_ID=
-TOKEN_NAME=$(echo -n "" | xxd -p)
+TOKEN_NAME=$(echo -n "<TOKEN_NAME>" | xxd -p)
 POLICY_SCRIPT=
 ```
 
@@ -51,28 +53,28 @@ cardano-cli transaction submit $MAGIC --tx-file tx.signed
 
 ### Step 2
 
-Provide 2 wallets if you want to play as both player and obtain its payment public key hash to be used as `firstPlayerPaymentPKH` and `secondPlayerPaymentPKH` in `Game.GameComplier`.
+Provide 2 wallets (if you want to play as both player) and obtain its payment public key hash to be used as `firstPlayerPaymentPKH` and `secondPlayerPaymentPKH` inside `Game.GameComplier`.
 
 ### Step 3
 
 Create staking credentials and obtain its stake public key hash by following these commands.
 
 ```bash
- cardano-cli stake-address key-gen --verification-key-file <FILE_NAME>.svkey --signing-key-file <FILE_NAME>.sskey
+ cardano-cli stake-address key-gen --verification-key-file <WALLET_NAME>.svkey --signing-key-file <WALLET_NAME>.sskey
 ```
 
 ```bash
 cardano-cli stake-address key-hash --stake-verification-key-file <FILE_NAME>.svkey
 ```
 
-Then replace values of `firstPlayerStakePKH` and  `secondPlayerStakePKH`
+Then replace values of `firstPlayerStakePKH` and `secondPlayerStakePKH` inside `Game.GameComplier`.
 
 ### Step 4
 
-Create staking address aka shelly era address for first player by executing this command.
+Create **Shelly Era** address for players by executing this command:
 
 ```bash
-cardano-cli address build --payment-verification-key-file <FIRST_PLAYER>.vkey --stake-verification-key-file <FILE_NAME>.svkey --test-net 1 --out-file <STAKING_ADDRESS>.addr
+cardano-cli address build --payment-verification-key-file <WALLET_NAME>.vkey --stake-verification-key-file <WALLET_NAME>.svkey --testnet-magic 1 --out-file <WALLET_NAME>.saddr
 ```
 
 ### Step 5
@@ -89,15 +91,15 @@ Run `writeZeroOneGameScript` and get `Right()` as output which indicate **Zero O
 
 ## Tooling
 
-There are 3 scripts at `/app` folder:
+There are 5 scripts at `/app` folder:
 
-- `dataToJSON.hs` for creating **Datums** and **Redeemers**.
-- `createHashOfAnswer.hs` for showing the actual `BuiltinByteString` of the **Hash of The Answer**.
-- `addressInfo.hs` for showing the address information.
+- `dataToJSON.hs` creates **Datums** and **Redeemers** for the game.
+- `createHashOfAnswer.hs` shows the actual `BuiltinByteString` of the **Hash of The Answer**.
+- `addressInfo.hs` shows `Address` type information.
+- `posixTimeToSlot.hs` converts `POSIXTime` to `Slot` number for **Pre-Production** testnet.
+- `slotToPOSIXTime.hs` converts `Slot` number to `POSIXTime` for **Pre-Production** testnet.
 
 In order to run those script go to `/project-303/Zero One Game` folder and run:
-
-- To create a **Datum** and **Redeemer** `datumToJSON.hs`
   
 ```bash
 cabal run <NAME_OF_THE_SCRIPT>
@@ -106,11 +108,10 @@ cabal run <NAME_OF_THE_SCRIPT>
 ## Note
 
 - All existing values are just examples.
-- All output files will be written to `/Zero One Game/output`
+- All output files will be written at `/Zero One Game/output`
 directory.
-- `output` folder consist of example redeemers and datums, so empty it first.
-- Feel free change, optimize and experiment with all these codes and scripts.
-- especially try to create different **Datum** and **Redeemer**.
+- `output` folder is consist of example redeemers and datums, so empty it first before creating your own datums and redeemers.
+- Feel free to change, optimize and experiment with all codes and scripts, especially try to create different **Datum** and **Redeemer**.
 
 ## License
 

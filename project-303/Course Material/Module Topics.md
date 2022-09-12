@@ -18,18 +18,34 @@
 
 ## Redeemer, Datum and Contract Parameters
 
+- Business rule and business logic
+- UTxO model and account model
+- What is role of datum, redeemer , contract parameter and script context
 - The holy book of Plutus
-- BuiltData
 - Data
-- What is role of datum
-- What is role of redeemer
-- What is role of contract parameters
+- BuiltData
 - How to define datum or redeemer
 - How to construct parametrized datum or redeemer
 - How to interact with them inside `repl`
 - What `constr` actually is and why it is necessary
 - What are the related functions such as `unstableMakeIsData`
 - What those function do actually
-- What should be inside to datum or redeemer
 - How to convert datum and redeemer for off-chain usage
+- What should be inside to datum or redeemer
+- CardanoScan
+
+## Plutus Smart Contract Logic
+
 - How to use datum, redeemer and contract parameters inside Plutus validator
+- Definition section, condition Section, function section, compilation section
+- Template haskell and `{-# INLINABLE #-}`
+- Plutus functions
+- Refactoring smart contract
+- Hack the logic
+
+## Deeper Look at Plutus
+
+- Decoding Plutus
+- Plutus Core
+- Smart contract CBOR and binary
+- Encoding and decoding addresses
