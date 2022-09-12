@@ -1,1 +1,9 @@
-{"fields":[{"fields":[],"constructor":0}],"constructor":0}
+{
+    "constructor": 0,
+    "fields": [
+        {
+            "constructor": 0,
+            "fields": []
+        }
+    ]
+}

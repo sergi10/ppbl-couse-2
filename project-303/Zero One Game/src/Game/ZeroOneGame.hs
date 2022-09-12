@@ -40,6 +40,8 @@ deserializeDatum md = do
 firstPlayerAdaForNFT :: Integer
 firstPlayerAdaForNFT = Ada.getLovelace minAdaTxOut
 
+-- mkGameValidator :: BuiltinData -> BuiltinByteString -> BuiltinByteString -> BuiltinData -> BuiltinData -> BuiltinData -> ()
+
 {-# INLINABLE mkGameValidator #-}
 mkGameValidator :: GameParams -> BuiltinByteString -> BuiltinByteString -> GameDatum -> GameRedeemer -> ScriptContext -> Bool
 mkGameValidator gp bsZero' bsOne' dat red ctx =
