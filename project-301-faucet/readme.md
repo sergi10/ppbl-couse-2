@@ -3,7 +3,7 @@
 ## Part 3: Test Locking and Unlocking Transactions with `cardano-cli`
 ### Follow Up from Live Coding 2022-09-01
 
-Try to unlock tokens from the contract at: `addr_test1wpenjjl2ea22r0vlcm9m3hy9heafwpt3grmty0qfx4r0nrglkg0pk`
+Try to unlock tokens from the contract at: `addr_test1wpenjjl2ea22r0vlcm9m3hy9heafwpt3grmty0qfx4r0nrglkg0pk`. This contract is configured to allow users to withdraw 3000 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
 
 ### Step By Step:
 1. Get the `ppbl-pre-prod-faucet-tgimbal-pkh.plutus` file provided here in `/project-301-faucet/shared-script/`
@@ -20,12 +20,13 @@ cardano-cli transaction hash-script-data --script-data-value 1618
 #### Set Variables
 ```
 CONTRACT_TXIN="db340b1dc87bee5c459517d8fb8c3b882defbf692ebe2929e1a588b8d66fb254#1"
-AUTH_TOKEN_TXIN="5a8d0667ff80644c9c1e1096d364e7d0e0b0dd5248fb702664214851208d67a6#14"
-FEE_TXIN="1d7618edb21d9025706cf04c4b5b26d3e66b3aff6c1b7f44917aa365a7fe224b#0"
-COLLATERAL="5a8d0667ff80644c9c1e1096d364e7d0e0b0dd5248fb702664214851208d67a6#9"
-PLUTUS_SCRIPT_FILE="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-301-faucet/output/ppbl-faucet-preprod-minimum.plutus"
+AUTH_TOKEN_TXIN=""
+FEE_TXIN=""
+COLLATERAL=""
+PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-course-02/project-301-faucet/output/ppbl-faucet-preprod-minimum.plutus"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
+TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 3000 to be withdrawn>
 ```
 Note: `$ASSET` represents `tgimbal`; `$AUTH_TOKEN` represents `PPBLSummer2022`
 
@@ -41,9 +42,9 @@ cardano-cli transaction build \
 --tx-in-datum-value 1618 \
 --tx-in-redeemer-value 101 \
 --tx-in-collateral $COLLATERAL \
---tx-out $SENDER+"2000000 + 250 $ASSET" \
+--tx-out $SENDER+"2000000 + 3000 $ASSET" \
 --tx-out $SENDER+"2000000 + 1 $AUTH_TOKEN" \
---tx-out $CONTRACTADDR+"2000000 + 24750 $ASSET" \
+--tx-out $CONTRACTADDR+"2000000 + $TOKENS_BACK_TO_CONTRACT $ASSET" \
 --tx-out-datum-hash $DATUMHASH \
 --change-address $SENDER \
 --protocol-params-file protocol.json \
