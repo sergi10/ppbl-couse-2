@@ -2,11 +2,11 @@
 ## Pre-Production Instance for PPBL Summer 2022
 
 ### Roadmap:
-[x] Use a bash script to mint one Contributor Token
-[ ] Use a bash script to mint a set of Contributor Tokens
-[ ] Create a front end for minting Contributor Tokens with Mesh
-[ ] Create a Plutus script for minting Contributor Tokens for holders of PPBLSummer2022
-[ ] Create a self-service front end for minting Contributor Tokens.
+- [x] Use a bash script to mint one Contributor Token
+- [ ] Use a bash script to mint a set of Contributor Tokens
+- [ ] Create a front end for minting Contributor Tokens with Mesh
+- [ ] Create a Plutus script for minting Contributor Tokens for holders of PPBLSummer2022
+- [ ] Create a self-service front end for minting Contributor Tokens.
 
 ### Instance Parameters:
 In order to compile and use our contract, need to prepare some tokens:
