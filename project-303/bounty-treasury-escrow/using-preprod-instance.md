@@ -2,7 +2,7 @@
 ## Pre-Production Instance for PPBL Summer 2022
 
 ### To Do:
-- [ ] At Live Coding the relationship between `BountyDetails` in `BountyTreasury.hs` and `BountyEscrowDatum` in `BountyEscrow.hs`. What logic is enabled by using each of these?
+- [ ] At Live Coding: Show the relationship between `BountyDetails` in `BountyTreasury.hs` and `BountyEscrowDatum` in `BountyEscrow.hs`. What logic is enabled by using each of these?
 
 ### Instance Parameters:
 In order to compile and use our contract, we need to prepare some tokens:
