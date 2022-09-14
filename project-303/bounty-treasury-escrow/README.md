@@ -1,11 +1,13 @@
 # Bounty Escrow
 
+## Contents:
+- [Using GBTE on Pre-Production](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/using-preprod-instance.md)
+- [Preparing Tokens](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md)
+- [Scripts for buildingeach transaction](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/tree/master/project-303/bounty-treasury-escrow/scripts): Use these as documentation to see how this dapp works.
+
 ## Description
-
 - This package contains Plutus source code for Bounty and Escrow Project.
-
 - This is a bounty campaign that is been managed by PPBL students which they will create task for other students in form of bounty and then reward participant.
-
 - Running bounty escrow campaign on blockchain have these advantages:
     1. If a participant try to use ill-practice behavior for any bounty, the participant will be disqualified and their funds which was locked inside smart contract will be taken by campaign management.
     2. The rules set out in these bounties are not fixed and according to the bounty it is flexible and changeable and the participants will be rewarded accordingly and no negotiation will be needed.
@@ -79,7 +81,7 @@ There are 2 scripts at `/app` folder for creating correct **Datum** or **Redeeme
 
 Feel free to use either and choose one to optimize and create different **Datum** and **Redeemer** with it. Note that the values are just examples.
 
-Inside `/project-303/Bounty Escrow` folder run:
+Inside `/project-303/bounty-treasury-escrow` folder run:
 
 - `dataToJSON-Hardcoded.hs`
 
@@ -96,7 +98,7 @@ cabal run dataToJSON-WithArg "22117fbd0f86a213ae4f4d824cd0d38eea29e49764ae22f5f5
 ## Note
 
 - All values are just examples.
-- All output files will be written to `/Bounty Escrow/output` directory.
+- All output files will be written to `/bounty-treasury-escrow/output` directory.
 - Feel free change, optimize and experiment with all codes and scripts, especially try to create different **Datum** and **Redeemer**.
 
 ## License
