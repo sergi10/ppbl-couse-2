@@ -3,7 +3,7 @@
 ## Description
 
 - This package contains Plutus source code for Bounty and Escrow Project.
-  
+
 - This is a bounty campaign that is been managed by PPBL students which they will create task for other students in form of bounty and then reward participant.
 
 - Running bounty escrow campaign on blockchain have these advantages:
@@ -15,11 +15,11 @@
     6. Since 2 smart contracts (Treasury and Escrow) was implemented, the result of this design pattern offer more security and less unwanted result(broken bounty) than normal bounty escrow smart contracts.
 
 - There are lot more advantages for such smart contract usage, so we strongly encourage students to change and improve the business logic of these smart contracts.
-  
+
 ## Installation
 
 Once you have Plutus development environment, to compile the smart contracts follow these instructions:
-  
+
 - Run `nix-shell` inside `plutus-app` folder
 - Change directory to `ppbl-course-02/project-303/Bounty Escrow`
 - Then execute `cabal update` command
@@ -56,6 +56,11 @@ Run `writeBountyEscrowScript` and get `Right()` as output which indicate **Bount
 
 Obtain contract address and contract hash (policy ID) by running this command
 
+```
+cardano-cli transaction policyid --script-file bounty-escrow.plutus
+> 3fceb0fdad63e0e54488da98b9e87c804b148a617af80aa1ad50fdea
+```
+
 ### Step 8
 
 Provide values for `writeBountyTreasuryScript` function parameters based on all the data you've gather and then compile treasury contract by running `writeBountyTreasuryScript` inside repl and get `Right()` as output which indicate **Bounty Treasury** contract was complied successfully.
@@ -77,7 +82,7 @@ Feel free to use either and choose one to optimize and create different **Datum*
 Inside `/project-303/Bounty Escrow` folder run:
 
 - `dataToJSON-Hardcoded.hs`
-  
+
 ```bash
 cabal run dataToJSON-Hardcoded
 ```
