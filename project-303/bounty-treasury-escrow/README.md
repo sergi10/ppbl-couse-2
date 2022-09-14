@@ -1,11 +1,13 @@
 # Bounty Escrow
 
+## Contents:
+- [Using GBTE on Pre-Production](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/using-preprod-instance.md)
+- [Preparing Tokens](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md)
+- [Scripts for buildingeach transaction](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/tree/master/project-303/bounty-treasury-escrow/scripts): Use these as documentation to see how this dapp works.
+
 ## Description
-
 - This package contains Plutus source code for Bounty and Escrow Project.
-  
 - This is a bounty campaign that is been managed by PPBL students which they will create task for other students in form of bounty and then reward participant.
-
 - Running bounty escrow campaign on blockchain have these advantages:
     1. If a participant try to use ill-practice behavior for any bounty, the participant will be disqualified and their funds which was locked inside smart contract will be taken by campaign management.
     2. The rules set out in these bounties are not fixed and according to the bounty it is flexible and changeable and the participants will be rewarded accordingly and no negotiation will be needed.
@@ -15,11 +17,11 @@
     6. Since 2 smart contracts (Treasury and Escrow) was implemented, the result of this design pattern offer more security and less unwanted result(broken bounty) than normal bounty escrow smart contracts.
 
 - There are lot more advantages for such smart contract usage, so we strongly encourage students to change and improve the business logic of these smart contracts.
-  
+
 ## Installation
 
 Once you have Plutus development environment, to compile the smart contracts follow these instructions:
-  
+
 - Run `nix-shell` inside `plutus-app` folder
 - Change directory to `ppbl-course-02/project-303/Bounty Escrow`
 - Then execute `cabal update` command
@@ -56,6 +58,11 @@ Run `writeBountyEscrowScript` and get `Right()` as output which indicate **Bount
 
 Obtain contract address and contract hash (policy ID) by running this command
 
+```
+cardano-cli transaction policyid --script-file bounty-escrow.plutus
+> 3fceb0fdad63e0e54488da98b9e87c804b148a617af80aa1ad50fdea
+```
+
 ### Step 8
 
 Provide values for `writeBountyTreasuryScript` function parameters based on all the data you've gather and then compile treasury contract by running `writeBountyTreasuryScript` inside repl and get `Right()` as output which indicate **Bounty Treasury** contract was complied successfully.
@@ -74,10 +81,10 @@ There are 2 scripts at `/app` folder for creating correct **Datum** or **Redeeme
 
 Feel free to use either and choose one to optimize and create different **Datum** and **Redeemer** with it. Note that the values are just examples.
 
-Inside `/project-303/Bounty Escrow` folder run:
+Inside `/project-303/bounty-treasury-escrow` folder run:
 
 - `dataToJSON-Hardcoded.hs`
-  
+
 ```bash
 cabal run dataToJSON-Hardcoded
 ```
@@ -91,7 +98,7 @@ cabal run dataToJSON-WithArg "22117fbd0f86a213ae4f4d824cd0d38eea29e49764ae22f5f5
 ## Note
 
 - All values are just examples.
-- All output files will be written to `/Bounty Escrow/output` directory.
+- All output files will be written to `/bounty-treasury-escrow/output` directory.
 - Feel free change, optimize and experiment with all codes and scripts, especially try to create different **Datum** and **Redeemer**.
 
 ## License
