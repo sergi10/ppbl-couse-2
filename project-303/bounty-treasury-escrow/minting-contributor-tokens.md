@@ -38,4 +38,4 @@ We will also need to specify a Treasury Issuer. This is represented by the Publi
 
 
 ## Use a bash script to mint one Contributor Token
-- see `/scripts/contrib-preprod-minter.sh`
+- see [/scripts/contrib-preprod-minter.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/00-contrib-preprod-minter.sh)
