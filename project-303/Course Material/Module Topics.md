@@ -31,15 +31,16 @@
 - What are the related functions such as `unstableMakeIsData`
 - What those function do actually
 - How to convert datum and redeemer for off-chain usage
-- What should be inside to datum or redeemer
+- What should be inside datum or redeemer
 - CardanoScan
 
 ## Plutus Smart Contract Logic
 
 - How to use datum, redeemer and contract parameters inside Plutus validator
-- Definition section, condition Section, function section, compilation section
-- Template haskell and `{-# INLINABLE #-}`
-- Plutus functions
+- Definition section, condition section, function section, compilation section
+- Template Haskell and `{-# INLINABLE #-}`
+- Script context and its usage
+- PlutusTx functions
 - Refactoring smart contract
 - Hack the logic
 
@@ -48,4 +49,6 @@
 - Decoding Plutus
 - Plutus Core
 - Smart contract CBOR and binary
-- Encoding and decoding addresses
+- Decoding and encoding addresses
+- Hard Limit
+- Script purpose

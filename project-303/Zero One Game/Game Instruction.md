@@ -2,25 +2,25 @@
 
 ## Zero One Game Logic
 
-This game implement to be played between 2 players. It is a bit like rock paper scissors, but even simpler as there are only two options. First player and second player both have two options, they can either play 0 or 1. Depending on what they play, one of them wins.
+This game is implemented to be played by 2 players. It is a bit like rock paper scissors game, but even simpler as there are only two options. The first player and second player can either play 0 or 1. Depending on what they play, one of them wins.
 
 - If they both choose same option, either both choose 0 or both choose 1, then **first player** wins.
 
 - If the choices are different, then **second player** wins.
 
-First player can send his choice with **Datum**, but string inside **Datum** in their default format is just plain text converted to `ByteString`. So this of course gives a very unfair advantage to second player. Second player now can check first player's submitted **Datum** and sees what number first player was picked.
+The first player can send his choice with **datum**, but the string inside **datum** in their default format is just plain text converted to a `ByteString`. So this, of course, gives a very unfair advantage to the second player. The second player can now check the first player's submitted **datum** and see what number the first player was picked.
 
-We'll use a cryptographic protocol called commit schemes. The idea is that first player does not reveal his choice to second player, but he commits to his choice so that he later can not change his mind.
+We'll use a cryptographic protocol called commit schemes. The idea is that the first player does not reveal his choice to the second player, but he commits to his choice so that he later can not change his mind.
 
-We'll use hash functions and they are one way functions. So It is difficult given a hash to reconstruct the original document or the original byte string that was hashed to this hash.
+We'll use hash functions and they are one-way functions. So, it is difficult, given a hash, to reconstruct the original document or the original byte string that was hashed to this hash.
 
-Looking at the game, first player, instead of putting his choice in plain text inside **Datum**, he instead puts the hash of his choice while it was concatenate with some arbitrary text called **nonce**.
+Looking at the game, the first player, instead of putting his choice in plain text inside **datum**, he instead puts the hash of his choice as it was concatenate with some arbitrary text called **nonce**.
 
-Why you may ask, because hash of 0 or 1 will be always same which may look very cryptic to second player the first time they play. However, sooner or later he will notice that he always sees one of these two hashes and then he knows which choice first player made.
+Why, you may ask, because the hash of 0 or 1 will always be the same, which may look very cryptic to the second player the first time they play. However, sooner or later, he will notice that he always sees one of these two hashes and then he knows which choice, the first player made.
 
-So let's say first player puts the hash of his 0 concatenated with **nonce** at **Datum**, which is just a cryptic byte string. So now second player sees this cryptic byte string and he has no idea whether first player picked, 0 or 1. But for second player there would be no need for him to use a hash, so he can just put the choice in plain text inside **Datum**. And second player choice 0 as well.
+So let's say, the first player puts the hash of his 0 concatenated with **nonce** in **datum**, which is just a cryptic byte string. So now, the second player sees this cryptic byte string and he has no idea whether the first player picked 0 or 1. But for the second player, there would be no need for him to use a hash, so he could just put the choice in plain text inside the **datum**. And let's say, the second player is choice 0 as well.
 
-In this case first player would have won, however second player still has no proof that first player has won. So there is then one additional step, that first player has to show his actual choice with **nonce**, which he'll use **Redeemer** for that.
+In this case, the first player would have won, but the second player still has no proof that the first player has won. So there is then one additional step, that the first player has to show his actual choice with **nonce**, which he'll use **redeemer** for that.
 
 ## How to Play
 
@@ -32,22 +32,22 @@ After obtaining and specifying the following, compile the game contract and get 
 - Specify time for **game deadline** and **reveal deadline**.
 - Obtain currency symbol and token name of state NFT.
 - Provide **nonce** and choose 0 or 1 at `dataToJSON.hs`.
-- Change second player choice at `dataToJSON.hs` file from `Zero` to `One` or keep it unchanged.
+- Change the second player choice at `dataToJSON.hs` file from `Zero` to `One` or keep it unchanged.
 - Run `cabal run dataToJSON` to create redeemer and datum files.
 
-Now that you have all the parts and necessary files (redeemers and datums) you can transfer all files inside `output` folder to destination place you want to run `cardano-cl` commands or you can start the game at `output` folder.
+Now that you have all the parts and necessary files (redeemers and datums), you can transfer all files inside the `output` folder to the destination place where you want to run `cardano-cl` commands or you can start the game in the `output` folder.
 
-You are ready to play so choose to play as either both players (needs 2 wallet) or one player. In either case follow below process to have a unique on-chain fun :) .
+You are ready to play, so choose to play as either both players ( need 2 wallets) or one player. In either case, follow the below process to have a unique on-chain fun :) .
 
-1. First, first player start the game by sending **bet amount** plus **state NFT** to game smart contract along with the hash of his nonce combined with the choice inside `startGame-DATUM.json` datum.
+1. First, the first player starts the game by sending the **bet amount** plus **state NFT** to game smart contract along with the hash of his nonce combined with the choice inside `startGame-DATUM.json` datum.
 
-2. Then if second player start playing before **game deadline**, he can take game UTxO inside game smart contract (which was sent by first player) and consume it and produce new UTxO with his own choice and send it back to game smart contract, by using these files `secondPlayerPlayChoice-DATUM.json` datum and `secondPlayerPlayChoice-REDEEMER.json` redeemer.
+2. Then, if the second player start playing before the **game deadline**, he can take the game UTxO inside game smart contract (which was sent by the first player) and consume it and produce new UTxO with his own choice and send it back to the game smart contract, by using these files `secondPlayerPlayChoice-DATUM.json` datum and `secondPlayerPlayChoice-REDEEMER.json` redeemer.
 
-3. If at this point, first player realizes that he has won depending on second player's choice, he will consume game UTxO and reveal his secret (nonce) which will be inside `firstPlayerRevealChoice-REDEEMER.json` and the game ends with his winning.
+3. If, at this point, the first player realizes that he has won depending on the second player's choice, he will consume the game UTxO and reveal his secret (nonce), which will be inside `firstPlayerRevealChoice-REDEEMER.json` and the game ends with his winning.
 
-4. If however, after second player makes his move, first player sees that he has lost, there's no need actually for him to do anything. So after **Reveal Deadline** has been, second player can claims his win by using `secondPlayerClaims-REDEEMER.json`. By the way, second player has to send back state NFT to first player and he has to provide **Shelly Era Address** of first player.
+4. However, if, after the second player moves, the first player sees that he has lost, there's no need actually for him to do anything. So, when the **reveal deadline** has been reached, the second player can claim his win amount by using `secondPlayerClaims-REDEEMER.json`. By the way, the second player has to send back the **state NFT** to the first player and he has to provide the **shelly era address** of the first player that was used as a contract parameter.
 
-5. One last thing, that after first player starts playing, second player simply is not interested and doesn't play. So, in that case, first player can get his own money back after **game deadline** has been reached, by using `firstPlayerClaims-REDEEMER.json`.
+5. One last thing, that after the first player starts playing, maybe second player simply is not interested and doesn't play. So, in that case, the first player can get his own money back after the **game deadline** has been reached, by using `firstPlayerClaims-REDEEMER.json`.
 
 ## First Player Start The Game
 
