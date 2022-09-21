@@ -51,6 +51,9 @@ instance ValidatorTypes TreasuryTypes where
     type DatumType TreasuryTypes = WithdrawalDatum
     type RedeemerType TreasuryTypes = BountyDetails
 
+-- Completion Status - not 0 or 1, but partial
+-- Completion status as, for example a % of what is completed?
+
 data BountyDetails = BountyDetails
   { issuerPkh           :: !PubKeyHash
   , contributorPkh      :: !PubKeyHash

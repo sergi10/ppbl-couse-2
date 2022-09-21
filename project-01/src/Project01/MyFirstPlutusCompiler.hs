@@ -12,6 +12,7 @@ import qualified Data.ByteString.Short as SBS
 import qualified Ledger
 import Plutus.V1.Ledger.Api (toData)
 import PlutusTx (Data (..), ToData)
+
 import qualified Project01.MyFirstPlutusScript as MFS
 
 
