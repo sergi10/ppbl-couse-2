@@ -19,14 +19,15 @@ cardano-cli transaction hash-script-data --script-data-value 1618
 4. Build an Unlocking Transaction to get some `tgimbal` tokens:
 #### Set Variables
 ```
-CONTRACT_TXIN="db340b1dc87bee5c459517d8fb8c3b882defbf692ebe2929e1a588b8d66fb254#1"
+CONTRACT_TXIN=""
 AUTH_TOKEN_TXIN=""
 FEE_TXIN=""
 COLLATERAL=""
-PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-course-02/project-301-faucet/output/ppbl-faucet-preprod-minimum.plutus"
+PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-course-02/project-301-faucet/output/ppbl-faucet-pre-prod-faucet-tgimbal-pkh.plutus"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
 TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 3000 to be withdrawn>
+CONTRACTADDR="addr_test1wpenjjl2ea22r0vlcm9m3hy9heafwpt3grmty0qfx4r0nrglkg0pk"
 ```
 Note: `$ASSET` represents `tgimbal`; `$AUTH_TOKEN` represents `PPBLSummer2022`
 
