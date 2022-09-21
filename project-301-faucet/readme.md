@@ -40,7 +40,7 @@ cardano-cli transaction build \
 --tx-in $CONTRACT_TXIN \
 --tx-in-script-file $PLUTUS_SCRIPT_FILE \
 --tx-in-datum-value 1618 \
---tx-in-redeemer-value 101 \
+--tx-in-redeemer-file redeemer.json \
 --tx-in-collateral $COLLATERAL \
 --tx-out $SENDER+"2000000 + 3000 $ASSET" \
 --tx-out $SENDER+"2000000 + 1 $AUTH_TOKEN" \
@@ -137,7 +137,7 @@ cardano-cli transaction build \
 --tx-in $CONTRACT_TXIN \
 --tx-in-script-file $PLUTUS_SCRIPT_FILE \
 --tx-in-datum-value 1618 \
---tx-in-redeemer-value 101 \
+--tx-in-redeemer-file redeemer.json \
 --tx-in-collateral $COLLATERAL \
 --tx-out $CONTRACT_ADDR+"2000000 + $TOTAL $ASSET" \
 --tx-out-datum-hash $DATUMHASH \
