@@ -32,7 +32,7 @@ To quickly add metadata to the blockchain, you can send a transaction to yoursel
 
 ```
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --testnet-magic 1 \
 --tx-in $TXIN \
 --change-address $SENDER \

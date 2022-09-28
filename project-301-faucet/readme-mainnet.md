@@ -31,7 +31,7 @@ Note: `$ASSET` represents `gimbal`; `$AUTH_TOKEN` represents `PPBLContribLevel1`
 #### Build Unlocking Transaction
 ```
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --mainnet \
 --tx-in $AUTH_TOKEN_TXIN \
 --tx-in $FEE_TXIN \
@@ -68,7 +68,7 @@ cardano-cli transaction submit \
 ```
 cardano-cli address build \
 --payment-script-file ppbl-faucet-<YOUR TOKEN>.plutus \
---testnet-magic 1 \
+--mainnet \
 --out-file ppbl-faucet-<YOUR TOKEN>.addr
 ```
 
@@ -97,7 +97,7 @@ PLUTUS_SCRIPT_FILE="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-301-fa
 Build a Locking Transaction:
 ```
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
 --tx-out $CONTRACTADDR+"2000000 + 300000000 $ASSET" \
@@ -129,7 +129,7 @@ cardano-cli transaction submit \
 ```
 cardano-cli transaction build \
 --babbage-era \
---testnet-magic 1097911063 \
+--testnet-magic 1 \
 --tx-in $AUTH_TOKEN_TXIN \
 --tx-in $FEE_TXIN \
 --tx-in $ADDITIONAL_TOKEN_TXIN \
@@ -163,7 +163,7 @@ RECEIVER4=addr_test1qp0gyn7hp4cmhpegywqffyrqmp9hxjuc03zs4qj5ykfey47h3xqep2a6y20j
 RECEIVER5=addr_test1qrh56dw8e6ms8hlv4p5rpn0ujg97fjngj5p2e624fwdyttf4smlkwuv0fa569kt0sejlfeq8fkhps8f6dr6m9at6wx3q302ef0
 
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
 --tx-out $RECEIVER1+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
