@@ -2,7 +2,7 @@
 
 ## Testing Faucet Contract on Mainnet (Danger!)
 
-Try to unlock tokens from the contract at: `#################newscriptaddress`
+Try to unlock tokens from the contract at: `addr1w9tlx9ml6wc2eyuxhxaapn0wvs7z4qlzdqzqz8ljh5cq86q5atkch`
 
 ### Step By Step:
 2. Create a `redeemer.json` file with the following contents:
