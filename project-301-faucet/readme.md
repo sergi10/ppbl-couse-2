@@ -3,7 +3,7 @@
 ## Part 3: Test Locking and Unlocking Transactions with `cardano-cli`
 ### Follow Up from Live Coding 2022-09-01
 
-Try to unlock tokens from the contract at: `addr_test1wpenjjl2ea22r0vlcm9m3hy9heafwpt3grmty0qfx4r0nrglkg0pk`. This contract is configured to allow users to withdraw 3000 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
+Try to unlock tokens from the contract at: `######################################scriptaddress`. This contract is configured to allow users to withdraw 3000 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
 
 ### Step By Step:
 1. Get the `ppbl-pre-prod-faucet-tgimbal-pkh.plutus` file provided here in `/project-301-faucet/shared-script/`
@@ -28,13 +28,14 @@ ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
 TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 3000 to be withdrawn>
 CONTRACTADDR="addr_test1wpenjjl2ea22r0vlcm9m3hy9heafwpt3grmty0qfx4r0nrglkg0pk"
+DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
 ```
 Note: `$ASSET` represents `tgimbal`; `$AUTH_TOKEN` represents `PPBLSummer2022`
 
 #### Build Unlocking Transaction
 ```
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --testnet-magic 1 \
 --tx-in $AUTH_TOKEN_TXIN \
 --tx-in $FEE_TXIN \
@@ -99,7 +100,7 @@ ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 Build a Locking Transaction:
 ```
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
 --tx-out $CONTRACTADDR+"2000000 + 25000 $ASSET" \
@@ -131,7 +132,7 @@ cardano-cli transaction submit \
 ```
 cardano-cli transaction build \
 --babbage-era \
---testnet-magic 1097911063 \
+--testnet-magic 1 \
 --tx-in $AUTH_TOKEN_TXIN \
 --tx-in $FEE_TXIN \
 --tx-in $ADDITIONAL_TOKEN_TXIN \
@@ -165,7 +166,7 @@ RECEIVER4=addr_test1qp0gyn7hp4cmhpegywqffyrqmp9hxjuc03zs4qj5ykfey47h3xqep2a6y20j
 RECEIVER5=addr_test1qrh56dw8e6ms8hlv4p5rpn0ujg97fjngj5p2e624fwdyttf4smlkwuv0fa569kt0sejlfeq8fkhps8f6dr6m9at6wx3q302ef0
 
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
 --tx-out $RECEIVER1+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
