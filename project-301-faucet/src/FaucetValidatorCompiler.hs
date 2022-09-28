@@ -29,5 +29,5 @@ writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-<YOUR TOKEN NAME>
     , FaucetValidatorScriptWithPkh.accessTokenName       = "PPBLSummer2022"
     , FaucetValidatorScriptWithPkh.faucetTokenSymbol     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
     , FaucetValidatorScriptWithPkh.faucetTokenName       = "tgimbal"
-    , FaucetValidatorScriptWithPkh.withdrawalAmount      = 250
+    , FaucetValidatorScriptWithPkh.withdrawalAmount      = 175
     }
