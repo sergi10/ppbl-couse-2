@@ -9,7 +9,7 @@ import Codec.Serialise (serialise)
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Short as SBS
 import qualified Ledger
-import qualified FaucetValidatorScriptWithPkh (validator, FaucetParams (..))
+import qualified FaucetValidatorScript (validator, FaucetParams (..))
 
 
 writeValidator :: FilePath -> Ledger.Validator -> IO (Either (FileError ()) ())
@@ -23,11 +23,11 @@ writeValidator file = writeFileTextEnvelope @(PlutusScript PlutusScriptV1) file 
 -- 5. Recommended: take a screenshot of this file so that you can remember the parameters you used
 
 writeFaucetScript :: IO (Either (FileError ()) ())
-writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-<YOUR TOKEN NAME>.plutus" $ FaucetValidatorScriptWithPkh.validator $ FaucetValidatorScriptWithPkh.FaucetParams
+writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-tgimbal-175.plutus" $ FaucetValidatorScript.validator $ FaucetValidatorScript.FaucetParams
     {
-      FaucetValidatorScriptWithPkh.accessTokenSymbol     = "748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60"
-    , FaucetValidatorScriptWithPkh.accessTokenName       = "PPBLSummer2022"
-    , FaucetValidatorScriptWithPkh.faucetTokenSymbol     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , FaucetValidatorScriptWithPkh.faucetTokenName       = "tgimbal"
-    , FaucetValidatorScriptWithPkh.withdrawalAmount      = 250
+      FaucetValidatorScript.accessTokenSymbol     = "748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60"
+    , FaucetValidatorScript.accessTokenName       = "PPBLSummer2022"
+    , FaucetValidatorScript.faucetTokenSymbol     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
+    , FaucetValidatorScript.faucetTokenName       = "tgimbal"
+    , FaucetValidatorScript.withdrawalAmount      = 175
     }
