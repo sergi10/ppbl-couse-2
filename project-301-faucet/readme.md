@@ -93,17 +93,17 @@ TXIN2="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#0"
 CONTRACTADDR="addr_test1wpugeqglkwls7utfghgqtnjc2wgnylxkztrjvm00248skxqy8duax"
 DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
-
+NUM_TOKENS= how many tokens do you want to lock?
 ```
 
 Build a Locking Transaction:
 ```
 cardano-cli transaction build \
 --babbage-era \
---tx-in 6779ad0cfdfdccfcbe207a8ec91ee1e7b17cf5b60c84290501352ec26d985606#0 \
---tx-in fff942d6139545a7bfb42646836e9f2d749ebba560e852be3368e5e0432a29bf#0 \
---tx-out $CONTRACTADDR+"2000000 + 15750 fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c" \
---tx-out-datum-hash 2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114 \
+--tx-in $TXIN1 \
+--tx-in $TXIN2 \
+--tx-out $CONTRACTADDR+"2000000 + $NUM_TOKENS $ASSET" \
+--tx-out-datum-hash $DATUMHASH \
 --change-address $SENDER \
 --protocol-params-file protocol-preprod.json \
 --out-file tx-lock.raw \
