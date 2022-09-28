@@ -3,7 +3,7 @@
 ## Part 3: Test Locking and Unlocking Transactions with `cardano-cli`
 ### Follow Up from Live Coding 2022-09-01
 
-Try to unlock tokens from the contract at: `######################################scriptaddress`. This contract is configured to allow users to withdraw 3000 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
+Try to unlock tokens from the contract at: `addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk`. This contract is configured to allow users to withdraw 3000 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
 
 ### Step By Step:
 1. Get the `ppbl-pre-prod-faucet-tgimbal-pkh.plutus` file provided here in `/project-301-faucet/shared-script/`
@@ -27,7 +27,7 @@ PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-course-02/project-301-faucet/output/ppbl
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
 TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 3000 to be withdrawn>
-CONTRACTADDR="addr_test1wpenjjl2ea22r0vlcm9m3hy9heafwpt3grmty0qfx4r0nrglkg0pk"
+CONTRACTADDR="addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk"
 DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
 ```
 Note: `$ASSET` represents `tgimbal`; `$AUTH_TOKEN` represents `PPBLSummer2022`
@@ -91,7 +91,7 @@ SENDER
 SENDERKEY
 TXIN1="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#2"
 TXIN2="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#0"
-CONTRACTADDR="addr_test1wpugeqglkwls7utfghgqtnjc2wgnylxkztrjvm00248skxqy8duax"
+CONTRACTADDR="addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk"
 DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 
