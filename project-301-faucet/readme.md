@@ -1,9 +1,9 @@
 # Project: Build a Faucet
 
 ## Part 3: Test Locking and Unlocking Transactions with `cardano-cli`
-### Follow Up from Live Coding 2022-09-01
+### Updated 2022-10-01 with new Example Contract Address
 
-Try to unlock tokens from the contract at: `addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk`. This contract is configured to allow users to withdraw 3000 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
+Try to unlock tokens from the contract at: `addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk`. This contract is configured to allow users to withdraw 175 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
 
 ### Step By Step:
 1. Get the `ppbl-pre-prod-faucet-tgimbal-pkh.plutus` file provided here in `/project-301-faucet/shared-script/`
@@ -23,7 +23,7 @@ CONTRACT_TXIN=""
 AUTH_TOKEN_TXIN=""
 FEE_TXIN=""
 COLLATERAL=""
-PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-course-02/project-301-faucet/output/ppbl-faucet-pre-prod-faucet-tgimbal-pkh.plutus"
+PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-course-02/project-301-faucet/output/ppbl-faucet-preprod-tgimbal-175.plutus"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
 TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 3000 to be withdrawn>
