@@ -6,7 +6,7 @@
 Try to unlock tokens from the contract at: `addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk`. This contract is configured to allow users to withdraw 175 `tgimbal` tokens per withdrawal (ie "unlocking transaction").
 
 ### Step By Step:
-1. Get the `ppbl-pre-prod-faucet-tgimbal-pkh.plutus` file provided here in `/project-301-faucet/shared-script/`
+1. Get the `ppbl-pre-prod-faucet-tgimbal-175.plutus` file provided here in `/project-301-faucet/shared-script/`
 2. Create a `redeemer.json` file with the following contents:
 ```
 {"constructor":0,"fields":[{"bytes":"<YOUR PUBKEYHASH HERE"}]}
