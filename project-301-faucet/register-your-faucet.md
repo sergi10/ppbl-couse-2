@@ -32,15 +32,15 @@ To quickly add metadata to the blockchain, you can send a transaction to yoursel
 
 ```
 cardano-cli transaction build \
---alonzo-era \
+--babbage-era \
 --testnet-magic 1 \
 --tx-in $TXIN \
---change-address $SENDER \
+--change-address $SENDERPREPROD \
 --metadata-json-file faucet-reg-metadata.json \
 --out-file faucet-registration.raw
 
 cardano-cli transaction sign \
---signing-key-file $SENDERKEY \
+--signing-key-file $SENDERKEYPREPROD \
 --testnet-magic 1 \
 --tx-body-file faucet-registration.raw \
 --out-file faucet-registration.signed
