@@ -26,7 +26,7 @@ COLLATERAL=""
 PLUTUS_SCRIPT_FILE="<YOUR PATH TO>/ppbl-faucet-preprod-tgimbal-175.plutus"
 ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 AUTH_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232"
-TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 3000 to be withdrawn>
+TOKENS_BACK_TO_CONTRACT=<will be the number of token in the contract, minus 175 to be withdrawn>
 CONTRACTADDR="addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk"
 DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
 ```
@@ -89,11 +89,11 @@ Set Variables
 ```
 SENDER
 SENDERKEY
-TXIN1="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#2"
-TXIN2="667392e97c858112dd71ae7eadb73cdb1831e2ac404afcac195563a8561dc9a4#0"
-CONTRACTADDR="addr_test1wrfp7hgj52px3a6lwq7sed2peqfe476sx3n2ceg0xx0vpmc2myjrk"
-DATUMHASH="2da1c63e7646ce8cc514113c66e9cefb79e482210ad1dadb51c2a17ab14cf114"
-ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
+TXIN1=
+TXIN2=
+CONTRACTADDR=
+DATUMHASH=
+ASSET=
 NUM_TOKENS= how many tokens do you want to lock?
 ```
 
@@ -153,28 +153,3 @@ cardano-cli transaction build \
 Try to define appropriate values for each of the variables in the Transaction template above. How would we calculate the value of `$TOTAL` in order make this transaction valid?
 
 * Hint: look up this transaction in a Testnet explorer: `5a2f5f2d814757e641b30363a90bef742c5bef6f4ba7f13b387c2ac618d667a1`
-
-
-
-## Send a bunch of PPBLSummer2022 Tokens on Pre-Prod
-#### (You can use this as a template for additional access tokens)
-RECEIVER1=addr_test1qq3c70lkdqtsg9he2ehlx45zje7d46wkc5jdxfhdmlea46mr4tdgk5rlhnujvt32c0hf89z7yndw9mdyglqslcuvr6rqqxfa7u
-RECEIVER2=addr_test1qzj5ayxmzhdrwtwe06p27mw2p83jgysx0cgk6z29400vj02c5lx6fe7jrx9r97qhuyt7gqv8ytea96ugq6sfxmrwwjhqwskj0g
-RECEIVER3=addr_test1qrasyvgzq036n599efyxnzwnmvnxhc2pfhgwk3przltm724pqcrstmq0m7rp27678g76yu0p99f76kvy3w668su6ua6q5gdd00
-RECEIVER4=addr_test1qp0gyn7hp4cmhpegywqffyrqmp9hxjuc03zs4qj5ykfey47h3xqep2a6y20j6wpdmccj09l5v5x0r8mnv5020wfxnzssafmm5t
-RECEIVER5=addr_test1qrh56dw8e6ms8hlv4p5rpn0ujg97fjngj5p2e624fwdyttf4smlkwuv0fa569kt0sejlfeq8fkhps8f6dr6m9at6wx3q302ef0
-
-cardano-cli transaction build \
---babbage-era \
---tx-in $TXIN1 \
---tx-in $TXIN2 \
---tx-out $RECEIVER1+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
---tx-out $RECEIVER2+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
---tx-out $RECEIVER3+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
---tx-out $RECEIVER4+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
---tx-out $RECEIVER5+"2000000 + 1 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
---tx-out $WALLET1+"2000000 + 130 748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c53756d6d657232303232" \
---change-address $WALLET1 \
---protocol-params-file protocol-preprod.json \
---out-file tx-lock.raw \
---testnet-magic 1
