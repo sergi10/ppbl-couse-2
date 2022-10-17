@@ -77,7 +77,7 @@ cardano-cli address build --testnet-magic 1 --payment-script-file jd-bounty-escr
 Now we are almost ready to test the contract, but first, we'll have to prepare some Datum and Redeemer files. They are a bit more complex than what we used in the Faucet Mini-Project.
 
 ### Treasury Contract
-- Datum type: `WithdrawalDatum` - is a placeholder for now, but does have a specified type.
+- Datum type: `WithdrawalDatum` - is a placeholder for now, but does have a specified type. For this example, we can use the file `ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/treasury-withdrawal-datum-example.json` as the Treasury Datum.
 - Redeemer type: `BountyDetails` - this Record type matches BountyEscrowDatum
 
 ### Escrow Contract
