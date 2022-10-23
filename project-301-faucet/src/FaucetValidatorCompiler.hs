@@ -23,11 +23,11 @@ writeValidator file = writeFileTextEnvelope @(PlutusScript PlutusScriptV1) file 
 -- 5. Recommended: take a screenshot of this file so that you can remember the parameters you used
 
 writeFaucetScript :: IO (Either (FileError ()) ())
-writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-tgimbal-175.plutus" $ FaucetValidatorScript.validator $ FaucetValidatorScript.FaucetParams
+writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-2022-oct-tgimbal.plutus" $ FaucetValidatorScript.validator $ FaucetValidatorScript.FaucetParams
     {
       FaucetValidatorScript.accessTokenSymbol     = "748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60"
-    , FaucetValidatorScript.accessTokenName       = "PPBLSummer2022"
+    , FaucetValidatorScript.accessTokenName       = "PPBL2022AccessToken"
     , FaucetValidatorScript.faucetTokenSymbol     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , FaucetValidatorScript.faucetTokenName       = "tgimbal"
-    , FaucetValidatorScript.withdrawalAmount      = 175
+    , FaucetValidatorScript.faucetTokenName       = "tGimbal"
+    , FaucetValidatorScript.withdrawalAmount      = 1000
     }
