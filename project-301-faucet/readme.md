@@ -163,29 +163,3 @@ cardano-cli transaction build \
 Try to define appropriate values for each of the variables in the Transaction template above. How would we calculate the value of `$TOTAL` in order make this transaction valid?
 
 
-
-
-## Send a bunch of PPBL2022AccessToken on Pre-Prod
-#### (You can use this as a template for additional access tokens)
-RECEIVER1=
-RECEIVER2=
-RECEIVER3=
-RECEIVER4=
-RECEIVER5=
-
-ACCESS_TOKEN="748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60.5050424c32303232416363657373546f6b656e"
-
-cardano-cli transaction build \
---babbage-era \
---tx-in $TXIN1 \
---tx-in $TXIN2 \
---tx-out $RECEIVER1+"2000000 + 1 $ACCESS_TOKEN" \
---tx-out $RECEIVER2+"2000000 + 1 $ACCESS_TOKEN" \
---tx-out $RECEIVER3+"2000000 + 1 $ACCESS_TOKEN" \
---tx-out $RECEIVER4+"2000000 + 1 $ACCESS_TOKEN" \
---tx-out $RECEIVER5+"2000000 + 1 $ACCESS_TOKEN" \
---tx-out $WALLET1+"2000000 + 130 $ACCESS_TOKEN" \
---change-address $WALLET1 \
---protocol-params-file protocol-preprod.json \
---out-file tx-lock.raw \
---testnet-magic 1
