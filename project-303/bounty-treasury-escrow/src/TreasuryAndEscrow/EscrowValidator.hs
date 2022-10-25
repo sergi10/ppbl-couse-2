@@ -11,7 +11,7 @@
 {-# LANGUAGE DeriveAnyClass        #-}
 {-# LANGUAGE DeriveGeneric         #-}
 
-module Escrow.BountyEscrow where
+module TreasuryAndEscrow.EscrowValidator where
 
 import              Ledger              hiding (singleton)
 import              Ledger.Typed.Scripts
@@ -20,19 +20,19 @@ import              Ledger.Ada
 import qualified    PlutusTx
 import              PlutusTx.Prelude    hiding (Semigroup (..), unless)
 
-import              Escrow.BountyTypes
+import              TreasuryAndEscrow.Types
 
 {-# INLINABLE mkValidator #-}
 mkValidator :: BountyParam -> BountyEscrowDatum -> BountyAction -> ScriptContext -> Bool
 mkValidator bp dat action ctx =
   case action of
-    Cancel      ->  traceIfFalse "Only Issuer can Cancel Bounty"                signedByIssuer &&
+    Cancel      ->  traceIfFalse "Only Issuer can Cancel Bounty"                inputHasIssuerToken &&
                     traceIfFalse "Can only cancel bounty after deadline"        deadlineReached
-    Update      ->  traceIfFalse "Only Issuer can Update Bounty"                signedByIssuer &&
+    Update      ->  traceIfFalse "Only Issuer can Update Bounty"                inputHasIssuerToken &&
                     traceIfFalse "Update must create one new Bounty UTXO"       createsContinuingBounty &&
                     traceIfFalse "Output UTXO value must be geq datum specs"    outputFulfillsValue &&
                     traceIfFalse "Updated datum is wrong"                       checkDatum
-    Distribute  ->  traceIfFalse "Issuer must sign to distribute bounty"        signedByIssuer &&
+    Distribute  ->  traceIfFalse "Issuer must sign to distribute bounty"        inputHasIssuerToken &&
                     traceIfFalse "Contributor must receive full bounty values"  outputFulfillsBounty
 
   where
@@ -45,8 +45,12 @@ mkValidator bp dat action ctx =
     bTokenN :: TokenName
     bTokenN = bountyTokenName bp
 
-    signedByIssuer :: Bool
-    signedByIssuer = txSignedBy info $ bedIssuerPkh dat
+    -- Create a list of all CurrencySymbol in tx input
+    inVals :: [CurrencySymbol]
+    inVals = symbols $ valueSpent info
+
+    inputHasIssuerToken :: Bool
+    inputHasIssuerToken = treasuryIssuerPolicyId bp `elem` inVals
 
     deadlineReached :: Bool
     deadlineReached = contains (from $ bedExpirationTime dat) $ txInfoValidRange info
@@ -90,8 +94,7 @@ mkValidator bp dat action ctx =
     checkDatum :: Bool
     checkDatum = case getEscrowDatum of
       Nothing -> False
-      Just ns -> bedIssuerPkh      ns == bedIssuerPkh dat      &&
-                 bedContributorPkh ns == bedContributorPkh dat &&
+      Just ns -> bedContributorPkh ns == bedContributorPkh dat &&
                  bedLovelaceAmount ns >= bedLovelaceAmount dat &&
                  bedTokenAmount    ns >= bedTokenAmount dat    &&
                  bedExpirationTime ns >= bedExpirationTime dat

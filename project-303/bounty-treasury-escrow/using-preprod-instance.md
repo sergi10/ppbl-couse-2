@@ -1,17 +1,42 @@
 # Gimbal Bounty Treasury and Escrow (GBTE)
-## Pre-Production Instance for PPBL Summer 2022
+## Pre-Production Instance - Updated 2022-10-25
+
+## Key Changes:
+1. Add parameterized redeemer to Treasury Validator
+2. Add Issuer Token to replace Issuer PKH logic.
+
+## Contract Addresses:
+- Treasury: `addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz`
+- Bounty Escrow: `addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl`
+
+## Tokens
+- Issuer Token (NFT): `94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3`
+- Contributor Token (NFT): `738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784`
+- Bounty FT: `fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c`
+
+
+## What's Missing:
+- [ ] A check that TreasuryAction -> BountyDetails matches BountyEscrowDatum.
 
 ### To Do:
-- [ ] At Live Coding: Show the relationship between `BountyDetails` in `BountyTreasury.hs` and `BountyEscrowDatum` in `BountyEscrow.hs`. What logic is enabled by using each of these?
+
 
 ### Instance Parameters:
 In order to compile and use our contract, we need to prepare some tokens:
 
-#### 1. Bounty Tokens
-In this example we will use the `tgimbal` tokens that already minted on Pre-Prod with policyId `fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c`. When you create your own instance, you can mint your own fungible token, or continue to use `tgimbal`'s.
+#### 1. NEW WITH THIS UPDATE: Issuer Token
+- See `issuer-minter.sh`
+- Example token minted to `$SENDERPREPROD` (`addr_test1qpjjjht0at8ux0lq98630pthpkfrw05zeh3gc0xcc4dre5gp84zu07dh68eunt6qhczxps8xcvjh8kgsfudzx2x6429sg2ntsa`)
+PolicyID: `94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3` - each Issuer Token can have a unique name, so that we have a record of who signs off on Treasury Transactions.
 
-#### 2. Contributor Access Tokens
-We also need the policyId for a Contributor Access Token. We could use the `PPBLSummer2022` token for this, but then we would not be able to distinguish between the tokens of different Contributors. That is why our Validator Parameters only require a PolicyId for the Contributor Token. We want to allow for the name of the token to be anything, so that we can use the TokenName to track individual contributions.
+#### 2. Bounty Tokens
+In this example we will use the `tGimbal` tokens that already minted on Pre-Prod with policyId `fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c`. When you create your own instance, you can mint your own fungible token, or continue to use `tGimbal`'s.
+
+#### 3. Contributor Access Tokens
+- See `contributor-minter.sh`.
+- Example token minted to `$WALLET2` (`addr_test1qrqasyjrvff5skkxyf49t6feq0597exxzwu7sdszl89r64nsuygajm0vp4m29g85nr86sedq6rg4kmzt9c2ghmqld4ask5tdam`)
+
+We also need the policyId for a Contributor Access Token. We could use the `PPBL2022AccessToken` token for this, but then we would not be able to distinguish between the tokens of different Contributors. That is why our Validator Parameters only require a PolicyId for the Contributor Token. We want to allow for the name of the token to be anything, so that we can use the TokenName to track individual contributions.
 
 In this example, the Contributor Token policyId is `738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784`. Once again, you can use this token (because PPBL students will already have it), or you can mint your Contributor NFTs.
 
@@ -34,10 +59,10 @@ writeBountyTreasuryScript :: IO (Either (FileError ()) ())
 writeBountyTreasuryScript = writeValidator "output/bounty-treasury.plutus" $ Escrow.BountyTreasury.validator $ TreasuryParam
     {
       tAccessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
+    , tIssuerTokenPolicyId = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
     , bountyContractHash   = ""
     , tBountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
     , tBountyTokenName     = "tgimbal"
-    , tTreasuryIssuerPkh   = "65295d6feacfc33fe029f51785770d92373e82cde28c3cd8c55a3cd1"
     }
 ```
 But there is still one parameter missing in our Treasury compiler. We need to reference the Bounty Escrow Contract as a parameter in the Bounty Treasury Contract. First, we must compile the `bounty-escrow.plutus` script. The project's `cabal repl` will load without error if you leave empty strings for any of these parameters. So first, open the repl and run `writeBountyEscrowScript`.
@@ -74,11 +99,13 @@ cardano-cli address build --testnet-magic 1 --payment-script-file jd-bounty-escr
 
 ## Preparing Datum and Redeemers
 
+# UPDATES REQUIRED BEFORE PUBLISHING ---------------------------------------------------
+
 Now we are almost ready to test the contract, but first, we'll have to prepare some Datum and Redeemer files. They are a bit more complex than what we used in the Faucet Mini-Project.
 
 ### Treasury Contract
-- Datum type: `WithdrawalDatum` - is a placeholder for now, but does have a specified type. For this example, we can use the file `ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/treasury-withdrawal-datum-example.json` as the Treasury Datum.
-- Redeemer type: `BountyDetails` - this Record type matches BountyEscrowDatum
+- Datum type: `TreasuryDatum` - is a placeholder for now, but does have a specified type. For this example, we can use the file `ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/treasury-withdrawal-datum-example.json` as the Treasury Datum.
+- Redeemer type: `TreasuryAction` - this Record type matches BountyEscrowDatum
 
 ### Escrow Contract
 - Datum type: `BountyEscrowDatum` - this Record type matches BountyDetails
@@ -173,11 +200,11 @@ data WithdrawalDatum = WithdrawalDatum
   , treasuryKey     :: !PubKeyHash
   } deriving (Pr.Eq, Pr.Ord, Show, Generic, ToJSON, FromJSON, ToSchema)
 ```
-
+### UPDATE ABOVE THIS LINE!  ---------------------------------------------------
 
 ## Let's Build Some Transactions:
-- Treasury Contract Address: addr_test1wpv67hsrsa6ld9xh4lry98x5uxjmqduvwz20nkneh65a3mgae8qes
-- Escrow Contract Address: addr_test1wqluav8a4437pe2y3rdf3w0g0jqyk9y2v9a0sz4p44g0m6skh0uwh
+- Treasury: `addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz`
+- Bounty Escrow: `addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl`
 
 ### 1. Issuer Locks Tokens at Treasury
 - See [/scripts/01-issuer-funds-treasury.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/01-issuer-funds-treasury.sh)

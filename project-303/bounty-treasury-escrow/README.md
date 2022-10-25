@@ -3,7 +3,7 @@
 ## Contents:
 - [Using GBTE on Pre-Production](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/using-preprod-instance.md)
 - [Preparing Tokens](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md)
-- [Scripts for buildingeach transaction](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/tree/master/project-303/bounty-treasury-escrow/scripts): Use these as documentation to see how this dapp works.
+- [Scripts for building each transaction](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/tree/master/project-303/bounty-treasury-escrow/scripts): Use these as documentation to see how this dapp works.
 
 ## Description
 - This package contains Plutus source code for Bounty and Escrow Project.

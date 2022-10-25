@@ -9,10 +9,10 @@ License-file:         LICENSE
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Escrow.EscrowCompiler
-                       Escrow.BountyEscrow
-                       Escrow.BountyTreasury
-                       Escrow.BountyTypes
+  exposed-modules:     TreasuryAndEscrow.Compiler
+                       TreasuryAndEscrow.EscrowValidator
+                       TreasuryAndEscrow.TreasuryValidator
+                       TreasuryAndEscrow.Types
   build-depends:       aeson
                      , base ^>=4.14.1.0
                      , bytestring
