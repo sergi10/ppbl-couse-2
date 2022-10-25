@@ -13,13 +13,13 @@ export CONTRIBUTORKEY=$2
 # Hard code these variables for your Bounty Treasury
 TREASURY_ADDR=addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz
 BOUNTY_ADDR=addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl
-TREASURY_PLUTUS_SCRIPT="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.plutus"
+TREASURY_PLUTUS_SCRIPT="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.plutus"
 BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
-TREASURY_DATUM="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/TreasuryDatumExample01.json"
-TREASURY_ACTION="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/TreasuryActionExample01.json"
-BOUNTY_DATUM="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/BountyEscrowDatumExample01.json"
+TREASURY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/TreasuryDatumExample01.json"
+TREASURY_ACTION="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/TreasuryActionExample01.json"
+BOUNTY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/BountyEscrowDatumExample01.json"
 
-export CARDANO_NODE_SOCKET_PATH=/home/james/hd2/cardano/testnet-pre-production/db/node.socket
+export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
 cardano-cli query tip --testnet-magic 1
 cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json
 

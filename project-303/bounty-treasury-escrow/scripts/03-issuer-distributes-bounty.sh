@@ -12,13 +12,12 @@ export ISSUERKEY=$2
 export CONTRIBUTOR=$3
 
 BOUNTY_ADDR=addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl
-BOUNTY_PLUTUS_SCRIPT="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-escrow-new-preprod.plutus"
+BOUNTY_PLUTUS_SCRIPT="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-escrow-new-preprod.plutus"
 BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
-BOUNTY_DATUM="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/BountyEscrowDatumExample01.json"
-ACTION_JSON_FILE="/home/james/hd2/ppbl-course-02/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/Distribute.json"
+BOUNTY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/BountyEscrowDatumExample01.json"
+ACTION_JSON_FILE="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/Distribute.json"
 
-# export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/db/node.socket
-export CARDANO_NODE_SOCKET_PATH=/home/james/hd2/cardano/testnet-pre-production/db/node.socket
+export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/db/node.socket
 
 cardano-cli query tip --testnet-magic 1
 cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json
