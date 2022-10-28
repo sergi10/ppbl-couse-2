@@ -1,5 +1,8 @@
 # Gimbal Bounty Treasury and Escrow (GBTE)
-## Pre-Production Instance - Updated 2022-10-25
+
+### This serves as a guide for interacting with the existing instance of GBTE using plutus V1 on pre-production network. 
+
+## Pre-Production Instance - Updated 2022-10-25 
 
 ## Key Changes:
 1. Add parameterized redeemer to Treasury Validator
@@ -18,154 +21,119 @@
 ## What's Missing:
 - [ ] A check that TreasuryAction -> BountyDetails matches BountyEscrowDatum.
 
-### To Do:
-
-
 ### Instance Parameters:
-In order to compile and use our contract, we need to prepare some tokens:
+In order to use this contract, we need to understand the tokens. For more info see Review [minting-tokens.md](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-tokens.md):
 
 #### 1. NEW WITH THIS UPDATE: Issuer Token
-- See `issuer-minter.sh`
-- Example token minted to `$SENDERPREPROD` (`addr_test1qpjjjht0at8ux0lq98630pthpkfrw05zeh3gc0xcc4dre5gp84zu07dh68eunt6qhczxps8xcvjh8kgsfudzx2x6429sg2ntsa`)
-PolicyID: `94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3` - each Issuer Token can have a unique name, so that we have a record of who signs off on Treasury Transactions.
+To interact with this instance of the GBTE, you will not need to create an issuer token. The issuer is your course administrator at Gimbalabs! They have already funded the contract and will release the bounty once you have submitted it.
 
 #### 2. Bounty Tokens
 In this example we will use the `tGimbal` tokens that already minted on Pre-Prod with policyId `fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c`. When you create your own instance, you can mint your own fungible token, or continue to use `tGimbal`'s.
 
 #### 3. Contributor Access Tokens
-- See `contributor-minter.sh`.
-- Example token minted to `$WALLET2` (`addr_test1qrqasyjrvff5skkxyf49t6feq0597exxzwu7sdszl89r64nsuygajm0vp4m29g85nr86sedq6rg4kmzt9c2ghmqld4ask5tdam`)
+You will need to apply for an access token in Canvas to be able to interact with this contract. Fill out the form [here](https://docs.google.com/forms/d/e/1FAIpQLSffNGQdMqqr3mp1WfxyfexR7BxHXbsbCHIpCnYt2XAM3aYgSQ/viewform)
 
-We also need the policyId for a Contributor Access Token. We could use the `PPBL2022AccessToken` token for this, but then we would not be able to distinguish between the tokens of different Contributors. That is why our Validator Parameters only require a PolicyId for the Contributor Token. We want to allow for the name of the token to be anything, so that we can use the TokenName to track individual contributions.
+When the GBTE is compiled it takes the policyId for a Contributor Access Token as a parameter. We could have used the `PPBL2022AccessToken` token for this, but then we would not be able to distinguish between the tokens of different Contributors. That is why our Validator Parameters only require a PolicyId for the Contributor Token. We want to allow for the name of the token to be anything, so that we can use the TokenName to track individual contributions.
 
 In this example, the Contributor Token policyId is `738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784`. Once again, you can use this token (because PPBL students will already have it), or you can mint your Contributor NFTs.
 
-Review [minting-contributor-tokens.md](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md) for details of how these tokens are minted.
+Review [minting-tokens.md](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-tokens.md) for details of how these tokens are minted.
 
 #### Compiling the Contracts
-So you will have something like this, maybe with different parameters. The one parameter you must change is the Treasury Issuer's PubKeyHash. Note that this is a parameter of both the Escrow Contract (`treasuryIssuerPkh`) and the Treasury Contract (`tTreasuryIssuerPkh`). These parameters have different names to prevent naming collisions in Haskell.
+To interact with this instance of the GBTE, you will need properly compiled plutus scripts. You will want to be sure your `Compiler.hs` document is unchanged. The parameters should appear as below. Note that some parameters in the Escrow Contract (`treasuryIssuerPkh`) and the Treasury Contract (`tTreasuryIssuerPkh`) are the same. These parameters have different names to prevent naming collisions in Haskell.
 
 ```
 writeBountyEscrowScript :: IO (Either (FileError ()) ())
-writeBountyEscrowScript = writeValidator "output/bounty-escrow.plutus" $ Escrow.BountyEscrow.validator $ BountyParam
+writeBountyEscrowScript = writeValidator "output/example-bounty-escrow-new-preprod.plutus" $ Escrow.validator $ BountyParam
     {
-      bountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , bountyTokenName     = "tgimbal"
-    , accessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , treasuryIssuerPkh   = "65295d6feacfc33fe029f51785770d92373e82cde28c3cd8c55a3cd1"
+      bountyTokenPolicyId     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
+    , bountyTokenName         = "tGimbal"
+    , accessTokenPolicyId     = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
+    , treasuryIssuerPolicyId  = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
     }
 
 writeBountyTreasuryScript :: IO (Either (FileError ()) ())
-writeBountyTreasuryScript = writeValidator "output/bounty-treasury.plutus" $ Escrow.BountyTreasury.validator $ TreasuryParam
+writeBountyTreasuryScript = writeValidator "output/example-bounty-treasury-new-preprod.plutus" $ Treasury.validator $ TreasuryParam
     {
-      tAccessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , tIssuerTokenPolicyId = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
-    , bountyContractHash   = ""
-    , tBountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , tBountyTokenName     = "tgimbal"
+      tAccessTokenPolicyId    = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
+    , tIssuerTokenPolicyId    = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
+    , bountyContractHash      = "88c922462536339e648c365d03ab695e9e8a12d2a8834867bdc76f82"
+    , tBountyTokenPolicyId    = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
+    , tBountyTokenName        = "tGimbal"
     }
 ```
-But there is still one parameter missing in our Treasury compiler. We need to reference the Bounty Escrow Contract as a parameter in the Bounty Treasury Contract. First, we must compile the `bounty-escrow.plutus` script. The project's `cabal repl` will load without error if you leave empty strings for any of these parameters. So first, open the repl and run `writeBountyEscrowScript`.
-
-With the output, use the following step to get the `bountyContractHash`:
-
-```
-cardano-cli transaction policyid --script-file bounty-escrow.plutus
-> 3fceb0fdad63e0e54488da98b9e87c804b148a617af80aa1ad50fdea
-```
-Yes, this looks like we are trying to make PolicyID, that could be used to mint tokens. The same function is used to derive other sorts of script hashes. Interesting, right?
-
-I'll use `3fceb0fdad63e0e54488da98b9e87c804b148a617af80aa1ad50fdea` as the `bountyContractHash`.
-
-```
-writeBountyTreasuryScript :: IO (Either (FileError ()) ())
-writeBountyTreasuryScript = writeValidator "output/bounty-treasury.plutus" $ Escrow.BountyTreasury.validator $ TreasuryParam
-    {
-      tAccessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , bountyContractHash   = "3fceb0fdad63e0e54488da98b9e87c804b148a617af80aa1ad50fdea"
-    , tBountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , tBountyTokenName     = "tgimbal"
-    , tTreasuryIssuerPkh   = "65295d6feacfc33fe029f51785770d92373e82cde28c3cd8c55a3cd1"
-    }
-```
-
-Reload the repl with this new parameter in place, and compile the Treasury script.
+Open the repl and run `writeBountyEscrowScript` and `writeBountyTreasuryScript`.
 
 ## Build Contract Addresses:
 ```
-cardano-cli address build --testnet-magic 1 --payment-script-file jd-bounty-treasury.plutus --out-file jd-bounty-treasury.addr
-cardano-cli address build --testnet-magic 1 --payment-script-file jd-bounty-escrow.plutus --out-file jd-bounty-escrow.addr
+cardano-cli address build --testnet-magic 1 --payment-script-file example-bounty-treasury-new-preprod.plutus --out-file example-bounty-treasury-new-preprod.addr
+cardano-cli address build --testnet-magic 1 --payment-script-file example-bounty-escrow-new-preprod.plutus --out-file example-bounty-escrow-new-preprod.addr
 ```
+These addresses are provided above, but this is good practice, and if the addresses you generate don't match those given at the beggining of this doc, then you need to double check that you entered your parameters correctly.
 
 ## Preparing Datum and Redeemers
-
-# UPDATES REQUIRED BEFORE PUBLISHING ---------------------------------------------------
 
 Now we are almost ready to test the contract, but first, we'll have to prepare some Datum and Redeemer files. They are a bit more complex than what we used in the Faucet Mini-Project.
 
 ### Treasury Contract
-- Datum type: `TreasuryDatum` - is a placeholder for now, but does have a specified type. For this example, we can use the file `ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/treasury-withdrawal-datum-example.json` as the Treasury Datum.
-- Redeemer type: `TreasuryAction` - this Record type matches BountyEscrowDatum
-
+- Datum type: `TreasuryDatum` - is a placeholder for now, but does have a specified type. For this example, we can use the file `ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json` as the Treasury Datum.
+- Redeemer type: `TreasuryAction` - this Record type contains a constructor, then and data matching `Bounty Details`. 
 ### Escrow Contract
-- Datum type: `BountyEscrowDatum` - this Record type matches BountyDetails
-- Redeemer type: `BountyAction` - is a simple Action, which follows a pattern you'll want to know.
+- Datum type: `BountyEscrowDatum` - this Record type matches `BountyDetails`.
+- Redeemer type: `BountyAction` - is a simple Action, which follows a pattern you'll want to get to know in the next section below
 
-Whether it's the BountyDetails or BountyEscrowDatum, here is what we are working with:
+### Datum and Redeemer Contents
+
+#### Bounty Details
+
+Whether it's the TreasuryAction or BountyEscrowDatum, here is what we are working with:
 
 ```
-data BountyEscrowDatum = BountyEscrowDatum
-  { bedIssuerPkh           :: !PubKeyHash
-  , bedContributorPkh      :: !PubKeyHash
-  , bedLovelaceAmount      :: !Integer
-  , bedTokenAmount         :: !Integer
-  , bedExpirationTime      :: !POSIXTime
+data BountyDetails = BountyDetails
+  { contributorPkh      :: !PubKeyHash
+  , lovelaceAmount      :: !Integer
+  , tokenAmount         :: !Integer
+  , expirationTime      :: !POSIXTime
   } deriving (Pr.Eq, Pr.Ord, Show, Generic, ToJSON, FromJSON, ToSchema)
 ```
 
-Each BountyEscrowDatum specifies a Bounty by recording the following:
-1. the PubKeyHash of the Issuer (which is an instance parameter)
-2. the PubKeyHash Contributor (who will be interacting with the Treasury Contract, and therefore providing their keyhash)
-3. A number of Lovelace to be locked in the Bounty Commitment UTxO
-4. A number of tgimbal to be locked in the Bounty Commitment UTxO
-5. An expiration POSIXTime for the Bounty, which allows the Issuer to Cancel the bounty commitment after a certain date.
+Each BountyDetails specifies a Bounty by recording the following:
+1. The PubKeyHash Contributor (who will be interacting with the Treasury Contract, and therefore providing their keyhash)
+2. A number of Lovelace to be locked in the Bounty Commitment UTxO
+3. A number of tgimbal (or in your own instance another bounty token) to be locked in the Bounty Commitment UTxO
+4. An expiration POSIXTime for the Bounty, which allows the Issuer to Cancel the bounty commitment after a certain date. 
 
 ### About POSIXTime:
 - [Calculate UNIX time here](https://www.epochconverter.com/)
 - POSIXTtime is equal to UNIX time in milliseconds. So multiply "Unix Time" by 1000.
 
-### Creating Datum and Redeemer:
-
-#### BountyDetails and BountyEscrowDatum:
-Some utilities are provided to build Datum and Redeemer types. But take a look at this output. It's a JSON object:
+#### Creating TreasuryAction and BountyEscrowDatum:
+Both TreasuryAction and BountyEscrowDatum are built on the `BountyDetails` data type. Some utilities are provided to build Datum and Redeemer types, but take a look at this output. It's a JSON object:
 
 ```
 {
     "constructor": 0,
     "fields": [
         {
-            "bytes": "22117fbd0f86a213ae4f4d824cd0d38eea29e49764ae22f5f50ba3d3"
+            "bytes": "c1d812436253485ac6226a55e93903e85f64c613b9e83602f9ca3d56"
         },
         {
-            "bytes": "e02f8dd57e378ee673d5bf3bf7228382f131b1767d588a79cde2726a"
+            "int": 7500000
         },
         {
-            "int": 20
+            "int": 200
         },
         {
-            "int": 25000
-        },
-        {
-            "int": 1651252695000
+            "int": 1669388578000
         }
     ]
 }
 ```
 
-The first two `bytes` strings are our two PubKeyHashes, the next to `int`s are the lovelace and tgimbal amounts, and the last `int` is POSIXTime.
+The first `bytes` string is our Contributor PubKeyHash, the next two `int`s are the lovelace and tgimbal amounts, and the last `int` is POSIXTime. This is all that is needed for BountyEscrowDatum. A TreasuryAction will contain the same information but wrapped in another `Constructor` with all this content in the `fields` heading.
 
 #### BountyAction:
-Redeemer Actions are a bit different. In BountyTypes.hs, we map each action to an index:
+Redeemer Actions are a bit different. In Types.hs, we map each section to an index:
 
 ```
 data BountyAction = Cancel | Update | Distribute
@@ -174,7 +142,7 @@ data BountyAction = Cancel | Update | Distribute
 PlutusTx.makeIsDataIndexed ''BountyAction [('Cancel, 0), ('Update, 1), ('Distribute, 2)]
 PlutusTx.makeLift ''BountyAction
 ```
-
+#### Creating BountyAction:
 To represent these "Actions" in Transactions, we can create three simple Redeemer files:
 
 `Cancel.json`
@@ -192,15 +160,14 @@ To represent these "Actions" in Transactions, we can create three simple Redeeme
 {"constructor":2,"fields":[]}
 ```
 
-#### WithdrawalDatum
-Finally, `WithdrawalDatum` takes a treasuryKey, which is the PubKeyHash of the Isser, and a `bountyCount` which is an integer that is currently unused in teh contract, but could be used by our front-end template to keep count of the number of bounties issued. It looks like this:
+#### TreasuryDatum
+Finally, `TreasuryDatum` takes a `issuerTokenName`, which is the name of the issuer's issuer token in hex, and a `bountyCount` which is an integer that is currently unused in the contract, but could be used by our front-end template to keep count of the number of bounties issued. It looks like this:
 ```
-data WithdrawalDatum = WithdrawalDatum
+data TreasuryDatum = TreasuryDatum
   { bountyCount     :: !Integer
-  , treasuryKey     :: !PubKeyHash
-  } deriving (Pr.Eq, Pr.Ord, Show, Generic, ToJSON, FromJSON, ToSchema)
+  , issuerTokenName :: !TokenName
+  } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 ```
-### UPDATE ABOVE THIS LINE!  ---------------------------------------------------
 
 ## Let's Build Some Transactions:
 - Treasury: `addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz`

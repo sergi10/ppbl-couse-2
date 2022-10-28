@@ -1,9 +1,10 @@
 # Bounty Escrow
 
 ## Contents:
-- [Using GBTE on Pre-Production](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/using-preprod-instance.md)
-- [Preparing Tokens](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md)
-- [Scripts for building each transaction](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/tree/master/project-303/bounty-treasury-escrow/scripts): Use these as documentation to see how this dapp works.
+This document provides basic instruction for compling and using a unique instance of the GBTE. Further documentation includes:
+- [Using GBTE on Pre-Production](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/using-preprod-instance.md) - for interacting with the Gimbalabs instance of the GBTE on pre-production network.
+- [Preparing Tokens](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md) - for details on the types of tokens to produce for an instance of the GBTE.
+- [Scripts for building each transaction](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/tree/master/project-303/bounty-treasury-escrow/scripts) - To help understand how this dapp works, and ease of building transactions,
 
 ## Description
 - This package contains Plutus source code for Bounty and Escrow Project.
@@ -32,40 +33,50 @@ Follow these steps to make smart contracts ready for compilation:
 
 ### Step 1
 
-Mint a reward token that will be paid to participant of bounty, and save the `PolicyId` and `TokenName`. These will be used for `bountyTokenPolicyId`, `bountyTokenName`,`tBountyTokenPolicyId` and `tBountyTokenName` of contracts parameter. How many tokens depends on you, so feel free to test boundaries of token generation, but keep in mind the **Hard Limit**.
+You will need to mint a series of tokens to use with this contract. If you need further details check out the guide to [GBTE Tokens](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/minting-contributor-tokens.md) . The tokens you will need are:
+- Issuer token(s) - An NFT. Minimum one but if you make multiples, be sure they have distinct names to identify each issuer. These are requireed to issue bounties
+- Contributor token(s) - similar to the above issuer token, but will need a seperate, and distinct policyID. Required to commit to bounties.
+- Bounty Tokens - A fungible token. You will want to mint many of these as they are used for paying out bounties, but keep in mind the **Hard Limit**..
+
+Values from these tokens will be used to fill out the following variables in `Compiler.hs`:
+
+- `bountyTokenPolicyId `    
+- `bountyTokenName `        
+- `accessTokenPolicyId`     
+- `treasuryIssuerPolicyId`  
+- `tAccessTokenPolicyId`   
+- `tIssuerTokenPolicyId`     
+- `tBountyTokenPolicyId`  
+- `tBountyTokenName`  
 
 ### Step 2
 
-Create and make ready a minting contract that will be used for credential (access) token, the `PolicyId` must be constant but `TokenName` will be based on participant username or ID. So each time you need to mint **ONE** new credential token for new participants. This will be used for `accessTokenPolicyId` and `tAccessTokenPolicyId` contracts parameter.
+Once these values are provided (`bountyContractHash` will still be empty), run `cabal repl`, and check there is no error (you can ignore warnings although it is good practice to solve those too)
 
 ### Step 3
 
-Provide a wallet and obtain its payment public hash to be used as `treasuryIssuerPkh` in treasury contract.
-
-### Step 4
-
-At file `EscrowCompiler.hs` provide values for  `writeBountyEscrowScript` function parameters
-
-### Step 5
-
-Run `cabal repl` and check there is no error (you can ignore warnings although it is good practice to solve those too)
-
-### Step 6
-
 Run `writeBountyEscrowScript` and get `Right()` as output which indicate **Bounty Escrow** contract was complied successfully.
 
-### Step 7
+### Step 4
 
 Obtain contract address and contract hash (policy ID) by running this command
 
 ```
-cardano-cli transaction policyid --script-file bounty-escrow.plutus
-> 3fceb0fdad63e0e54488da98b9e87c804b148a617af80aa1ad50fdea
+cardano-cli transaction policyid --script-file example-bounty-escrow-new-preprod.plutus
+> 88c922462536339e648c365d03ab695e9e8a12d2a8834867bdc76f82
 ```
 
-### Step 8
+### Step 5
 
-Provide values for `writeBountyTreasuryScript` function parameters based on all the data you've gather and then compile treasury contract by running `writeBountyTreasuryScript` inside repl and get `Right()` as output which indicate **Bounty Treasury** contract was complied successfully.
+Provide this value for `writeBountyTreasuryScript` function, and then compile treasury contract by running `writeBountyTreasuryScript` inside repl and get `Right()` as output which indicate **Bounty Treasury** contract was complied successfully.
+
+## Step 6
+
+Generate the plutus script addresses using:
+```
+cardano-cli address build --testnet-magic 1 --payment-script-file example-bounty-treasury-new-preprod.plutus --out-file bounty-treasury.addr
+cardano-cli address build --testnet-magic 1 --payment-script-file example-bounty-escrow-new-preprod.plutus --out-file bounty-escrow.addr
+```
 
 ## Design patterns
 
@@ -94,6 +105,16 @@ cabal run dataToJSON-Hardcoded
 ```bash
 cabal run dataToJSON-WithArg "22117fbd0f86a213ae4f4d824cd0d38eea29e49764ae22f5f50ba3d3" "e02f8dd57e378ee673d5bf3bf7228382f131b1767d588a79cde2726a" 20 25000 1651252695000
 ```
+## Building Transactions:
+
+### 1. Issuer Locks Tokens at Treasury
+- See [/scripts/01-issuer-funds-treasury.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/01-issuer-funds-treasury.sh)
+
+### 2. Contributor Commits to Bounty
+- See [/scripts/02-contributor-commits-to-bounty.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/02-contributor-commits-to-bounty.sh)
+
+### 3a. Issuer Distributes Bounty
+- See [/scripts/03-issuer-distributes-bounty.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/03-issuer-distributes-bounty.sh)
 
 ## Note
 
@@ -104,3 +125,4 @@ cabal run dataToJSON-WithArg "22117fbd0f86a213ae4f4d824cd0d38eea29e49764ae22f5f5
 ## License
 
 Apache 2.0
+
