@@ -15,9 +15,9 @@ TREASURY_ADDR=addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz
 BOUNTY_ADDR=addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl
 TREASURY_PLUTUS_SCRIPT="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.plutus"
 BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
-TREASURY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/TreasuryDatumExample01.json"
-TREASURY_ACTION="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/TreasuryActionExample01.json"
-BOUNTY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/jd-examples/BountyEscrowDatumExample01.json"
+TREASURY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json"
+TREASURY_ACTION="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryActionExample01.json"
+BOUNTY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/BountyEscrowDatumExample01.json"
 
 export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
 cardano-cli query tip --testnet-magic 1
