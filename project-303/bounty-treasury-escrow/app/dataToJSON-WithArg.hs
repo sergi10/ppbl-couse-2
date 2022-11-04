@@ -12,17 +12,16 @@ import            PlutusTx
 import            System.Environment            (getArgs)
 import            Cardano.Api.Shelley           (fromPlutusData)
 
-import Escrow.BountyTypes
+import TreasuryAndEscrow.Types
 
 main :: IO ()
 main = do
-  [bedIssuerPkh', bedContributorPkh', bedLovelaceAmount', bedTokenAmount', bedExpirationTime'] <- getArgs
-  let bedIssuerPkh'' = fromString bedIssuerPkh'
-      bedContributorPkh'' = fromString bedContributorPkh'
+  [bedContributorPkh', bedLovelaceAmount', bedTokenAmount', bedExpirationTime'] <- getArgs
+  let bedContributorPkh'' = fromString bedContributorPkh'
       bedLovelaceAmount'' = read bedLovelaceAmount'
       bedTokenAmount'' = read bedTokenAmount'
       bedExpirationTime'' = POSIXTime $ read bedExpirationTime'
-      escrowInstance = BountyEscrowDatum bedIssuerPkh'' bedContributorPkh'' bedLovelaceAmount'' bedTokenAmount'' bedExpirationTime''
+      escrowInstance = BountyEscrowDatum bedContributorPkh'' bedLovelaceAmount'' bedTokenAmount'' bedExpirationTime''
   writeData "output/BountyEscrowDatum-WithArg.json" escrowInstance
   putStrLn "\n<---------------DONE--------------->"
   putStrLn "\nATTENTION: JSON flies were written at 'output' directory"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# A script for minting tokens.
+# A script for minting tokens. Requires having Vim installed for the xxd utility
 
 # HOW TO USE <======================================================================= ***
 # This script can be used to mint any of the tokens needed to spin up a GBTE instance
@@ -14,10 +14,43 @@ export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/db/node.socket
 cardano-cli query tip --testnet-magic 1
 cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json 
 
-# Parameters
+# Parameters: Senders public address and path to signing key
 export SENDER=$1
 export SENDERKEY=$2
 
+# Optional Parameter, path to a second signing key
+export SECONDSIGNER=$3
+
+# If a second signer has been passed in, this creates the necessary transaction components
+if [ -n "$SECONDSIGNER" ]; then
+    export BUILDSIGNER="--required-signer $SECONDSIGNER"
+    export SIGNING="--signing-key-file $SENDERKEY --signing-key-file $SECONDSIGNER"
+else
+    export BUILDSIGNER=""
+    export SIGNING="--signing-key-file $SENDERKEY"
+fi
+
+
+echo "Is there a time constraint on this Policy? (yes/no, default no)"
+read TIMECONSTRAINT
+
+# IF a time constraint is specified then this will add the necessary build components
+if [ $TIMECONSTRAINT == "yes" ]; then
+    echo "1 = invalid-before, 2 = invalid-hereafter (default 1)"
+    read BEFOREAFTER
+    if [ $BEFOREAFTER == 2 ]; then
+        BUILDTIME="--invalid-hereafter "
+    else
+        BUILDTIME="--invalid-before "
+    fi
+    echo "Enter slot number"
+    read TIMESLOT
+    export BUILDTIME+="$TIMESLOT"
+else
+    export BUILDTIME=""
+fi
+
+# This is the full path to your policy script
 echo "Specify the path to a Policy Script"
 read SCRIPTFILE
 
@@ -44,17 +77,16 @@ export TOKENHEX=${TOKENHEXSTRING::-2}
 cardano-cli transaction build \
 --babbage-era \
 --testnet-magic 1 \
---tx-in $TXIN \
+--tx-in $TXIN $BUILDSIGNER \
 --tx-out $SENDER+"10000000 + $QTY_TOKENS $POLICY_ID.$TOKENHEX" \
 --mint "$QTY_TOKENS $POLICY_ID.$TOKENHEX" \
 --mint-script-file $SCRIPTFILE \
---change-address $SENDER \
+--change-address $SENDER $BUILDTIME \
 --protocol-params-file protocol.json \
 --out-file mint-${TOKENNAME}.draft
 
 cardano-cli transaction sign \
---signing-key-file $SENDERKEY \
---testnet-magic 1 \
+$SIGNING --testnet-magic 1 \
 --tx-body-file mint-${TOKENNAME}.draft \
 --out-file mint-${TOKENNAME}.signed
 

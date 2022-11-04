@@ -69,11 +69,11 @@ Open the repl and run `writeBountyEscrowScript` and `writeBountyTreasuryScript`.
 cardano-cli address build --testnet-magic 1 --payment-script-file example-bounty-treasury-new-preprod.plutus --out-file example-bounty-treasury-new-preprod.addr
 cardano-cli address build --testnet-magic 1 --payment-script-file example-bounty-escrow-new-preprod.plutus --out-file example-bounty-escrow-new-preprod.addr
 ```
-These addresses are provided above, but this is good practice, and if the addresses you generate don't match those given at the beggining of this doc, then you need to double check that you entered your parameters correctly.
+These addresses are provided above, but this is good practice, and if the addresses you generate don't match those given at the beggining of this doc, then you need to double check that your parameters match the above.
 
 ## Preparing Datum and Redeemers
 
-Now we are almost ready to test the contract, but first, we'll have to prepare some Datum and Redeemer files. They are a bit more complex than what we used in the Faucet Mini-Project.
+Now we are almost ready to test the contract, but first, we'll have to prepare some Datum and Redeemer files. They are a bit more complex than what we used in the Faucet Mini-Project. For this excercise, we will only need the types `TreasuryDatum` and `TreasuryAction`, but the other types are explained here as well and will be useful for compiling our own contracts later.
 
 ### Treasury Contract
 - Datum type: `TreasuryDatum` - is a placeholder for now, but does have a specified type. For this example, we can use the file `ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json` as the Treasury Datum.
@@ -169,19 +169,10 @@ data TreasuryDatum = TreasuryDatum
   } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 ```
 
-## Let's Build Some Transactions:
+## Let's Build Commit to a Bounty:
 - Treasury: `addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz`
 - Bounty Escrow: `addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl`
 
-### 1. Issuer Locks Tokens at Treasury
-- See [/scripts/01-issuer-funds-treasury.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/01-issuer-funds-treasury.sh)
-
-### 2. Contributor Commits to Bounty
+### Contributor Commits to Bounty
 - See [/scripts/02-contributor-commits-to-bounty.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/02-contributor-commits-to-bounty.sh)
 
-### 3a. Issuer Distributes Bounty
-- See [/scripts/03-issuer-distributes-bounty.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/ppbl-course-02/-/blob/master/project-303/bounty-treasury-escrow/scripts/03-issuer-distributes-bounty.sh)
-
-### 3b. Issuer Updates Bounty
-
-### 3c. Issuer Cancels Bounty (after deadline)
