@@ -22,10 +22,11 @@ import json
 from pprint import pprint
 
 DIR = '/opt/DEV/PLUTUS/tools/preprod-wallets'
-SENDER = 'addr_test1vpczyxl0z74jnuefruujpdt843nt0rtxnmee4uajtlsa0ccr2ev0q'  # 'preprod1.addr'
+SENDER = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'  # 'preprod1.addr'
 SENDER_SKEY = 'preprod1.skey'
 RECEIVER = 'addr_test1vqlj4gyuhs5y6s4y350r0hhsgevfw46wl2hyhnssvnmjxqg8c90rj' # preprod2.addr
-TXHASH = 'c595cd4b368447ae4ffda6f19f087b7943ebf98b1278abe47cbdeb966737c99c'
+RECEIVER2 ='addr1qx06ajxagpv8cq8uhun8y45d3vgscjpxaukxus35wc38pk7gzdza8fumastcs6j55660dqdgvs3mdn03cyrp8h0td0csrvpslz' # GameChanger.addr
+TXHASH = 'd1fdf7de73288ce9db78926ab7b716ecab63f31cddc13f35d8636670ac04a02d'
 # TXHASH_TOK = '37008dfb97d76f1764a380b64968e3cf5734e0075ab42b7edc91c50ece8bea59'
 # TXHASH_LOV = 'abf44cbf6abc68c929a33fbd6dbf1839256e7cd868b04c00b9c12c87bcc068e5'
 # 'acfa9843ad0d11baa5f5e137e60f6c298569f1b59008e8b54d7c232c652da258'
@@ -34,7 +35,7 @@ MAGICT = ' --testnet-magic 1 '
 FEE = 170869 # Lovelace 170869
 SENDER_AMOUNT = 894113579
 RECEIVER_AMOUNT = 2092503
-MIN_SEND = 100000000
+MIN_SEND = 5000000000
 TOKEN1_AMOUNT = 940
 TOKEN2_AMOUNT = 660
 TOKEN_SEND = 500
@@ -70,13 +71,13 @@ def make_token_transaction():
     return result
 
 def make_draft_transaction():
-    result = 'CLI transaction build --babbage-era ' + MAGICT
+    result = 'CLI transaction build --babbage-era' + MAGICT
     result += ' --tx-in '  + TXHASH + '#' + TXIX
     result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
-    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
-    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
-    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
-    result += ' --change-address '  + SENDER
+    result += ' --tx-out ' + RECEIVER2 + '+' + str(MIN_SEND)
+    # result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
+    # result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
+    # result += ' --change-address '  + SENDER
     result += ' --out-file '        + FILE_RAW
     return result
 
@@ -181,10 +182,10 @@ def createPolicyID():
 
 
 # print(make_transaction())
-# print(make_draft_transaction())
+print(make_draft_transaction())
 # print(calc_fee())
 # print(sing())
-print(submit())
+# print(submit())
 # print(burnign())
 # pprint(mint())
 # pprint(json.dumps(createPolicyID()))
