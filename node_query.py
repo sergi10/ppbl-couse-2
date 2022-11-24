@@ -18,20 +18,26 @@
 #
 #
 # CLI transaction sign --signing-key-file tok.skey --signing-key-file policy/policy.skey $MAGICT --tx-body-file toktx.raw --out-file toktx.signed
-import json
+
+import json, os, subprocess
 from pprint import pprint
 
 DIR = '/opt/DEV/PLUTUS/tools/preprod-wallets'
-SENDER = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'  # 'preprod1.addr'
+CARDANO_CLI_PATH = '/opt/adanode/bin/cardano-cli'
+MAGICT = ' --testnet-magic 1 '
+
+# SENDER = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'  # 'preprod1.addr'
+SENDER_ADDR = 'preprod1.addr' 
 SENDER_SKEY = 'preprod1.skey'
-RECEIVER = 'addr_test1vqlj4gyuhs5y6s4y350r0hhsgevfw46wl2hyhnssvnmjxqg8c90rj' # preprod2.addr
-RECEIVER2 ='addr1qx06ajxagpv8cq8uhun8y45d3vgscjpxaukxus35wc38pk7gzdza8fumastcs6j55660dqdgvs3mdn03cyrp8h0td0csrvpslz' # GameChanger.addr
+# RECEIVER = 'addr_test1vqlj4gyuhs5y6s4y350r0hhsgevfw46wl2hyhnssvnmjxqg8c90rj' # preprod2.addr
+RECEIVERR_ADDR = 'preprod2.addr' 
+# RECEIVER2 ='addr1qx06ajxagpv8cq8uhun8y45d3vgscjpxaukxus35wc38pk7gzdza8fumastcs6j55660dqdgvs3mdn03cyrp8h0td0csrvpslz' # GameChanger.addr
 TXHASH = 'd1fdf7de73288ce9db78926ab7b716ecab63f31cddc13f35d8636670ac04a02d'
 # TXHASH_TOK = '37008dfb97d76f1764a380b64968e3cf5734e0075ab42b7edc91c50ece8bea59'
 # TXHASH_LOV = 'abf44cbf6abc68c929a33fbd6dbf1839256e7cd868b04c00b9c12c87bcc068e5'
 # 'acfa9843ad0d11baa5f5e137e60f6c298569f1b59008e8b54d7c232c652da258'
+
 TXIX = '0'
-MAGICT = ' --testnet-magic 1 '
 FEE = 170869 # Lovelace 170869
 SENDER_AMOUNT = 894113579
 RECEIVER_AMOUNT = 2092503
@@ -53,7 +59,46 @@ TOK_SKEY = 'preprod1.skey'
 POL_SKEY = 'policy/policy.skey'
 
 
-# $MAGICT = '--testnet-magic 1097911063'
+# PROCESS TO GET ADDRESSES
+# Read wallet address value from payment.addr file
+with open(os.path.join(DIR, SENDER_ADDR), 'r') as file:
+    SENDER = file.read()
+with open(os.path.join(DIR, RECEIVERR_ADDR), 'r') as file:
+    RECEIVERR = file.read()
+# print(SENDER)
+# print(RECEIVERR)
+# AUXILIAR FUNTIONS
+def lovelance2ada(lovelance):
+    return round(float(lovelance / 1000000), 6)
+
+def ada2lovelance(ada):
+    return int(ada * 1000000)   
+
+
+# PROCESS TO QUERY
+# We tell python to execute cardano-cli shell command to query the UTXO and read the output data
+# subprocess.call('command', shell=True, executable='/bin/bash')
+wllt = 'addr_test1vpczyxl0z74jnuefruujpdt843nt0rtxnmee4uajtlsa0ccr2ev0q'
+rawUtxoTable = subprocess.check_output([
+    CARDANO_CLI_PATH,
+    'query', 'utxo',
+    '--testnet-magic', str(1),
+    '--address', wllt])
+utxoTableRows = rawUtxoTable.strip().splitlines()[2:]
+result = []
+totalLovelaceRecv = 0
+for row in utxoTableRows:
+    line = row.split()
+    # line = row.strip().split()
+    # line = list(line)
+    result.append(line)
+    totalLovelaceRecv +=  int(line[2])
+    # print(row) #, sep=' - ', end='')
+    # for elem in row:
+    #     print(elem) #, sep=' - ', end='')
+# print( result)
+print(lovelance2ada(totalLovelaceRecv))
+print(ada2lovelance(2.152698764321))
 
 
 
@@ -182,7 +227,7 @@ def createPolicyID():
 
 
 # print(make_transaction())
-print(make_draft_transaction())
+# print(make_draft_transaction())
 # print(calc_fee())
 # print(sing())
 # print(submit())
