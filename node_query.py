@@ -23,6 +23,7 @@ import json, os, subprocess
 from pprint import pprint
 
 DIR = '/opt/DEV/PLUTUS/tools/preprod-wallets'
+TOKEN_FOLDER = '/token-native-script'
 CARDANO_CLI_PATH = '/opt/adanode/bin/cardano-cli'
 MAGICT = ' --testnet-magic 1 '
 
@@ -36,27 +37,18 @@ TXHASH = 'd1fdf7de73288ce9db78926ab7b716ecab63f31cddc13f35d8636670ac04a02d'
 # TXHASH_TOK = '37008dfb97d76f1764a380b64968e3cf5734e0075ab42b7edc91c50ece8bea59'
 # TXHASH_LOV = 'abf44cbf6abc68c929a33fbd6dbf1839256e7cd868b04c00b9c12c87bcc068e5'
 # 'acfa9843ad0d11baa5f5e137e60f6c298569f1b59008e8b54d7c232c652da258'
-
+TXHASH
 TXIX = '0'
 FEE = 170869 # Lovelace 170869
 SENDER_AMOUNT = 894113579
 RECEIVER_AMOUNT = 2092503
-MIN_SEND = 5000000000
-TOKEN1_AMOUNT = 940
-TOKEN2_AMOUNT = 660
-TOKEN_SEND = 500
-TOKEN1 = 'Tok1'
-TOKEN2 = 'Tok2'
-POLICYID = '27e697df28a774b12716699bf9605c504878b042c3605fafbd943b96'
+MIN_SEND = 5000000
+
+HASH = 'd739ff308ecd63b4854e077e9d1fa7fa53dcce33dfffe2b1f5ad29df'
 FILE_RAW = 'tx.raw'
 FILE_SINGNED = 'tx.signed'
 FILE_MINT = 'mint.raw'
-FILE_SCRIPT = 'policy/policy.script'
-PROTOCOL_FILE = 'protocol.json'
-TOK_SKEY = 'preprod1.skey'
-# TOK_SKEY = 'test02.skey'
-# TOK_SKEY = 'tok.skey'
-POL_SKEY = 'policy/policy.skey'
+
 
 
 # PROCESS TO GET ADDRESSES
@@ -67,18 +59,23 @@ with open(os.path.join(DIR, RECEIVERR_ADDR), 'r') as file:
     RECEIVERR = file.read()
 # print(SENDER)
 # print(RECEIVERR)
-# AUXILIAR FUNTIONS
+# AUXILIAR FUNCTIONS
 def lovelance2ada(lovelance):
     return round(float(lovelance / 1000000), 6)
 
 def ada2lovelance(ada):
     return int(ada * 1000000)   
 
+def toHex(s):
+    result = s
+    if type(s) == str:
+        result = s.encode('utf-8').hex()    
+    return result
 
 # PROCESS TO QUERY
 # We tell python to execute cardano-cli shell command to query the UTXO and read the output data
 # subprocess.call('command', shell=True, executable='/bin/bash')
-wllt = 'addr_test1vpczyxl0z74jnuefruujpdt843nt0rtxnmee4uajtlsa0ccr2ev0q'
+wllt = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'
 rawUtxoTable = subprocess.check_output([
     CARDANO_CLI_PATH,
     'query', 'utxo',
@@ -96,17 +93,82 @@ for row in utxoTableRows:
     # print(row) #, sep=' - ', end='')
     # for elem in row:
     #     print(elem) #, sep=' - ', end='')
-# print( result)
-print(lovelance2ada(totalLovelaceRecv))
-print(ada2lovelance(2.152698764321))
 
+TXHASH = result[0][0]
+TXIX  = result[0][1]
+# print( str(TXHASH) +'#'+ str(TXIX))
+# print(lovelance2ada(totalLovelaceRecv))
+# print(ada2lovelance(2.152698764321))
 
+#region MINTING NATIVE SCRIPT
+
+#region VARIABLES
+TOKEN1_AMOUNT = 1000
+TOKEN2_AMOUNT = 100
+TOKEN3_AMOUNT = 10
+TOKEN_SEND = 500
+TOKEN1 = 'Land'
+TOKEN2 = 'Build'
+TOKEN3 = 'Quarter'
+POLICYID = 'bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4'
+POLICYPATH = '/opt/DEV/PLUTUS/tools/preprod-wallets/token-native-script'
+POLICYSCRIPT = 'ses-policy.script'
+# protocol.json In the same path
+FILE_SCRIPT = 'policy/policy.script'
+PROTOCOL_FILE = 'protocol.json'
+TOK_SKEY = 'preprod1.skey'
+# TOK_SKEY = 'test02.skey'
+# TOK_SKEY = 'tok.skey'
+POL_SKEY = 'policy/policy.skey'
+#endregion
+
+def mint_token_transaction():
+    result =     'CLI transaction build'
+    result +=    ' --babbage-era' 
+    result +=    ' --testnet-magic 1' 
+    # result +=    ' --fee ' + str(FEE) 
+    result +=    ' --tx-in ' + str(TXHASH) + '#' + str(TXIX) 
+    result +=    ' --tx-out ' + SENDER + '+' + str(MIN_SEND) 
+    result +=        '+"'  + str(TOKEN1_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN1) 
+    result +=        ' + ' + str(TOKEN2_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN2) 
+    result +=        ' + ' + str(TOKEN3_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN3) + '"' 
+    result +=    ' --mint '+'"' + str(TOKEN1_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN1) 
+    result +=        ' + ' + str(TOKEN2_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN2) 
+    result +=        ' + ' + str(TOKEN3_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN3) + '"'
+    result +=    ' --mint-script-file ' + POLICYSCRIPT 
+    result +=    ' --change-address ' + SENDER 
+    result +=    ' --protocol-params-file protocol.json' 
+    result +=    ' --out-file ' + FILE_RAW
+    return result
+# Estimated transaction fee: Lovelace 172321
+res = mint_token_transaction()
+print(res)
+
+def sing_token_transaction():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + FILE_RAW
+    result += ' --out-file ' + FILE_SINGNED
+    return result
+res = sing_token_transaction()
+print(res)
+
+def submit_token_transaction():
+    result =  'CLI transaction submit'
+    result += ' --tx-file ' + FILE_SINGNED
+    result += ' --testnet-magic 1'
+    return result
+res = submit_token_transaction()
+print(res)
+
+#endregion
 
 def make_token_transaction():
     result = 'CLI transaction build-raw'
     result += ' --fee ' + str(FEE)
-    result += ' --tx-in ' + TXHASH_TOK + '#' + TXIX
-    result += ' --tx-out ' + RECEIVER + '+' + str(MIN_SEND) + '+"' + str(
+    result += ' --tx-in ' + TXHASH + '#' + TXIX
+    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) + '+"' + str(
         TOKEN_SEND) + ' ' + POLICYID + '.' + TOKEN1 + ' + ' + str(TOKEN_SEND) \
               + ' ' + POLICYID + '.' + TOKEN2 + '"'
     result += ' --tx-out ' + SENDER + '+' + str(SENDER_AMOUNT - MIN_SEND - FEE) + '+"' + str(
@@ -142,7 +204,7 @@ def make_transaction():
     result = 'CLI transaction build-raw --babbage-era ' + MAGICT
     result += ' --fee ' + str(FEE)
     result += ' --tx-in ' + TXHASH + '#' + TXIX
-    result += ' --tx-out ' + RECEIVER + '+' + str(MIN_SEND) + '+"' + str(
+    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) + '+"' + str(
         TOKEN_SEND) + ' ' + POLICYID + '.' + TOKEN1 + ' + ' + str(TOKEN_SEND) \
               + ' ' + POLICYID + '.' + TOKEN2 + '"'
     result += ' --tx-out ' + SENDER + '+' + str(SENDER_AMOUNT - MIN_SEND - FEE) + '+"' + str(
