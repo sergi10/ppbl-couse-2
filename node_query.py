@@ -22,7 +22,8 @@
 import json, os, subprocess
 from pprint import pprint
 
-DIR = '/opt/DEV/PLUTUS/tools/preprod-wallets'
+DIR = '/opt/DEV/PLUTUS/ppbl-course-02/'
+DIR +='activitis/project-02/native-scripts'
 TOKEN_FOLDER = '/token-native-script'
 CARDANO_CLI_PATH = '/opt/adanode/bin/cardano-cli'
 MAGICT = ' --testnet-magic 1 '
@@ -37,7 +38,7 @@ TXHASH = 'd1fdf7de73288ce9db78926ab7b716ecab63f31cddc13f35d8636670ac04a02d'
 # TXHASH_TOK = '37008dfb97d76f1764a380b64968e3cf5734e0075ab42b7edc91c50ece8bea59'
 # TXHASH_LOV = 'abf44cbf6abc68c929a33fbd6dbf1839256e7cd868b04c00b9c12c87bcc068e5'
 # 'acfa9843ad0d11baa5f5e137e60f6c298569f1b59008e8b54d7c232c652da258'
-TXHASH
+# TXHASH
 TXIX = '0'
 FEE = 170869 # Lovelace 170869
 SENDER_AMOUNT = 894113579
@@ -55,8 +56,8 @@ FILE_MINT = 'mint.raw'
 # Read wallet address value from payment.addr file
 with open(os.path.join(DIR, SENDER_ADDR), 'r') as file:
     SENDER = file.read()
-with open(os.path.join(DIR, RECEIVERR_ADDR), 'r') as file:
-    RECEIVERR = file.read()
+# with open(os.path.join(DIR, RECEIVERR_ADDR), 'r') as file:
+#     RECEIVERR = file.read()
 # print(SENDER)
 # print(RECEIVERR)
 # AUXILIAR FUNCTIONS
@@ -94,8 +95,11 @@ for row in utxoTableRows:
     # for elem in row:
     #     print(elem) #, sep=' - ', end='')
 
-TXHASH = result[0][0]
-TXIX  = result[0][1]
+TXHASH = result[1][0].decode()
+TXIX  = result[1][1].decode()
+TXHASH2 = result[2][0].decode()
+TXIX2  = result[2][1].decode()
+
 # print( str(TXHASH) +'#'+ str(TXIX))
 # print(lovelance2ada(totalLovelaceRecv))
 # print(ada2lovelance(2.152698764321))
@@ -110,6 +114,7 @@ TOKEN_SEND = 500
 TOKEN1 = 'Land'
 TOKEN2 = 'Build'
 TOKEN3 = 'Quarter'
+
 POLICYID = 'bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4'
 POLICYPATH = '/opt/DEV/PLUTUS/tools/preprod-wallets/token-native-script'
 POLICYSCRIPT = 'ses-policy.script'
@@ -127,7 +132,7 @@ def mint_token_transaction():
     result +=    ' --babbage-era' 
     result +=    ' --testnet-magic 1' 
     # result +=    ' --fee ' + str(FEE) 
-    result +=    ' --tx-in ' + str(TXHASH) + '#' + str(TXIX) 
+    result +=    ' --tx-in ' + TXHASH  + '#' + TXIX  
     result +=    ' --tx-out ' + SENDER + '+' + str(MIN_SEND) 
     result +=        '+"'  + str(TOKEN1_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN1) 
     result +=        ' + ' + str(TOKEN2_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN2) 
@@ -141,8 +146,8 @@ def mint_token_transaction():
     result +=    ' --out-file ' + FILE_RAW
     return result
 # Estimated transaction fee: Lovelace 172321
-res = mint_token_transaction()
-print(res)
+# res = mint_token_transaction()
+# print(res)
 
 def sing_token_transaction():
     result =  'CLI transaction sign'
@@ -151,8 +156,8 @@ def sing_token_transaction():
     result += ' --tx-body-file ' + FILE_RAW
     result += ' --out-file ' + FILE_SINGNED
     return result
-res = sing_token_transaction()
-print(res)
+# res = sing_token_transaction()
+# print(res)
 
 def submit_token_transaction():
     result =  'CLI transaction submit'
@@ -164,17 +169,84 @@ print(res)
 
 #endregion
 
-def make_token_transaction():
-    result = 'CLI transaction build-raw'
-    result += ' --fee ' + str(FEE)
-    result += ' --tx-in ' + TXHASH + '#' + TXIX
-    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) + '+"' + str(
-        TOKEN_SEND) + ' ' + POLICYID + '.' + TOKEN1 + ' + ' + str(TOKEN_SEND) \
-              + ' ' + POLICYID + '.' + TOKEN2 + '"'
-    result += ' --tx-out ' + SENDER + '+' + str(SENDER_AMOUNT - MIN_SEND - FEE) + '+"' + str(
-        TOKEN1_AMOUNT - TOKEN_SEND) + ' ' + POLICYID + '.' + TOKEN1 + \
-              ' + ' + str(TOKEN2_AMOUNT - TOKEN_SEND) + ' ' + POLICYID + '.' + TOKEN2 + '"'
+
+#region MINTING plutus SCRIPT 
+#region COLATERAL
+
+def collateral_transaction():
+    result = 'CLI transaction build --babbage-era  --testnet-magic 1'
+    result += ' --tx-in ' + TXHASH  + '#' + TXIX 
+    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND)
+    result += ' --change-address ' + SENDER 
     result += ' --out-file ' + FILE_RAW
+    return result
+# res = collateral_transaction()
+# print(res)
+
+def sing_colateral_transaction():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + FILE_RAW
+    result += ' --out-file ' + FILE_SINGNED
+    return result
+# res = sing_colateral_transaction()
+# print(res)
+#endregion
+
+
+# cd ppbl-course-02/activitis/project-02/plutus-scripts/
+POLICYID = 'a10aa40d0ec3fd4c8fa33a2910fb27941ae8b7ad2a5b0c30816f7a20'
+TOKEN_S1 = 'City'
+POLICYSCRIPT = 'my-minting-script.plutus'
+REDEEMERFILE = 'redeemer.json'
+
+def mint_plutus_token_transaction():
+    result =  'CLI transaction build'
+    result += ' --babbage-era' 
+    result += ' --testnet-magic 1' 
+    result += ' --tx-in ' + TXHASH  + '#' + TXIX
+    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) 
+    result += '+"' + str(TOKEN3_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN_S1) + '"' 
+    result += ' --mint '+'"' + str(TOKEN3_AMOUNT) + ' ' + POLICYID + '.' + toHex(TOKEN_S1) + '"' 
+    result += ' --mint-script-file ' + POLICYSCRIPT 
+    result += ' --mint-redeemer-file ' + REDEEMERFILE
+    result += ' --tx-in-collateral ' + TXHASH2 + '#' + TXIX2
+    result += ' --change-address ' + SENDER 
+    result += ' --protocol-params-file protocol.json' 
+    result += ' --out-file ' + FILE_RAW
+    return result
+res = mint_plutus_token_transaction()
+# print(res)
+
+
+def sing_plutus_token_transaction():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + FILE_RAW
+    result += ' --out-file ' + FILE_SINGNED
+    return result
+res = sing_plutus_token_transaction()
+print(res)
+
+def submit_plutus_token_transaction():
+    result =  'CLI transaction submit'
+    result += ' --tx-file ' + FILE_SINGNED
+    result += ' --testnet-magic 1'
+    return result
+res = submit_token_transaction()
+# print(res)
+#endregion
+
+def calc_fee():
+    result = 'CLI transaction calculate-min-fee'
+    result += ' --tx-body-file ' + FILE_RAW
+    result += ' --tx-in-count 1'
+    result += ' --tx-out-count 2'
+    result += ' --witness-count 1'
+    result += ' $MAGICT'
+    result += ' --protocol-params-file ' + PROTOCOL_FILE
     return result
 
 def make_draft_transaction():
@@ -188,20 +260,9 @@ def make_draft_transaction():
     result += ' --out-file '        + FILE_RAW
     return result
 
-
-def calc_fee():
-    result = 'CLI transaction calculate-min-fee'
-    result += ' --tx-body-file ' + FILE_RAW
-    result += ' --tx-in-count 1'
-    result += ' --tx-out-count 2'
-    result += ' --witness-count 1'
-    result += ' $MAGICT'
-    result += ' --protocol-params-file ' + PROTOCOL_FILE
-    return result
-
-
 def make_transaction():
-    result = 'CLI transaction build-raw --babbage-era ' + MAGICT
+    result = 'CLI transaction build-raw --babbage-era  --testnet-magic 1'
+    result += ' --change-address ' + SENDER 
     result += ' --fee ' + str(FEE)
     result += ' --tx-in ' + TXHASH + '#' + TXIX
     result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) + '+"' + str(
