@@ -23,8 +23,7 @@ import json, os, subprocess
 from pprint import pprint
 import tabview as t
 
-
-
+# region  GLOBALS
 DIR = '/opt/DEV/PLUTUS/ppbl-course-02/'
 DIR +='activitis/project-02/native-scripts'
 TOKEN_FOLDER = '/token-native-script'
@@ -55,6 +54,7 @@ FILE_RAW = 'tx.raw'
 FILE_SINGNED = 'tx.signed'
 FILE_MINT = 'mint.raw'
 
+# endregion
 
 
 # PROCESS TO GET ADDRESSES
@@ -65,7 +65,8 @@ with open(os.path.join(DIR, SENDER_ADDR), 'r') as file:
 #     RECEIVERR = file.read()
 # print(SENDER)
 # print(RECEIVERR)
-# AUXILIAR FUNCTIONS
+
+#region AUXILIAR FUNCTIONS
 def lovelance2ada(lovelance):
     return round(float(lovelance / 1000000), 6)
 
@@ -106,11 +107,9 @@ def tx2dict(txs):
             i +=1
         result['transactions'] = transactions
         return result
+#endregion
 
-
-
-
-# PROCESS TO QUERY
+#region PROCESS TO QUERY
 # We tell python to execute cardano-cli shell command to query the UTXO and read the output data
 # subprocess.call('command', shell=True, executable='/bin/bash')
 wllt = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'
@@ -134,24 +133,20 @@ for row in utxoTableRows:
     #     print(elem) #, sep=' - ', end='')
 
 # pprint(txlist)
-# pprint(tx2dict(txlist))
+pprint(tx2dict(txlist))
 
 wallet_Txs = tx2dict(txlist)
 
 TX = wallet_Txs['transactions'][2]
 TXHASH = TX['tx']
 TXIX  = TX['ix']
-
-
-
-
 TXHASH = txlist[1][0].decode()
 TXIX  = txlist[1][1].decode()
 TXHASH2 = txlist[2][0].decode()
 TXIX2  = txlist[2][1].decode()
 
 # t.view(txlist)
-
+#endregion
 
 # print( str(TXHASH) +'#'+ str(TXIX))
 # print(lovelance2ada(totalLovelaceRecv))
@@ -179,7 +174,8 @@ TOK_SKEY = 'preprod1.skey'
 # TOK_SKEY = 'tok.skey'
 POL_SKEY = 'policy/policy.skey'
 #endregion
-#region TRANSACTION
+
+#region MINTING FILE SCRIPT
 def mint_token_transaction():
     result =     'CLI transaction build'
     result +=    ' --babbage-era' 
@@ -220,8 +216,9 @@ def submit_token_transaction():
 #endregion
 
 
-#region MINTING plutus SCRIPT 
-#region COLATERAL
+#region MINTING PLUTUS SCRIPT 
+
+##region COLATERAL
 
 def collateral_transaction():
     result = 'CLI transaction build --babbage-era  --testnet-magic 1'
@@ -242,9 +239,9 @@ def sing_colateral_transaction():
     return result
 # res = sing_colateral_transaction()
 # print(res)
-#endregion
+#endregion COLATERAL
 
-#region TRANSACCIONES
+##region TRANSACCIONES
 # cd ppbl-course-02/activitis/project-02/plutus-scripts/
 POLICYID = 'a10aa40d0ec3fd4c8fa33a2910fb27941ae8b7ad2a5b0c30816f7a20'
 TOKEN_S1 = 'City'
@@ -287,12 +284,13 @@ def submit_plutus_token_transaction():
     return result
 # res = submit_token_transaction()
 # print(res)
-#endregion
+#endregion TRANSACCIONES
+
 #endregion
 
 #region TRANSACTION METADTA
 mdfile = '/opt/DEV/PLUTUS/ppbl-course-02/activitis/project-02/metadata/metadata.json'
-fee = 169153
+fee = 0#169153
 def mint_metadata_transaction():
     result =  'CLI transaction build'
     result += ' --babbage-era' 
@@ -314,21 +312,19 @@ def sing_metadata_transaction():
     result += ' --tx-body-file ' + FILE_RAW
     result += ' --out-file ' + FILE_SINGNED
     return result
-res = sing_plutus_token_transaction()
-print(res)
+# res = sing_plutus_token_transaction()
+# print(res)
 
 def submit_metadata_transaction():
     result =  'CLI transaction submit'
     result += ' --tx-file ' + FILE_SINGNED
     result += ' --testnet-magic 1'
     return result
-res = submit_token_transaction()
-print(res)
+# res = submit_token_transaction()
+# print(res)
 
 # query_result = subprocess.check_output(res)
 # query_result = query_result.strip().splitlines()[2:]
-
-
 
 #endregion
 

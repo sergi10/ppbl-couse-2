@@ -1,0 +1,249 @@
+-- varaibles {"number": 2000000}
+query selectGreatGrandchildBlock ($number: Int!) 
+{
+    blocks (where: { number:{ _gte: $number}}, limit:3, order_by:{slotNo:desc}) {
+        hash
+    		number
+    		epoch{
+          number
+          blocksCount
+          lastBlockTime
+        }
+        nextBlock {
+            number
+          	transactionsCount
+            nextBlock {
+                number
+                nextBlock {
+                    number
+                }
+            }
+        }
+    }
+}
+
+-- variables {"num": 200}
+query epochProtocolParams {
+  epochs(where: {number: {_gte: 200}},limit:2,order_by:{number:desc}) {
+    number
+    startedAt
+    lastBlockTime
+    blocksCount
+    blocks (limit:10,order_by:{slotNo:desc}){
+      forgedAt
+      slotNo
+    }
+    protocolParams{
+      a0
+      eMax
+      decentralisationParam
+      protocolVersion
+      rho
+      tau
+    }
+  }
+}
+
+-- variables {"slot_num":13339694, "trans_num":"1", "epoch_num":228}
+query findPoolBySlot ($slot_num: Int) {
+  blocks(where:{slotNo:{_eq:$slot_num}}){
+    number
+    hash
+    epochNo
+    size
+    transactionsCount
+    slotLeader{
+      description
+      hash
+      stakePool{
+        id
+      }
+    }
+  }
+}
+query findTransactioonsBySlot 	 {
+  blocks(where:{transactionsCount:{_gte:$trans_num} _and:{epoch:{number:{ _eq:$epoch_num}}}}){
+    number
+    hash
+    epochNo
+    size
+    transactionsCount
+    slotLeader{
+      description
+      hash
+      stakePool{
+        id
+      }
+    }
+  }
+}
+
+{"slot_num":13558526, "trans_num":"10", "epoch_num":228,"_id":"pool1lkpj6fa4l0sy39qfvyl4pcsnnd22y8np8j98vzwula2kuxgers4",
+  "_hash2": "675304517e38e66880714b3c4816f47866c302edafceb96945fd056f",
+  "_hash":"fd832d27b5fbe0489409613f50e2139b54a21e613c8a7609dcff556e",
+	"_block_no":4938186}
+	
+	
+  query transactionsByNo(
+    $_block_no: Int) { 
+    transactions(where:{block:{number:{_eq:$_block_no}}}){
+      blockIndex
+      deposit
+      fee
+      hash
+      size
+      totalOutput
+      includedAt
+      metadata{
+        key
+        value
+      }
+    }
+    
+  }
+
+
+
+
+
+query transactionsWithMetadata{
+ transactions(where:{metadata:{key:{_nin:["1968"]}}},limit:10, order_by:{totalOutput:desc}){
+    blockIndex
+    deposit
+    fee
+    hash
+    size
+    totalOutput
+    includedAt
+    metadata{
+      key
+      value
+    }
+	}
+}
+
+
+
+query onTest{
+#  blocks(where: {fees:{_gt:0}},limit:10,order_by:{slotNo:desc}){
+#  blocks(limit:10,order_by:{slotNo:desc}){
+  blocks(where: {epoch:{number:{_gt:230}}},limit:10,order_by:{slotNo:desc}){
+    number
+    fees
+    epochNo
+    slotNo
+    ...on Block{
+      slotLeader{
+        description
+        stakePool{id}
+      }
+    }
+  }
+}
+
+
+query onTest{
+#  blocks(where: {fees:{_gt:0}},limit:10,order_by:{slotNo:desc}){
+   #blocks(limit:10,order_by:{slotNo:desc}){
+  	
+    number
+    fees
+    epochNo
+    slotNo
+          slotLeader{
+        description
+        stakePool{id}
+    
+    }
+  }
+}
+
+query TopTenWithdraws{
+  withdrawals(order_by:{amount:desc},limit:10){
+    address
+    amount
+    transaction{
+      fee
+      totalOutput
+      blockIndex
+      block{number epochNo slotInEpoch }
+      metadata{key value}   
+      inputs{address value}
+      outputs{address value}
+    }
+  }
+}
+
+--{"mi_policy": "27e697df28a774b12716699bf9605c504878b042c3605fafbd943b96",
+"name":"546f6b31"}
+
+query findPolicyID($mi_policy: Hash28Hex!) {
+ assets(where:{policyId:{_eq: $mi_policy}}){
+  assetId
+  assetName
+  description
+  tokenMints{
+    asset{name ticker}
+    quantity
+    transaction {
+      fee
+      includedAt 
+      block{epochNo number}
+      hash 
+      metadata{key value}}
+  }
+  
+}
+}
+
+query findPolicyID2($mi_policy: Hash28Hex!,$name:Hex!) {
+ assets(where:{policyId:{_eq: $mi_policy} _and:{assetName:{_eq: $name}}}){
+  assetId
+  assetName
+  description
+  fingerprint
+  metadataHash
+  tokenMints_aggregate{
+    aggregate{count sum{quantity}}
+  }
+  tokenMints(where:{quantity:{_lt: "0"}}){
+    asset{name ticker}
+    quantity
+    transaction {
+      fee
+      includedAt 
+      block{epochNo number}
+      hash 
+      metadata{key value}}
+  }
+  
+}
+}
+
+{"adr":"addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r"}
+query utxosbyAddress($adr:String){
+  utxos(where:{address:{_eq:$adr}}){  
+    address
+    txHash
+    index
+    value
+    tokens{
+      quantity
+      asset{
+        assetId
+        assetName
+        decimals
+        description
+        name
+        policyId
+        ticker
+      }
+    }
+  }
+}
+
+
+
+
+
+
