@@ -21,7 +21,7 @@
 
 import json, os, subprocess
 from pprint import pprint
-import tabview as t
+# import tabview as t
 
 # region  GLOBALS
 DIR = '/opt/DEV/PLUTUS/ppbl-course-02/'
@@ -29,6 +29,8 @@ DIR +='activitis/project-02/native-scripts'
 TOKEN_FOLDER = '/token-native-script'
 CARDANO_CLI_PATH = '/opt/adanode/bin/cardano-cli'
 MAGICT = ' --testnet-magic 1 '
+KEYS_DIR = '/opt/DEV/PLUTUS/tools/preprod-wallets/project-204'
+SRIPT_DIR = '/opt/DEV/PLUTUS/ppbl-course-02/activitis/project-204'
 
 # SENDER = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'  # 'preprod1.addr'
 SENDER_ADDR = 'preprod1.addr' 
@@ -315,6 +317,7 @@ def sing_metadata_transaction():
 # res = sing_plutus_token_transaction()
 # print(res)
 
+
 def submit_metadata_transaction():
     result =  'CLI transaction submit'
     result += ' --tx-file ' + FILE_SINGNED
@@ -348,6 +351,7 @@ def make_draft_transaction():
     # result += ' --change-address '  + SENDER
     result += ' --out-file '        + FILE_RAW
     return result
+"""
 
 token_TX = txlist[0][0].decode()
 token_IX = txlist[0][1].decode()
@@ -368,6 +372,65 @@ def make_transaction():
     result += ' --tx-out ' + RECEIVER + '+' + str(tada_min ) + '+"' + str(1) + ' ' + token_ID + '"'
     result += ' --out-file ' + FILE_RAW
     return result
+
+"""
+
+TX = wallet_Txs['transactions'][0]
+#region SCRIPT VALIDATOR
+KEYS_DIR = '/opt/DEV/PLUTUS/tools/preprod-wallets/project-204'
+SCRIPT_DIR = '/opt/DEV/PLUTUS/ppbl-course-02/activitis/project-204'
+script_address = 'addr_test1wqy0j8ym4q3wutn05vkzxg8zddvgfp04l8f8pxjzh7a72dg3qxfvy'
+datum_hash = '3ceb17d6702c23286dab4352f367a9614588d53099c39f31cd618e2851a56731'
+fee = 169329 #--169329
+""" COLATERAL 
+
+def collateral_transaction2():
+    result = 'CLI transaction build --babbage-era  --testnet-magic 1'
+    result += ' --tx-in ' + TX['tx']  + '#' + TX['ix'] 
+    result += ' --tx-out ' + SENDER + '+' + str(int(ada2lovelance(5000)))
+    result += ' --tx-out ' + SENDER + '+' + str(int(TX['lovelace']) - ada2lovelance(5000) -fee)+ '+"' 
+    for asset in TX['assets']:
+        result += str(asset['quantity']) + ' ' + asset['asset'] + ' + '
+    result = result[:-3]
+    result += '"'
+    result += ' --change-address ' + SENDER 
+    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_RAW
+    return result
+# res = collateral_transaction2()
+# print(res)
+def sing_colateral_transaction2():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + FILE_RAW
+    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_SINGNED
+    return result
+# res = sing_colateral_transaction2()
+# print(res)
+def submit_metadata_transaction2():
+    result =  'CLI transaction submit'
+    result += ' --tx-file ' + SCRIPT_DIR + '/' + FILE_SINGNED
+    result += ' --testnet-magic 1'
+    return result
+# res = submit_metadata_transaction2()
+# print(res)
+"""
+
+TX = wallet_Txs['transactions'][0]
+def validator_transaction():
+    result =  'CLI transaction build'
+    result += ' --babbage-era' 
+    result += ' --testnet-magic 1' 
+    result += ' --tx-in ' + TX['tx']  + '#' + TX['ix']
+    result += ' --tx-out ' + script_address + '+' + str(int(TX['lovelace']) - fee)
+    result += ' --tx-out-datum-hash ' + datum_hash 
+    result += ' --change-address ' + SENDER 
+    # result += ' --protocol-params-file protocol.json' 
+    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_RAW
+    return result
+# res = validator_transaction()
+# print(res)
+#endregion
 
 
 
