@@ -196,14 +196,7 @@ script_address = 'addr_test1wr6ydfrw00eextwar9qqpg2clukee4s65z3egs824d7ftsqdpdnw
 # datum_hash = '3ceb17d6702c23286dab4352f367a9614588d53099c39f31cd618e2851a56731'
 fee = 187633 # ---187633
 
-wallet_Txs = getUtxos(wllt)
-pprint(wallet_Txs)
-TX_TOKEN = wallet_Txs['transactions'][3]
-TX_AUTH = wallet_Txs['transactions'][2]
-TX_COL = wallet_Txs['transactions'][1]
-script_Txs = getUtxos(script_address)
-pprint(script_Txs)
-TX_SC = script_Txs['transactions'][1]
+
 
 """
 #region send tokens to script
@@ -249,7 +242,6 @@ print(res)
 """
 
 # LOCK Transaction
-fee = 0
 
 def validator_transaction():
     result =  'CLI transaction build'
@@ -265,45 +257,123 @@ def validator_transaction():
 # res = validator_transaction()
 # print(res)
 #endregion
-
+wallet_Txs = getUtxos(wllt)
+pprint(wallet_Txs)
+TX_TOKEN = wallet_Txs['transactions'][3]
+TX_AUTH = wallet_Txs['transactions'][1]
+TX_COL = wallet_Txs['transactions'][5]
+script_Txs = getUtxos(script_address)
+pprint(script_Txs)
+TX_SC = script_Txs['transactions'][1]
 #region SCRIPT  UNLOCK FUNDS
+
 script_hash = '94bfd0e3065d4e5446a38e41e861e12f43838c8ea9b5ebd72ed5eb6186837ac3'
 script_ix = '0'
 collateral_hash = ''
 colalteral_ix = ''
 ScriptDataInBabbageEra = '3ceb17d6702c23286dab4352f367a9614588d53099c39f31cd618e2851a56731'
-file_wildraw_raw = 'sc_wildraw_tx.raw'
+FILE_UNLOCK_TX = 'sc_wildraw_tx.raw'
+FILE_TX_UNLOCK_SIGNED = 'sc_wildraw_tx.signed'
 eternal_addr ='addr_test1qqwepf45p7vlyc9musyd49e836xpzqgppcu8cqu2uu0650jn2ntn8fs5mgkw9zmsq8730pnga7se4uyqejw2756knzwse4qq4m'
 
-fee = 0
-# RECIVE FAUCET TOKENS Transction
+fee = 524152
+""" LOCK FAUCET TOKENS Transction
+FILE_LOCK_TX = 'Tx_lock_tokens.raw'
+FILE_TX_LOCK_SIGNED = 'Tx_lock_tokens.signed'
+def lock_script_transaction():
+    result = 'CLI transaction build --babbage-era  --testnet-magic 1'
+    result += ' --tx-in ' + TX_TOKEN['tx']  + '#' + TX_TOKEN['ix'] 
+    result += ' --tx-in ' + TX_AUTH['tx']  + '#' + TX_AUTH['ix']
+    # tx in contract
+    result += ' --tx-in ' + TX_SC['tx']  + '#' + TX_SC['ix'] 
+    result += ' --tx-in-collateral ' + TX_COL['tx']  + '#' + TX_COL['ix']
+    result += ' --tx-in-script-file ' + SCRIPT_DIR + '/' + 'ppbl-faucet-preprod-LAND.plutus'
+    result += ' --tx-in-datum-value ' + str(1001)
+    result += ' --tx-in-redeemer-file ' + SCRIPT_DIR + '/' + 'redeemer_1001.json'
+    
+    # result += ' --tx-in-datum-value ' + str(1001)
+    result += ' --tx-out ' + script_address + '+' + str(int(ada2lovelance(3)))  
+    result +=        '+"' + str(TX_SC['assets'][0]['quantity'] + 90) + ' ' + TX_TOKEN['assets'][0]['asset'] + '"' 
+    result += ' --tx-out-datum-hash ' + 'c9f1a86686aecf55fd2f90d275c5c7908a2978df1aec9f189fcb3a00ff529ac0'
+    result += ' --tx-out ' + SENDER + '+' + str(int(TX_TOKEN['lovelace']) - fee) 
+    result +=        '+"'  + str(TX_TOKEN['assets'][0]['quantity'] - 90) + ' ' + TX_TOKEN['assets'][0]['asset'] + '"' 
+    result += ' --tx-out ' + SENDER + '+' + TX_AUTH['lovelace']
+    result +=       '+"'  + str(TX_AUTH['assets'][0]['quantity']) + ' ' + TX_AUTH['assets'][0]['asset'] + '"'
+    result += ' --change-address ' + SENDER 
+    result += ' --protocol-params-file ' + KEYS_DIR + '/'+ 'protocol.json' 
+    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_LOCK_TX
+    return result
+res = lock_script_transaction()
+print(res)
+print('\n')
+def sing_transaction2():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + FILE_LOCK_TX
+    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_TX_LOCK_SIGNED
+    return result
+res = sing_transaction2()
+print(res)
+print('\n')
+def submit_transaction2():
+    result =  'CLI transaction submit'
+    result += ' --tx-file ' + SCRIPT_DIR + '/' + FILE_TX_LOCK_SIGNED
+    result += ' --testnet-magic 1'
+    return result
+res = submit_transaction2()
+print(res)
+print('\n')
+"""
+
+""" UNLOCK FAUCET TOKENS Transction
 def wildraw_script_transaction():
     result =  'CLI transaction build'
     result += ' --babbage-era' 
     result += ' --testnet-magic 1'
     # send auth token TX_TOKEN
     result += ' --tx-in ' + TX_AUTH['tx']  + '#' + TX_AUTH['ix']
-    result += ' --tx-in ' + TX_TOKEN['tx']  + '#' + TX_TOKEN['ix']
+    # result += ' --tx-in ' + TX_TOKEN['tx']  + '#' + TX_TOKEN['ix']
     # SC transaction
     result += ' --tx-in ' + TX_SC['tx']  + '#' + TX_SC['ix'] 
     result += ' --tx-in-script-file ' + SCRIPT_DIR + '/' + 'ppbl-faucet-preprod-LAND.plutus'
     result += ' --tx-in-datum-value ' + str(1001)
     result += ' --tx-in-redeemer-file ' + SCRIPT_DIR + '/' + 'redeemer_1001.json'
     result += ' --tx-in-collateral ' + TX_COL['tx']  + '#' + TX_COL['ix']
-    result += ' --tx-out ' + SENDER + '+' + str(int(TX_TOKEN['lovelace']) - fee) 
-    result +=        '+"'  + str(TX_TOKEN['assets'][0]['quantity'] + 10) + ' ' + TX_TOKEN['assets'][0]['asset'] + '"' 
+    # result += ' --tx-out ' + SENDER + '+' + str(int(TX_TOKEN['lovelace']) - fee) 
+    # result +=        '+"'  + str(TX_TOKEN['assets'][0]['quantity'] + 10) + ' ' + TX_TOKEN['assets'][0]['asset'] + '"' 
     # result += ' --tx-out ' + SENDER + '+' + TX_COL['lovelace']
-    result += ' --tx-out ' + SENDER + '+' + TX_AUTH['lovelace']
-    result +=       '+"'  + str(TX_AUTH['assets'][0]['quantity'] + 1) + ' ' + TX_AUTH['assets'][0]['asset'] + '"'
+    result += ' --tx-out ' + SENDER + '+' + str(int(TX_AUTH['lovelace']) - fee)
+    result +=       '+"'   + str(10) + ' ' + TX_SC['assets'][0]['asset'] 
+    result +=       ' + '  + str(TX_AUTH['assets'][0]['quantity'] ) + ' ' + TX_AUTH['assets'][0]['asset'] + '"'
     result += ' --tx-out ' + script_address + '+' + TX_SC['lovelace'] # script_address
     result +=        '+"'  + str(TX_SC['assets'][0]['quantity'] - 10) + ' ' + TX_SC['assets'][0]['asset'] + '"' 
     result += ' --tx-out-datum-hash ' + 'c9f1a86686aecf55fd2f90d275c5c7908a2978df1aec9f189fcb3a00ff529ac0'
     result += ' --change-address ' + SENDER 
     result += ' --protocol-params-file ' + KEYS_DIR + '/'+ 'protocol.json' 
-    result += ' --out-file ' + SCRIPT_DIR + '/' + file_wildraw_raw
+    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_UNLOCK_TX
     return result
 res = wildraw_script_transaction()
 print(res)
+print('\n')
+def sing_transaction2():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + FILE_UNLOCK_TX
+    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_TX_UNLOCK_SIGNED
+    return result
+res = sing_transaction2()
+print(res)
+print('\n')
+def submit_transaction2():
+    result =  'CLI transaction submit'
+    result += ' --tx-file ' + SCRIPT_DIR + '/' + FILE_TX_UNLOCK_SIGNED
+    result += ' --testnet-magic 1'
+    return result
+res = submit_transaction2()
+print(res)
+"""
 #endregion
 
 
