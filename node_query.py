@@ -1,23 +1,3 @@
-# cardano-cli query utxo --address $address --$testnet
-#
-# CLI transaction build-raw
-#     --fee $fee
-#     --tx-in $txhash#$txix
-#     --tx-out $receiver+$receiver_output+"50 $policyid.$token1 + 33 $policyid.$token2"
-#     --tx-out $(cat tok.addr)+$output+"950 $policyid.$token1 + 967 $policyid.$token2"
-#     --out-file toktx.raw
-#
-# fee=$(CLI transaction calculate-min-fee
-#   --tx-body-file toktx.raw
-#   --tx-in-count 1
-#   --tx-out-count 2
-#   --witness-count 1 $MAGICT
-#   --protocol-params-file protocol.json | cut -d " " -f1)
-#
-# CLI transaction sign --signing-key-file tok.skey --signing-key-file policy/policy.skey $MAGICT --tx-body-file toktx.raw --out-file toktx.signed
-#
-#
-# CLI transaction sign --signing-key-file tok.skey --signing-key-file policy/policy.skey $MAGICT --tx-body-file toktx.raw --out-file toktx.signed
 
 import json, os, subprocess
 from pprint import pprint
@@ -89,26 +69,31 @@ def tx2dict(txs):
         for tx in txs:
             assets = []
             procesed = {}
-            procesed['id'] = i
-            procesed['tx'] = tx[0].decode()
-            procesed['ix'] = tx[1].decode()
-            procesed['lovelace'] = tx[2].decode()
-            if tx[5].decode() != 'TxOutDatumNone':
+            # update({"role": "Developer"})
+            procesed.update({'id': i})
+            procesed.update({'tx': tx[0].decode()})
+            procesed.update({'ix': tx[1].decode()})
+            procesed.update({'lovelace': tx[2].decode()})
+            if tx[5].decode() == 'TxOutDatumHash':
+                procesed.update({'scriptType': tx[6].decode()})
+                procesed.update({'datumHash': tx[7].decode()})
+            elif tx[5].decode() != 'TxOutDatumNone':
                 for h in range(5, len(tx) -2, 3):
                     token = {}
-                    token['asset'] = tx[h+1].decode()
+                    token.update({'asset': tx[h+1].decode()})
                     info = tx[h+1].decode().split('.')
-                    token['policyID'] = info[0]
-                    token['name'] = info[1]
-                    token['textname'] = bytes.fromhex(info[1]).decode('utf-8')
-                    token['quantity'] = int(tx[h].decode())
+                    token.update({'policyID': info[0]})
+                    token.update({'name': info[1]})
+                    token.update({'textname': bytes.fromhex(info[1]).decode('utf-8')})
+                    token.update({'quantity': int(tx[h].decode())})
                     assets.append(token)
             if assets:
-                procesed['assets'] = assets
+                procesed.update({'assets': assets})
             transactions.append(procesed)
             i +=1
-        result['transactions'] = transactions
+        result.update({'transactions': transactions})
         return result
+
 #endregion
 
 #region PROCESS TO QUERY
@@ -432,6 +417,35 @@ def validator_transaction():
 # print(res)
 #endregion
 
+#region SCRIPT  UNLOCK FUNDS
+script_hash = '94bfd0e3065d4e5446a38e41e861e12f43838c8ea9b5ebd72ed5eb6186837ac3'
+script_ix = '0'
+collateral_hash = ''
+colalteral_ix = ''
+ScriptDataInBabbageEra = '3ceb17d6702c23286dab4352f367a9614588d53099c39f31cd618e2851a56731'
+file_wildraw_raw = 'sc_wildraw_tx.raw'
+eternal_addr ='addr_test1qqwepf45p7vlyc9musyd49e836xpzqgppcu8cqu2uu0650jn2ntn8fs5mgkw9zmsq8730pnga7se4uyqejw2756knzwse4qq4m'
+
+
+
+def wildraw_script_transaction():
+    result =  'CLI transaction build'
+    result += ' --babbage-era' 
+    result += ' --testnet-magic 1'
+    result += ' tx-in-script-file' + SCRIPT_DIR + '/src/Ppbl/output/' + 'Myvalidator.plutus'
+    result += ' tx-in-datum-file' + SCRIPT_DIR + '/src/Ppbl/output/' + 'MyPpblDatum.plutus'
+    result += ' tx-in-redeemer-file' + SCRIPT_DIR + '/src/Ppbl/output/' + 'MyRedeemer.json'
+    result += ' --tx-in-collateral ' + collateral_hash  + '#' + colalteral_ix
+    result += ' --required-signer-has ' + 'd739ff308ecd63b4854e077e9d1fa7fa53dcce33dfffe2b1f5ad29df'
+    result += ' --tx-out ' + eternal_addr  # eternal_addr
+    result += ' --tx-out ' + script_address + '+' + str(5000000- fee) # script_address
+    result += ' --change-address ' + SENDER 
+    result += ' --protocol-params-file ' + SCRIPT_DIR + '/'+ 'protocol.json' 
+    result += ' --out-file ' + SCRIPT_DIR + '/'+ file_wildraw_raw
+    return result
+
+#endregion
+
 
 
 # res = make_transaction()
@@ -441,98 +455,122 @@ def validator_transaction():
 # res = submit_token_transaction()
 # print(res)
 
+"""  OLD FUNCTIONS
 
-# def make_transaction2():
-#     result = 'CLI transaction build --babbage-era  --testnet-magic 1'
-#     # result += ' --change-address ' + SENDER 
-#     # result += ' --fee ' + str(FEE)
-#     result += ' --tx-in ' + TXTOKEN + '#' + TXTOKENIX
-#     result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) + '+"' + str(
-#         1) + ' ' + POLICYID + '.' + TOKEN_S1 + '"'
-#     result += ' --tx-out ' + RECEIVER + '+' + str(SENDER_AMOUNT - MIN_SEND - FEE) + '+"' + str(
-#         1) + ' ' + POLICYID + '.' + TOKEN_S1 + '"'
-#     result += ' --out-file ' + FILE_RAW
-#     return result
+cardano-cli query utxo --address $address --$testnet
 
-# def sing():
-#     result = 'CLI transaction sign'
-#     result += ' --signing-key-file ' + SENDER_SKEY
-#     # result += ' --signing-key-file ' + POL_SKEY
-#     result += MAGICT
-#     result += ' --tx-body-file ' + FILE_RAW
-#     result += ' --out-file ' + FILE_SINGNED
-#     return result
+CLI transaction build-raw
+    --fee $fee
+    --tx-in $txhash#$txix
+    --tx-out $receiver+$receiver_output+"50 $policyid.$token1 + 33 $policyid.$token2"
+    --tx-out $(cat tok.addr)+$output+"950 $policyid.$token1 + 967 $policyid.$token2"
+    --out-file toktx.raw
+
+fee=$(CLI transaction calculate-min-fee
+  --tx-body-file toktx.raw
+  --tx-in-count 1
+  --tx-out-count 2
+  --witness-count 1 $MAGICT
+  --protocol-params-file protocol.json | cut -d " " -f1)
+
+CLI transaction sign --signing-key-file tok.skey --signing-key-file policy/policy.skey $MAGICT --tx-body-file toktx.raw --out-file toktx.signed
 
 
-# def submit():
-#     # CLI     transaction    submit - -tx - file    toktx.signed  $MAGICT
-#     result = 'CLI transaction submit'
-#     result += ' --tx-file ' + FILE_SINGNED + MAGICT
-#     return result
+CLI transaction sign --signing-key-file tok.skey --signing-key-file policy/policy.skey $MAGICT --tx-body-file toktx.raw --out-file toktx.signed
+
+def make_transaction2():
+    result = 'CLI transaction build --babbage-era  --testnet-magic 1'
+    # result += ' --change-address ' + SENDER 
+    # result += ' --fee ' + str(FEE)
+    result += ' --tx-in ' + TXTOKEN + '#' + TXTOKENIX
+    result += ' --tx-out ' + SENDER + '+' + str(MIN_SEND) + '+"' + str(
+        1) + ' ' + POLICYID + '.' + TOKEN_S1 + '"'
+    result += ' --tx-out ' + RECEIVER + '+' + str(SENDER_AMOUNT - MIN_SEND - FEE) + '+"' + str(
+        1) + ' ' + POLICYID + '.' + TOKEN_S1 + '"'
+    result += ' --out-file ' + FILE_RAW
+    return result
+
+def sing():
+    result = 'CLI transaction sign'
+    result += ' --signing-key-file ' + SENDER_SKEY
+    # result += ' --signing-key-file ' + POL_SKEY
+    result += MAGICT
+    result += ' --tx-body-file ' + FILE_RAW
+    result += ' --out-file ' + FILE_SINGNED
+    return result
 
 
-# def burnign():
-#     result = 'CLI transaction build-raw'
-#     result += ' --fee ' + str(FEE)
-#     result += ' --tx-in ' + TXHASH_TOK + '#' + TXIX
-#     result += ' --tx-out ' + RECEIVER + '+' + str(
-#         RECEIVER_AMOUNT - FEE) + '+"40 ' + POLICYID + '.' + TOKEN1 + ' + ' + '319 ' \
-#               + POLICYID + '.' + TOKEN2 + '"'
-#     result += ' --mint=' + '"-1 ' + POLICYID + '.' + TOKEN1 + \
-#               ' + ' + '-1 ' + POLICYID + '.' + TOKEN2 + '"'
-#     result += ' --minting-script-file policy/policy.script'
-#     # result += ' --metadata-json-file tokens.json'
-#     result += ' --out-file ' + FILE_RAW
-#     return result
+def submit():
+    # CLI     transaction    submit - -tx - file    toktx.signed  $MAGICT
+    result = 'CLI transaction submit'
+    result += ' --tx-file ' + FILE_SINGNED + MAGICT
+    return result
 
 
-# def mint():
-#     assets = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF', 'GGG', 'HHH']
-#     amounts = [1, 20, 400, 4000, 40000, 200000, 1000000, 5000000]
-#     mint = ''
-#     for a in assets:
-#         mint += str(amounts[assets.index(a)]) + ' ' + POLICYID + '.' + a + ' '
-
-#     result = 'CLI transaction build-raw'
-#     result += ' --fee ' + str(FEE)
-#     result += ' --tx-in ' + TXHASH_TOK + '#' + TXIX
-#     result += ' --tx-out ' + RECEIVER + '+' + str(MIN_SEND) + '+"' + str(
-#         TOKEN1_AMOUNT) + ' ' + POLICYID + '.' + TOKEN1 + ' + ' + str(TOKEN2_AMOUNT) \
-#               + ' ' + POLICYID + '.' + TOKEN2 + '"'
-#     result += ' --mint="' + mint
-#     result += ' --minting-script-file ' + FILE_SCRIPT
-#     result += ' --out-file ' + FILE_RAW
-#     # result += ' --metadata-json-file ' + 'mint.json'
-#     return result
+def burnign():
+    result = 'CLI transaction build-raw'
+    result += ' --fee ' + str(FEE)
+    result += ' --tx-in ' + TXHASH_TOK + '#' + TXIX
+    result += ' --tx-out ' + RECEIVER + '+' + str(
+        RECEIVER_AMOUNT - FEE) + '+"40 ' + POLICYID + '.' + TOKEN1 + ' + ' + '319 ' \
+              + POLICYID + '.' + TOKEN2 + '"'
+    result += ' --mint=' + '"-1 ' + POLICYID + '.' + TOKEN1 + \
+              ' + ' + '-1 ' + POLICYID + '.' + TOKEN2 + '"'
+    result += ' --minting-script-file policy/policy.script'
+    # result += ' --metadata-json-file tokens.json'
+    result += ' --out-file ' + FILE_RAW
+    return result
 
 
-# def createPolicyID():
-#     # \"$(cardano-cli address key-hash --payment-verification-key-file policy/policy.vkey)\"
-#     hash_policyID = '920ffdb246cb66dfdd74e29f76529f75a0a4aaaeebcce12a9c7f44cb'
-#     # \"slot\": $(expr $(cardano-cli query tip --mainnet | jq .slot?) + 10000)"
-#     # CLI query tip $MAGICT | jq.slot --> 40008254
-#     slot = 1000
+def mint():
+    assets = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF', 'GGG', 'HHH']
+    amounts = [1, 20, 400, 4000, 40000, 200000, 1000000, 5000000]
+    mint = ''
+    for a in assets:
+        mint += str(amounts[assets.index(a)]) + ' ' + POLICYID + '.' + a + ' '
 
-#     result = {"type": "all",
-#               "scripts": [
-#                   {
-#                       "type": "before",
-#                       "slot": slot
-#                   },
-#                   {
-#                       "type": "sig",
-#                       "keyHash": hash_policyID
-#                   }
-#               ]
-#               }
+    result = 'CLI transaction build-raw'
+    result += ' --fee ' + str(FEE)
+    result += ' --tx-in ' + TXHASH_TOK + '#' + TXIX
+    result += ' --tx-out ' + RECEIVER + '+' + str(MIN_SEND) + '+"' + str(
+        TOKEN1_AMOUNT) + ' ' + POLICYID + '.' + TOKEN1 + ' + ' + str(TOKEN2_AMOUNT) \
+              + ' ' + POLICYID + '.' + TOKEN2 + '"'
+    result += ' --mint="' + mint
+    result += ' --minting-script-file ' + FILE_SCRIPT
+    result += ' --out-file ' + FILE_RAW
+    # result += ' --metadata-json-file ' + 'mint.json'
+    return result
 
-#     return result
 
-# print(make_transaction())
-# print(make_draft_transaction())
-# print(calc_fee())
-# print(sing())
-# print(submit())
-# print(burnign())
-# pprint(mint())
-# pprint(json.dumps(createPolicyID()))
+def createPolicyID():
+    # \"$(cardano-cli address key-hash --payment-verification-key-file policy/policy.vkey)\"
+    hash_policyID = '920ffdb246cb66dfdd74e29f76529f75a0a4aaaeebcce12a9c7f44cb'
+    # \"slot\": $(expr $(cardano-cli query tip --mainnet | jq .slot?) + 10000)"
+    # CLI query tip $MAGICT | jq.slot --> 40008254
+    slot = 1000
+
+    result = {"type": "all",
+              "scripts": [
+                  {
+                      "type": "before",
+                      "slot": slot
+                  },
+                  {
+                      "type": "sig",
+                      "keyHash": hash_policyID
+                  }
+              ]
+              }
+
+    return result
+
+print(make_transaction())
+print(make_draft_transaction())
+print(calc_fee())
+print(sing())
+print(submit())
+print(burnign())
+pprint(mint())
+pprint(json.dumps(createPolicyID()))
+
+"""

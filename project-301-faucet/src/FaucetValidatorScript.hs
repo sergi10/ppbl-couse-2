@@ -61,8 +61,8 @@ PlutusTx.makeLift ''FaucetRedeemer
 
 {-# INLINEABLE faucetValidator #-}
 faucetValidator :: FaucetParams -> Integer -> FaucetRedeemer -> ScriptContext -> Bool
-faucetValidator faucet _ receiver ctx =  traceIfFalse "Input needs PPBL2022AccessToken"           inputHasAccessToken &&
-                                                  traceIfFalse "PPBL2022AccessToken must return to sender" outputHasAccessToken &&
+faucetValidator faucet _ receiver ctx =  traceIfFalse "Input needs a Build Token"           inputHasAccessToken &&
+                                                  traceIfFalse "Build Token must return to sender" outputHasAccessToken &&
                                                   traceIfFalse "Faucet token must be distributed to sender" outputHasFaucetToken &&
                                                   traceIfFalse "Must return remaining tokens to contract"   faucetContractGetsRemainingTokens &&
                                                   traceIfFalse "Do we need to check datum"                  checkDatumIsOk

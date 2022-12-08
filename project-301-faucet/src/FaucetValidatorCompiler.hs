@@ -23,11 +23,13 @@ writeValidator file = writeFileTextEnvelope @(PlutusScript PlutusScriptV1) file 
 -- 5. Recommended: take a screenshot of this file so that you can remember the parameters you used
 
 writeFaucetScript :: IO (Either (FileError ()) ())
-writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-<YOUR TOKEN NAME>.plutus" $ FaucetValidatorScript.validator $ FaucetValidatorScript.FaucetParams
+writeFaucetScript = writeValidator "output/ppbl-faucet-preprod-LAND.plutus" $ FaucetValidatorScript.validator $ FaucetValidatorScript.FaucetParams
     {
-      FaucetValidatorScript.accessTokenSymbol     = "748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60"
-    , FaucetValidatorScript.accessTokenName       = "PPBL2022AccessToken"
-    , FaucetValidatorScript.faucetTokenSymbol     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , FaucetValidatorScript.faucetTokenName       = "tGimbal"
-    , FaucetValidatorScript.withdrawalAmount      = 1000
+    --FaucetValidatorScript.accessTokenSymbol     = "748ee66265a1853c6f068f86622e36b0dda8edfa69c689a7dd232c60"
+    --, FaucetValidatorScript.accessTokenName       = "PPBL2022AccessToken"
+      FaucetValidatorScript.accessTokenSymbol     = "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4"
+    , FaucetValidatorScript.accessTokenName       = "Build"
+    , FaucetValidatorScript.faucetTokenSymbol     = "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4"
+    , FaucetValidatorScript.faucetTokenName       = "Land"
+    , FaucetValidatorScript.withdrawalAmount      = 10
     }

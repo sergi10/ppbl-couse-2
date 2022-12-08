@@ -11,7 +11,7 @@ Try to unlock tokens from the contract at: `addr_test1wqunsl063ezhn67r72uxetvjug
 1. Get the `ppbl-faucet-preprod-2022-oct-tgimbal.plutus` file provided here in `/project-301-faucet/shared-script/`
 2. Create a `redeemer.json` file with the following contents:
 ```
-{"constructor":0,"fields":[{"bytes":"<YOUR PUBKEYHASH HERE"}]}
+{"constructor":0,"fields":[{"bytes":"<YOUR PUBKEYHASH HERE"}]} # .vkey ???
 ```
 3. Note the Datum and DatumHash:
 ```
