@@ -187,7 +187,6 @@ def submit_metadata_transaction2():
 """
 
 
-#region SCRIPT VALIDATOR
 # cd ppbl-course-02/activitis/project-02/plutus-scripts/
 POLICYSCRIPT = 'ppbl-faucet-preprod-LAND.plutus'
 # REDEEMERFILE = 'redeemer.json'
@@ -198,8 +197,7 @@ fee = 187633 # ---187633
 
 
 
-"""
-#region send tokens to script
+""" COLATERAL
 FILE_TX = 'Tx_send_tokens.raw'
 FILE_TX_SIGNED = 'Tx_send_tokens.signed'
 def collateral_transaction2():
@@ -238,25 +236,8 @@ def submit_metadata_transaction2():
     return result
 res = submit_metadata_transaction2()
 print(res)
-#endregion
 """
 
-# LOCK Transaction
-
-def validator_transaction():
-    result =  'CLI transaction build'
-    result += ' --babbage-era' 
-    result += ' --testnet-magic 1' 
-    result += ' --tx-in ' + TX['tx']  + '#' + TX['ix']
-    result += ' --tx-out ' + script_address + '+' + str(int(TX['lovelace']) - fee)
-    result += ' --tx-out-datum-hash ' + datum_hash 
-    result += ' --change-address ' + SENDER 
-    # result += ' --protocol-params-file protocol.json' 
-    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_RAW
-    return result
-# res = validator_transaction()
-# print(res)
-#endregion
 wallet_Txs = getUtxos(wllt)
 pprint(wallet_Txs)
 TX_TOKEN = wallet_Txs['transactions'][3]
@@ -265,7 +246,6 @@ TX_COL = wallet_Txs['transactions'][5]
 script_Txs = getUtxos(script_address)
 pprint(script_Txs)
 TX_SC = script_Txs['transactions'][1]
-#region SCRIPT  UNLOCK FUNDS
 
 script_hash = '94bfd0e3065d4e5446a38e41e861e12f43838c8ea9b5ebd72ed5eb6186837ac3'
 script_ix = '0'
@@ -277,6 +257,7 @@ FILE_TX_UNLOCK_SIGNED = 'sc_wildraw_tx.signed'
 eternal_addr ='addr_test1qqwepf45p7vlyc9musyd49e836xpzqgppcu8cqu2uu0650jn2ntn8fs5mgkw9zmsq8730pnga7se4uyqejw2756knzwse4qq4m'
 
 fee = 524152
+#region SCRIPT LOCK TRANSACTION
 """ LOCK FAUCET TOKENS Transction
 FILE_LOCK_TX = 'Tx_lock_tokens.raw'
 FILE_TX_LOCK_SIGNED = 'Tx_lock_tokens.signed'
@@ -325,6 +306,9 @@ res = submit_transaction2()
 print(res)
 print('\n')
 """
+#endregion
+
+#region SCRIPT UNLOCK TRANSACTION
 
 """ UNLOCK FAUCET TOKENS Transction
 def wildraw_script_transaction():
@@ -375,6 +359,41 @@ res = submit_transaction2()
 print(res)
 """
 #endregion
+
+
+""" METADATA TRANSACTION
+"""
+TX_MTDT = wallet_Txs['transactions'][0]
+def metadata_tx():
+    result =  'CLI transaction build'
+    result += ' --babbage-era' 
+    result += ' --testnet-magic 1'
+    result += ' --tx-in ' + TX_MTDT['tx']  + '#' + TX_MTDT['ix']
+    result += ' --change-address ' + SENDER 
+    result += ' --metadata-json-file ' + SCRIPT_DIR + '/' + 'faucet-reg-metadata.json'
+    result += ' --protocol-params-file ' + KEYS_DIR + '/'+ 'protocol.json' 
+    result += ' --out-file ' + SCRIPT_DIR + '/' + 'metadata.raw'
+    return result
+res = metadata_tx()
+print(res)
+print('\n')
+def sing_transaction2():
+    result =  'CLI transaction sign'
+    result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
+    result += ' --testnet-magic 1'
+    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + 'metadata.raw'
+    result += ' --out-file ' + SCRIPT_DIR + '/' + 'metadata.signed'
+    return result
+res = sing_transaction2()
+print(res)
+print('\n')
+def submit_transaction2():
+    result =  'CLI transaction submit'
+    result += ' --tx-file ' + SCRIPT_DIR + '/' + 'metadata.signed'
+    result += ' --testnet-magic 1'
+    return result
+res = submit_transaction2()
+print(res)
 
 
 
