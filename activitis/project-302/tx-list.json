@@ -1,0 +1,137 @@
+{
+    "transactions": [
+      {
+        "__typename": "Transaction",
+        "includedAt": "2022-11-26T15:43:56Z",
+        "mint": [
+          {
+            "__typename": "Token",
+            "asset": {
+              "__typename": "Asset",
+              "policyId": "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4",
+              "assetName": "51756172746572",
+              "name": null
+            },
+            "quantity": "10"
+          },
+          {
+            "__typename": "Token",
+            "asset": {
+              "__typename": "Asset",
+              "policyId": "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4",
+              "assetName": "4c616e64",
+              "name": null
+            },
+            "quantity": "1000"
+          },
+          {
+            "__typename": "Token",
+            "asset": {
+              "__typename": "Asset",
+              "policyId": "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4",
+              "assetName": "4275696c64",
+              "name": null
+            },
+            "quantity": "100"
+          }
+        ],
+        "outputs": [
+          {
+            "__typename": "TransactionOutput",
+            "txHash": "acda5cb0173a27f90d298700e55675d1b9df8c000c1c53ed9b9220ccfb7a08c8",
+            "value": "5000000",
+            "tokens": [
+              {
+                "__typename": "Token",
+                "asset": {
+                  "__typename": "Asset",
+                  "policyId": "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4",
+                  "assetName": "51756172746572"
+                },
+                "quantity": "10"
+              },
+              {
+                "__typename": "Token",
+                "asset": {
+                  "__typename": "Asset",
+                  "policyId": "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4",
+                  "assetName": "4c616e64"
+                },
+                "quantity": "1000"
+              },
+              {
+                "__typename": "Token",
+                "asset": {
+                  "__typename": "Asset",
+                  "policyId": "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4",
+                  "assetName": "4275696c64"
+                },
+                "quantity": "100"
+              }
+            ]
+          },
+          {
+            "__typename": "TransactionOutput",
+            "txHash": "acda5cb0173a27f90d298700e55675d1b9df8c000c1c53ed9b9220ccfb7a08c8",
+            "value": "9994827679",
+            "tokens": []
+          }
+        ]
+      }
+    ]
+  }
+
+    // My CODE
+    const [assetsList, setAssetsList] = useState(null)
+    const [isLoading, setLoading] = useState(false)
+
+    useEffect(() => {
+        setAssetsList(data['transactions']['mint'])
+    }, [])
+    // mesh code
+        // const assets = useAssets();
+        // return (
+        //   <ol>
+        //     {assets &&
+        //       assets.slice(0, 10).map((asset, i) => {
+        //         return (
+        //           <li key={i}>
+        //             <b>{asset.unit}</b> (x{asset.quantity})
+        //           </li>
+        //         );
+        //       })}
+        //   </ol>
+        // );
+
+    // const codeSample = 
+    const codeSample = () => { 
+        const bodyText = "This is not really a bird nest.";
+    <div className="example">
+        <div>
+            <p>mint :  </p>
+            <p>outputs : </p>
+        </div>
+         {/* <div>
+                {
+                // setAssetsList(data['transactions']['mint']);
+                Object.keys(assetsList.object).map((key, i) => (
+                    <p key={i}>
+                    <span>Key Name: {key}</span>
+                    <span>Value: {data.object[key]}</span>
+                    </p>)
+                    )
+                }
+        </div>  */}
+    </div>
+    }
+    // function renderUsers() {
+    //     const txList = [];
+    //     data.forEach((tx) => {
+    //        let _id = `${user.name.first} ${user.name.last}`;
+    // //       let avatar = user.picture.thumbnail;
+    // //       let email = user.email;
+    // //       let key = user.id.value;
+    //        txList.push(<tx/>);
+    // //     });
+    //     return txList;
+    //   }

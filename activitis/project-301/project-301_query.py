@@ -16,6 +16,7 @@ SENDER_VKEY = 'preprod1.vkey'
 # RECEIVER = 'addr_test1qzkxt9tcagpw5myjtmae5wau4tkv5hu5lr5pagagc4h7x6mhy35hn2pwkwh3uyz32tg4507cl6wh9d3p2gcgryfyqfcsaumm53' # nami testnet
 # RECEIVER2 ='addr1qx06ajxagpv8cq8uhun8y45d3vgscjpxaukxus35wc38pk7gzdza8fumastcs6j55660dqdgvs3mdn03cyrp8h0td0csrvpslz' # GameChanger.addr
 RECEIVER = 'addr_test1qq4c2emcjmd9hyvwkm6cs6z6w8a0htw8wmnfc2pmmgtx8m2n2ntn8fs5mgkw9zmsq8730pnga7se4uyqejw2756knzws8gaak7' # Eternal preprod
+ETERNAL_ADDR = RECEIVER
 RECEIVERR_ADDR = 'preprod2.addr' 
 
 FILE_RAW = 'sc-301_tx.raw'
@@ -131,7 +132,16 @@ script_address = 'addr_test1wqy0j8ym4q3wutn05vkzxg8zddvgfp04l8f8pxjzh7a72dg3qxfv
 
 #endregion
 
-
+wallet_Txs = getUtxos(wllt)
+pprint(wallet_Txs)
+TX_LAND = wallet_Txs['transactions'][1] #800
+TX_BUILD = wallet_Txs['transactions'][2] #100 - 10
+TX_TOKEN = wallet_Txs['transactions'][2]
+TX_AUTH = wallet_Txs['transactions'][1]
+TX_COL = wallet_Txs['transactions'][5]
+script_Txs = getUtxos(script_address)
+pprint(script_Txs)
+TX_SC = script_Txs['transactions'][0]
 
 """ TOKENS
 {'assets': [
@@ -151,39 +161,48 @@ script_address = 'addr_test1wqy0j8ym4q3wutn05vkzxg8zddvgfp04l8f8pxjzh7a72dg3qxfv
                                'quantity': 10,
                                'textname': 'Quarter'}],
 """
-
-""" COLATERAL 
-
+""" COLATERAL
+ETERNAL_ADDR
+FILE_TX = 'Tx_send_tokens.raw'
+FILE_TX_SIGNED = 'Tx_send_tokens.signed'
+fee = 181781
 def collateral_transaction2():
     result = 'CLI transaction build --babbage-era  --testnet-magic 1'
-    result += ' --tx-in ' + TX['tx']  + '#' + TX['ix'] 
-    result += ' --tx-out ' + SENDER + '+' + str(int(ada2lovelance(5000)))
-    result += ' --tx-out ' + SENDER + '+' + str(int(TX['lovelace']) - ada2lovelance(5000) -fee)+ '+"' 
-    for asset in TX['assets']:
-        result += str(asset['quantity']) + ' ' + asset['asset'] + ' + '
-    result = result[:-3]
-    result += '"'
+    result += ' --tx-in ' + TX_BUILD['tx']  + '#' + TX_BUILD['ix'] 
+    result += ' --tx-in ' + TX_LAND['tx']  + '#' + TX_LAND['ix']
+    # result += ' --tx-in-datum-value ' + str(1001)
+    result += ' --tx-out ' + SENDER + '+' + str(int(TX_BUILD['lovelace']) - int(ada2lovelance(1.5)) -fee) 
+    result +=        '+"'  + str(TX_BUILD['assets'][0]['quantity'] - 1) + ' ' + TX_BUILD['assets'][0]['asset'] + '"' 
+    result += ' --tx-out ' + SENDER + '+' + str(int(TX_LAND['lovelace'])) 
+    result +=        '+"'  + str(TX_LAND['assets'][0]['quantity'] +10) + ' ' + TX_LAND['assets'][0]['asset'] + '"' 
+    # result += ' --tx-out ' + SENDER + '+' + str(int(ada2lovelance(50))) 
+    # result +=        '+"'  + str(TX_TOKEN['assets'][2]['quantity']) + ' ' + TX_TOKEN['assets'][2]['asset'] + '"' 
+    # result += ' --tx-out ' + SENDER + '+' + str(int(TX_TOKEN['lovelace']) + int(TX_FEE['lovelace']) - ada2lovelance(153) - fee) 
+    result += ' --tx-out ' + ETERNAL_ADDR + '+' + str(int(ada2lovelance(1.5)))  
+    result +=        '+"' + str(1) + ' ' + TX_BUILD['assets'][0]['asset'] + '"' 
+    # result += ' --tx-out-datum-hash ' + 'c9f1a86686aecf55fd2f90d275c5c7908a2978df1aec9f189fcb3a00ff529ac0'
     result += ' --change-address ' + SENDER 
-    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_RAW
+    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_TX
     return result
-# res = collateral_transaction2()
-# print(res)
+res = collateral_transaction2()
+print(res,'\n')
 def sing_colateral_transaction2():
     result =  'CLI transaction sign'
     result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
     result += ' --testnet-magic 1'
-    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + FILE_RAW
-    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_SINGNED
+    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + FILE_TX
+    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_TX_SIGNED
     return result
-# res = sing_colateral_transaction2()
-# print(res)
+res = sing_colateral_transaction2()
+print(res,'\n')
 def submit_metadata_transaction2():
     result =  'CLI transaction submit'
-    result += ' --tx-file ' + SCRIPT_DIR + '/' + FILE_SINGNED
+    result += ' --tx-file ' + SCRIPT_DIR + '/' + FILE_TX_SIGNED
     result += ' --testnet-magic 1'
     return result
-# res = submit_metadata_transaction2()
-# print(res)
+res = submit_metadata_transaction2()
+print(res)
+print('\n')
 """
 
 
@@ -193,59 +212,12 @@ POLICYSCRIPT = 'ppbl-faucet-preprod-LAND.plutus'
 wllt = 'addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r'
 script_address = 'addr_test1wr6ydfrw00eextwar9qqpg2clukee4s65z3egs824d7ftsqdpdnw6'
 # datum_hash = '3ceb17d6702c23286dab4352f367a9614588d53099c39f31cd618e2851a56731'
-fee = 187633 # ---187633
+fee = 0 # ---187633
 
 
 
-""" COLATERAL
-FILE_TX = 'Tx_send_tokens.raw'
-FILE_TX_SIGNED = 'Tx_send_tokens.signed'
-def collateral_transaction2():
-    result = 'CLI transaction build --babbage-era  --testnet-magic 1'
-    result += ' --tx-in ' + TX_TOKEN['tx']  + '#' + TX_TOKEN['ix'] 
-    result += ' --tx-in ' + TX_FEE['tx']  + '#' + TX_FEE['ix']
-    # result += ' --tx-in-datum-value ' + str(1001)
-    result += ' --tx-out ' + SENDER + '+' + str(int(ada2lovelance(50))) 
-    result +=        '+"'  + str(TX_TOKEN['assets'][0]['quantity']) + ' ' + TX_TOKEN['assets'][0]['asset'] + '"' 
-    result += ' --tx-out ' + SENDER + '+' + str(int(ada2lovelance(50))) 
-    result +=        '+"'  + str(TX_TOKEN['assets'][1]['quantity'] - 60) + ' ' + TX_TOKEN['assets'][1]['asset'] + '"' 
-    result += ' --tx-out ' + SENDER + '+' + str(int(ada2lovelance(50))) 
-    result +=        '+"'  + str(TX_TOKEN['assets'][2]['quantity']) + ' ' + TX_TOKEN['assets'][2]['asset'] + '"' 
-    result += ' --tx-out ' + SENDER + '+' + str(int(TX_TOKEN['lovelace']) + int(TX_FEE['lovelace']) - ada2lovelance(153) - fee) 
-    result += ' --tx-out ' + script_address + '+' + str(int(ada2lovelance(3)))  
-    result +=        '+"' + str(60) + ' ' + TX_TOKEN['assets'][1]['asset'] + '"' 
-    result += ' --tx-out-datum-hash ' + 'c9f1a86686aecf55fd2f90d275c5c7908a2978df1aec9f189fcb3a00ff529ac0'
-    result += ' --change-address ' + SENDER 
-    result += ' --out-file ' + SCRIPT_DIR + '/'+ FILE_TX
-    return result
-res = collateral_transaction2()
-print(res)
-def sing_colateral_transaction2():
-    result =  'CLI transaction sign'
-    result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
-    result += ' --testnet-magic 1'
-    result += ' --tx-body-file ' + SCRIPT_DIR + '/' + FILE_TX
-    result += ' --out-file ' + SCRIPT_DIR + '/' + FILE_TX_SIGNED
-    return result
-res = sing_colateral_transaction2()
-print(res)
-def submit_metadata_transaction2():
-    result =  'CLI transaction submit'
-    result += ' --tx-file ' + SCRIPT_DIR + '/' + FILE_TX_SIGNED
-    result += ' --testnet-magic 1'
-    return result
-res = submit_metadata_transaction2()
-print(res)
-"""
 
-wallet_Txs = getUtxos(wllt)
-pprint(wallet_Txs)
-TX_TOKEN = wallet_Txs['transactions'][3]
-TX_AUTH = wallet_Txs['transactions'][1]
-TX_COL = wallet_Txs['transactions'][5]
-script_Txs = getUtxos(script_address)
-pprint(script_Txs)
-TX_SC = script_Txs['transactions'][1]
+
 
 script_hash = '94bfd0e3065d4e5446a38e41e861e12f43838c8ea9b5ebd72ed5eb6186837ac3'
 script_ix = '0'
@@ -340,6 +312,7 @@ def wildraw_script_transaction():
 res = wildraw_script_transaction()
 print(res)
 print('\n')
+
 def sing_transaction2():
     result =  'CLI transaction sign'
     result += ' --signing-key-file ' + KEYS_DIR + '/' + TOK_SKEY
@@ -360,9 +333,8 @@ print(res)
 """
 #endregion
 
-
+#region SCRIPT METADATA TRANSACTION
 """ METADATA TRANSACTION
-"""
 TX_MTDT = wallet_Txs['transactions'][0]
 def metadata_tx():
     result =  'CLI transaction build'
@@ -395,14 +367,8 @@ def submit_transaction2():
 res = submit_transaction2()
 print(res)
 
-
-
-# res = make_transaction()
-# print(res)
-# res = sing_token_transaction()
-# print(res)
-# res = submit_token_transaction()
-# print(res)
+"""
+#endregion
 
 """  OLD FUNCTIONS
 
