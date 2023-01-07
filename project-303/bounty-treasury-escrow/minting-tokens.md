@@ -10,7 +10,7 @@
 - [ ] Create a Plutus script for minting Contributor Tokens for holders of PPBLSummer2022
 - [ ] Create a self-service front end for minting Contributor Tokens.
 
-### Types of Tokens used by the GBTE
+### Types of Tokens used by the GBTElmdb
 
 #### 1. Contributor Token
 The first type of token is known as the Contributor Token, and we will need it's policyId to spin up an instance of GBTE. This token allows holders to commit to bounties. We could use the `PPBLSummer2022` token for this, but then we would not be able to distinguish between the tokens of different Contributors. That is why our Validator Parameters only require a PolicyId for the Contributor Token. We want to allow for the name of the token to be anything, so that we can use the TokenName to track individual contributions.
