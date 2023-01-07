@@ -13,13 +13,16 @@ export CONTRIBUTOR=addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc
 export CONTRIBUTORKEY=/opt/DEV/PLUTUS/tools/preprod-wallets/preprod1.skey
 
 # Hard code these variables for your Bounty Treasury
+# /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.addr
 TREASURY_ADDR=addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz
+# /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-escrow-new-preprod.addr
 BOUNTY_ADDR=addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl
 TREASURY_PLUTUS_SCRIPT="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.plutus"
 BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
 TREASURY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json"
 TREASURY_ACTION="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryActionExample01.json"
-BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/BountyEscrowDatumExample01.json"
+# BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/BountyEscrowDatumExample01.json"
+BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/BountyEscrow-Redeemer-Sergi10.json"
 
 # export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
 # CLI query tip --testnet-magic 1
@@ -28,13 +31,13 @@ BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/
 # CLI query utxo --testnet-magic 1 --address $TREASURY_ADDR
 # echo "Specify the Treasury Contract UTXO:"
 # read CONTRACT_TXIN
-CONTRACT_TXIN=4a19b9381dd02a5e9b21b7e5dc7d245273642de783e81a2efa0a599be74e0b84#2
+CONTRACT_TXIN=ef77fdee9129afcdc6b265f3e921a258e45618a9a804cfd131f6992ae50092c8#2
 # echo "How many lovelace are currently in the Treasury?"
 # read 
-LOVELACE_AT_TREASURY=648500000
+LOVELACE_AT_TREASURY=641000000
 # echo "How many tgimbals are currently in the Treasury?"
 # read BOUNTY_TOKENS_AT_TREASURY
-BOUNTY_TOKENS_AT_TREASURY=12769
+BOUNTY_TOKENS_AT_TREASURY=12569
 
 
 # CLI query utxo --testnet-magic 1 --address $CONTRIBUTOR
@@ -42,18 +45,28 @@ BOUNTY_TOKENS_AT_TREASURY=12769
 # echo "Specify a Collateral UTxO:"
 # read COLLATERAL
 COLLATERAL=128b5ae7bf206145283ceb24c00ba5b4f6b554edccd64c15e1428a39b58d9144#0
+
 # echo "Specify a TXIN with Contributor Token:"
 # read TXIN1
-TXIN1=87d0928c8aa1ce3832d5862bf112aaf366a94718a4d809cb6a764ebfdf285e70#0
+#PPBL2022AccessToken
+#TXIN1=75a8ea9213734842113aa3ffcf7ace3dc3b8da9adf239f055c2102e9fe28a18f#0
+#Sergi10GBTEpreprod
+TXIN1=090ce52718e132fcd669cb8f8685e126b045b673e978f4bd7d6c2988e6c5647d#0
+
 # echo "What is the Asset ID of your Contributor Token?"
 # read CONTRIBUTOR_ASSET
-CONTRIBUTOR_ASSET=fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.536572676931306762746550726550726f64
+#PPBL2022AccessToken (5050424c32303232416363657373546f6b656e)
+#Sergi10GBTEpreprod (536572676931304742544570726570726f64)
+CONTRIBUTOR_ASSET=738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784.536572676931304742544570726570726f64
+
 # echo "Specify a TXIN with with additional lovelace (for tx fees):"
 # read TXIN2
 TXIN2=f9e763944de6ed04b4a0340034ed69154a0034c4afb2e76baa1053b541f3fee7#3
+
 # echo "Amount of lovelace in this bounty:"
 # read BOUNTY_LOVELACE
 BOUNTY_LOVELACE=7500000
+
 # echo "Number of tgimbals in this bounty:"
 # read BOUNTY_AMOUNT
 BOUNTY_AMOUNT=200
