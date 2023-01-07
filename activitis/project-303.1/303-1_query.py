@@ -1,7 +1,6 @@
 import json, os, subprocess
 from pprint import pprint
 
-
 # region  GLOBALS
 CARDANO_CLI_PATH = '/opt/adanode/bin/cardano-cli'
 MAGICT = ' --testnet-magic 1 '

@@ -1,0 +1,76 @@
+{"constructor":0,"fields":[{"bytes":"d739ff308ecd63b4854e077e9d1fa7fa53dcce33dfffe2b1f5ad29df"},{"int":20},{"int":25000},{"int":1673308800000}]}
+
+
+4a19b9381dd02a5e9b21b7e5dc7d245273642de783e81a2efa0a599be74e0b84     2        648500000 lovelace + 12769 fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c + TxOutDatumHash ScriptDataInBabbageEra "55f91bdc2ce46e13dfa29b12b992544fd616cdd9ae006d1f663a2bda784bc1b9"
+94feae6d8d4c4d56385b7d11172b332bff1721729762324aa24187c85c15bfad     1        15000000 lovelace + 100 fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c + TxOutDatumHash ScriptDataInBabbageEra "55f91bdc2ce46e13dfa29b12b992544fd616cdd9ae006d1f663a2bda784bc1b9"
+
+CONTRIBUTOR	addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r
+CONTRIBUTORKEY 	/opt/DEV/PLUTUS/tools/preprod-wallets/preprod1.skey
+d739ff308ecd63b4854e077e9d1fa7fa53dcce33dfffe2b1f5ad29df
+
+
+Specify the Treasury Contract UTXO:
+4a19b9381dd02a5e9b21b7e5dc7d245273642de783e81a2efa0a599be74e0b84#2
+
+How many lovelace are currently in the Treasury?
+648500000
+
+How many tgimbals are currently in the Treasury?
+12769
+
+Specify a Collateral UTxO:
+128b5ae7bf206145283ceb24c00ba5b4f6b554edccd64c15e1428a39b58d9144#0
+
+Specify a TXIN with Contributor Token:
+87d0928c8aa1ce3832d5862bf112aaf366a94718a4d809cb6a764ebfdf285e70#0
+
+hat is the Asset ID of your Contributor Token?
+536572676931306762746550726550726f64
+
+Specify a TXIN with with additional lovelace (for tx fees):
+f9e763944de6ed04b4a0340034ed69154a0034c4afb2e76baa1053b541f3fee7#3
+
+Amount of lovelace in this bounty:
+7500000
+
+Number of tgimbals in this bounty:
+200
+
+
+
+CLI transaction build \
+--babbage-era \
+--tx-in $CONTRACT_TXIN \
+--tx-in-script-file 4a19b9381dd02a5e9b21b7e5dc7d245273642de783e81a2efa0a599be74e0b84#2 \
+--tx-in-datum-file $TREASURY_DATUM \
+--tx-in-redeemer-file $TREASURY_ACTION \
+--tx-in $TXIN1 \
+--tx-in $TXIN2 \
+--tx-in-collateral $COLLATERAL \
+--tx-out $BOUNTY_ADDR+"$BOUNTY_LOVELACE + 1 $CONTRIBUTOR_ASSET + $BOUNTY_AMOUNT $BOUNTY_ASSET" \
+--tx-out-datum-embed-file $BOUNTY_DATUM \
+--tx-out $TREASURY_ADDR+"$LOVELACE_BACK_TO_TREASURY + $TOKENS_BACK_TO_TREASURY $BOUNTY_ASSET" \
+--tx-out-datum-embed-file $TREASURY_DATUM \
+--change-address $CONTRIBUTOR \
+--protocol-params-file protocol.json \
+--testnet-magic 1 \
+--out-file commitment-tx.draft
+
+
+
+
+CLI transaction build 
+--babbage-era --tx-in 4a19b9381dd02a5e9b21b7e5dc7d245273642de783e81a2efa0a599be74e0b84#2 
+--tx-in-script-file /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.plutus 
+--tx-in-datum-file /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json 
+--tx-in-redeemer-file /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryActionExample01.json 
+--tx-in 87d0928c8aa1ce3832d5862bf112aaf366a94718a4d809cb6a764ebfdf285e70#0 
+--tx-in f9e763944de6ed04b4a0340034ed69154a0034c4afb2e76baa1053b541f3fee7#3 
+--tx-in-collateral 128b5ae7bf206145283ceb24c00ba5b4f6b554edccd64c15e1428a39b58d9144#0 
+--tx-out addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl+7500000 + 1 fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.536572676931306762746550726550726f64 + 200 fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c
+--tx-out-datum-embed-file /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/BountyEscrowDatumExample01.json 
+--tx-out addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz+641000000 + 12569 fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c -
+-tx-out-datum-embed-file /opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json --change-address addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r 
+--protocol-params-file protocol.json 
+--testnet-magic 1 
+--out-file commitment-tx.draft

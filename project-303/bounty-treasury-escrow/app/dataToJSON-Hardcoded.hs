@@ -12,10 +12,12 @@ import           TreasuryAndEscrow.Types
 
 datum :: BountyEscrowDatum
 datum = BountyEscrowDatum
-  { bedContributorPkh     = "e02f8dd57e378ee673d5bf3bf7228382f131b1767d588a79cde2726a"
+  -- { bedContributorPkh     = "e02f8dd57e378ee673d5bf3bf7228382f131b1767d588a79cde2726a"
+  { bedContributorPkh     = "d739ff308ecd63b4854e077e9d1fa7fa53dcce33dfffe2b1f5ad29df"
   , bedLovelaceAmount     = 20
   , bedTokenAmount        = 25000
-  , bedExpirationTime     = 1651252695000
+  -- , bedExpirationTime     = 1651252695000
+  , bedExpirationTime     = 1673308800000 --10 January 2023 0:00:00
   }
 
 redeemer :: BountyAction
