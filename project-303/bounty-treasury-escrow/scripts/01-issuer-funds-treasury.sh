@@ -7,35 +7,40 @@
 #. 01-issuer-funds-treasury (Issuer Address) (Path to Issuer Signing Key)
 
 # Arguments
-export ISSUER=$1
-export ISSUERKEY=$2
+ISSUER=addr_test1vrtnnles3mxk8dy9fcrha8gl5la98hxwx00llc437kkjnhcqsxc8r
+ISSUERKEY="/opt/DEV/PLUTUS/tools/preprod-wallets/preprod1.skey"
 
 # Hard code these variables for your Bounty Treasury
-TREASURY_ADDR=addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz
-BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
-DATUM_FILE="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json"
+TREASURY_ADDR=addr_test1wzmchhafv9mj6fjaeu9qqvsw3estnlfd9242hh6943gf2jqnla7g8
+BOUNTY_ASSET="bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4.7453657267693130"
+DATUM_FILE="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-TreasuryDatum.json"
 
-export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
-cardano-cli query tip --testnet-magic 1
-cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json
+# export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
+CLI query tip --testnet-magic 1
+CLI query protocol-parameters --testnet-magic 1 --out-file protocol.json
 
-cardano-cli query utxo --testnet-magic 1 --address $ISSUER
+CLI query utxo --testnet-magic 1 --address $ISSUER
 
-echo "Specify a TXIN with tGimbals:"
-read TXIN1
-echo "Specify a TXIN with with additional lovelace:"
-read TXIN2
-echo "Number of lovelace to lock:"
-read LOVELACE_LOCK_AMOUNT
+# echo "Specify a TXIN with tSergi10:"
+# read TXIN1
+TXIN1=c0149fce6c1cede73cb5097411ebe9d67e9cea7938aeeeab9a7c21f115035299#1
+# echo "Specify a TXIN with with additional lovelace:"
+# read TXIN2
+TXIN2=d39539c845b41c96588a64b664b50fd718a0c04588e6dc7106871a064edc3de3#0
+# echo "Number of lovelace to lock:"
+# read LOVELACE_LOCK_AMOUNT
+LOVELACE_LOCK_AMOUNT=25000000
 # We do not need to calculate number lovelace back to Issuer because --change-address handles this.
-echo "Number of bounty tokens to lock:"
-read LOCK_AMOUNT
-echo "Number of bounty tokens back to Issuer:"
-read TOKENS_BACK_TO_ISSUER
+# echo "Number of bounty tokens to lock:"
+# read LOCK_AMOUNT
+LOCK_AMOUNT=250
+# echo "Number of bounty tokens back to Issuer:"
+# read TOKENS_BACK_TO_ISSUER
+TOKENS_BACK_TO_ISSUER=99750
 
 echo "Thanks, using $TXIN1 and $TXIN2"
 
-cardano-cli transaction build \
+CLI transaction build \
 --babbage-era \
 --tx-in $TXIN1 \
 --tx-in $TXIN2 \
@@ -47,12 +52,12 @@ cardano-cli transaction build \
 --out-file fund-treasury.draft \
 --testnet-magic 1
 
-cardano-cli transaction sign \
+CLI transaction sign \
 --signing-key-file $ISSUERKEY \
 --testnet-magic 1 \
 --tx-body-file fund-treasury.draft \
 --out-file fund-treasury.signed
 
-cardano-cli transaction submit \
+CLI transaction submit \
 --tx-file fund-treasury.signed \
 --testnet-magic 1

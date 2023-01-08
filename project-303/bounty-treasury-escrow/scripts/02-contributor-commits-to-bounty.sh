@@ -7,50 +7,59 @@
 #. 02-contributor-commits-to-bounty (CONTRIBUTOR Address) (Path to CONTRIBUTOR Signing Key)
 
 # Arguments
-export CONTRIBUTOR=$1
-export CONTRIBUTORKEY=$2
+CONTRIBUTOR=addr_test1vqlt502gqt8t3whc0ldhrzmgsp6grgdtnpz2x2f05hhew8g0ylua5
+CONTRIBUTORKEY="/opt/DEV/PLUTUS/tools/preprod-wallets/preprod2.vkey"
 
 # Hard code these variables for your Bounty Treasury
-TREASURY_ADDR=addr_test1wrk2n3ygme5jh05nm668eu26phljpg56pd8lts27j9ucc0qgc0ypz
-BOUNTY_ADDR=addr_test1wzyvjgjxy5mr88ny3sm96qatd90fazsj625gxjr8hhrklqsf6ftxl
-TREASURY_PLUTUS_SCRIPT="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/output/example-bounty-treasury-new-preprod.plutus"
-BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
-TREASURY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryDatumExample01.json"
-TREASURY_ACTION="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/TreasuryActionExample01.json"
-BOUNTY_DATUM="<YOUR PATH TO>/ppbl-course-02/project-303/bounty-treasury-escrow/datum-and-redeemers/BountyEscrowDatumExample01.json"
+TREASURY_ADDR=addr_test1wzmchhafv9mj6fjaeu9qqvsw3estnlfd9242hh6943gf2jqnla7g8
+BOUNTY_ADDR=addr_test1wz9vqh0paq8wyp4ywfw409fe3eep28uvu3ae7v48l2lr83c0thhcu
+TREASURY_PLUTUS_SCRIPT="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/sergi10-bounty-treasury-preprod.plutus"
+BOUNTY_ASSET="bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4.7453657267693130"
+TREASURY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-TreasuryDatum.json"
+TREASURY_ACTION="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-TreasuryAction.json"
+BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-BountyEscrow-Datum.json"
 
-export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
-cardano-cli query tip --testnet-magic 1
-cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json
+# export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
+# CLI query tip --testnet-magic 1
+# CLI query protocol-parameters --testnet-magic 1 --out-file protocol.json
 
-cardano-cli query utxo --testnet-magic 1 --address $TREASURY_ADDR
-echo "Specify the Treasury Contract UTXO:"
-read CONTRACT_TXIN
-echo "How many lovelace are currently in the Treasury?"
-read LOVELACE_AT_TREASURY
-echo "How many tgimbals are currently in the Treasury?"
-read BOUNTY_TOKENS_AT_TREASURY
+# CLI query utxo --testnet-magic 1 --address $TREASURY_ADDR
+# echo "Specify the Treasury Contract UTXO:"
+# read CONTRACT_TXIN
+CONTRACT_TXIN=c4c9cb417568ab8ba29a20406566a32ff9c06bd258c397a1cca6e16fa7388c84#1
+# echo "How many lovelace are currently in the Treasury?"
+# read LOVELACE_AT_TREASURY
+LOVELACE_AT_TREASURY=25000000
+# echo "How many tSergi10 are currently in the Treasury?"
+# read BOUNTY_TOKENS_AT_TREASURY
+BOUNTY_TOKENS_AT_TREASURY=250
 
 
-cardano-cli query utxo --testnet-magic 1 --address $CONTRIBUTOR
+CLI query utxo --testnet-magic 1 --address $CONTRIBUTOR
 
-echo "Specify a Collateral UTxO:"
-read COLLATERAL
-echo "Specify a TXIN with Contributor Token:"
-read TXIN1
-echo "What is the Asset ID of your Contributor Token?"
-read CONTRIBUTOR_ASSET
-echo "Specify a TXIN with with additional lovelace (for tx fees):"
-read TXIN2
-echo "Amount of lovelace in this bounty:"
-read BOUNTY_LOVELACE
-echo "Number of tgimbals in this bounty:"
-read BOUNTY_AMOUNT
+# echo "Specify a Collateral UTxO:"
+# read COLLATERAL
+COLLATERAL=c123312a1f7d80ef86f0c3392ec46d6bff768099d826cdf8ed4fe81b2930ba90#0
+# echo "Specify a TXIN with Contributor Token:"
+# read TXIN1
+TXIN1=2adc69ee6e069cdf63c53e221eda07ebdafe21f7e2a3a9f03c39202a01fb26dc#0
+# echo "What is the Asset ID of your Contributor Token?"
+# read CONTRIBUTOR_ASSET
+CONTRIBUTOR_ASSET=bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4.7453657267693130414343455353544f4b454e
+# echo "Specify a TXIN with with additional lovelace (for tx fees):"
+# read TXIN2
+TXIN2=9914b7f8ed1f07a708ebb35faacb3d8d88424b711cedf93fd2e688cb861b97fd#0
+# echo "Amount of lovelace in this bounty:"
+# read BOUNTY_LOVELACE
+BOUNTY_LOVELACE=10000000
+# echo "Number of tSergi10 in this bounty:"
+# read BOUNTY_AMOUNT
+BOUNTY_AMOUNT=100
 
 LOVELACE_BACK_TO_TREASURY=$(expr $LOVELACE_AT_TREASURY - $BOUNTY_LOVELACE)
 TOKENS_BACK_TO_TREASURY=$(expr $BOUNTY_TOKENS_AT_TREASURY - $BOUNTY_AMOUNT)
 
-cardano-cli transaction build \
+CLI transaction build \
 --babbage-era \
 --tx-in $CONTRACT_TXIN \
 --tx-in-script-file $TREASURY_PLUTUS_SCRIPT \
@@ -68,12 +77,12 @@ cardano-cli transaction build \
 --testnet-magic 1 \
 --out-file commitment-tx.draft
 
-cardano-cli transaction sign \
---signing-key-file $CONTRIBUTORKEY \
---testnet-magic 1 \
---tx-body-file commitment-tx.draft \
---out-file commitment-tx.signed
+# CLI transaction sign \
+# --signing-key-file $CONTRIBUTORKEY \
+# --testnet-magic 1 \
+# --tx-body-file commitment-tx.draft \
+# --out-file commitment-tx.signed
 
-cardano-cli transaction submit \
---tx-file commitment-tx.signed \
---testnet-magic 1
+# CLI transaction submit \
+# --tx-file commitment-tx.signed \
+# --testnet-magic 1
