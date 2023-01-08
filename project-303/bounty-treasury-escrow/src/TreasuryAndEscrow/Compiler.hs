@@ -19,20 +19,20 @@ writeValidator :: FilePath -> Ledger.Validator -> IO (Either (FileError ()) ())
 writeValidator file = writeFileTextEnvelope @(PlutusScript PlutusScriptV1) file Nothing . PlutusScriptSerialised . SBS.toShort . LBS.toStrict . serialise . Ledger.unValidatorScript
 
 writeBountyEscrowScript :: IO (Either (FileError ()) ())
-writeBountyEscrowScript = writeValidator "output/example-bounty-escrow-new-preprod.plutus" $ Escrow.validator $ BountyParam
+writeBountyEscrowScript = writeValidator "output/sergi10-bounty-escrow-preprod.plutus" $ Escrow.validator $ BountyParam
     {
-      bountyTokenPolicyId     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , bountyTokenName         = "tGimbal"
-    , accessTokenPolicyId     = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , treasuryIssuerPolicyId  = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
+      bountyTokenPolicyId     = "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4"
+    , bountyTokenName         = "tSergi10"
+    , accessTokenPolicyId     = "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4"
+    , treasuryIssuerPolicyId  = "c09c50bf1f23530376a2bd14611c64eb0f0bd4f197a402a6688b5c70"
     }
 
 writeBountyTreasuryScript :: IO (Either (FileError ()) ())
-writeBountyTreasuryScript = writeValidator "output/example-bounty-treasury-new-preprod.plutus" $ Treasury.validator $ TreasuryParam
+writeBountyTreasuryScript = writeValidator "output/sergi10-bounty-treasury-preprod.plutus" $ Treasury.validator $ TreasuryParam
     {
-      tAccessTokenPolicyId    = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , tIssuerTokenPolicyId    = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
-    , bountyContractHash      = "88c922462536339e648c365d03ab695e9e8a12d2a8834867bdc76f82"
-    , tBountyTokenPolicyId    = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , tBountyTokenName        = "tGimbal"
+      tAccessTokenPolicyId    = "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4"
+    , tIssuerTokenPolicyId    = "c09c50bf1f23530376a2bd14611c64eb0f0bd4f197a402a6688b5c70"
+    , bountyContractHash      = "8ac05de1e80ee206a4725d5795398e72151f8ce47b9f32a7fabe33c7"
+    , tBountyTokenPolicyId    = "bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4"
+    , tBountyTokenName        = "tSergi10"
     }

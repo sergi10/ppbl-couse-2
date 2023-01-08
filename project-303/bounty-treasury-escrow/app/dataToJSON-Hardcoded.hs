@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE TypeApplications    #-}
 
 import            Cardano.Api
 import            Data.Aeson                    (encode)
@@ -13,9 +13,9 @@ import           TreasuryAndEscrow.Types
 datum :: BountyEscrowDatum
 datum = BountyEscrowDatum
   { bedContributorPkh     = "e02f8dd57e378ee673d5bf3bf7228382f131b1767d588a79cde2726a"
-  , bedLovelaceAmount     = 20
-  , bedTokenAmount        = 25000
-  , bedExpirationTime     = 1651252695000
+  , bedLovelaceAmount     = 25000000
+  , bedTokenAmount        = 250
+  , bedExpirationTime     = 1675987200000
   }
 
 redeemer :: BountyAction
@@ -33,8 +33,8 @@ writeJSON file = LBS.writeFile file . encode . scriptDataToJson ScriptDataJsonDe
 
 main :: IO ()
 main = do
-      writeJSON "output/BountyEscrow-Datum-Hardcoded.json" datum
-      writeJSON "output/BountyEscrow-Redeemer-Hardcoded.json" redeemer
+      writeJSON "output/Sergi10_BountyEscrow-Datum.json" datum
+      writeJSON "output/Sergi10_BountyEscrow-Redeemer.json" redeemer
       putStrLn "\n<---------------DONE--------------->"
       putStrLn "\nATTENTION: JSON flies were written at 'output' directory"
       putStrLn "\n<----------------------------------->"
