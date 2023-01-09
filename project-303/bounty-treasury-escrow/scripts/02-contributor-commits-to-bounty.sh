@@ -17,7 +17,9 @@ TREASURY_PLUTUS_SCRIPT="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasu
 BOUNTY_ASSET="bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4.7453657267693130"
 TREASURY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-TreasuryDatum.json"
 TREASURY_ACTION="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-TreasuryAction.json"
-BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-BountyEscrow-Datum.json"
+# BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-BountyEscrow-Datum.json"
+# In the datum its mandatory to use de pk hash for the Contributor address not same hash as the issuer address.
+BOUNTY_DATUM="/opt/DEV/PLUTUS/ppbl-course-02/project-303/bounty-treasury-escrow/output/Sergi10-BountyEscrow-Contriubtor-Datum.json"
 
 # export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
 # CLI query tip --testnet-magic 1
