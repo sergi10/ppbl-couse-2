@@ -8,7 +8,7 @@
 
 # Arguments
 CONTRIBUTOR=addr_test1vqlt502gqt8t3whc0ldhrzmgsp6grgdtnpz2x2f05hhew8g0ylua5
-CONTRIBUTORKEY="/opt/DEV/PLUTUS/tools/preprod-wallets/preprod2.vkey"
+CONTRIBUTORKEY="/opt/DEV/PLUTUS/tools/preprod-wallets/preprod2.skey"
 
 # Hard code these variables for your Bounty Treasury
 TREASURY_ADDR=addr_test1wzmchhafv9mj6fjaeu9qqvsw3estnlfd9242hh6943gf2jqnla7g8
@@ -42,13 +42,13 @@ CLI query utxo --testnet-magic 1 --address $CONTRIBUTOR
 COLLATERAL=c123312a1f7d80ef86f0c3392ec46d6bff768099d826cdf8ed4fe81b2930ba90#0
 # echo "Specify a TXIN with Contributor Token:"
 # read TXIN1
-TXIN1=2adc69ee6e069cdf63c53e221eda07ebdafe21f7e2a3a9f03c39202a01fb26dc#0
+TXIN1=83563d7029d148c8bb7b6ce45cae0bab4f0dac8968e3021b8bbeb97cb6cb272f#1
 # echo "What is the Asset ID of your Contributor Token?"
 # read CONTRIBUTOR_ASSET
 CONTRIBUTOR_ASSET=bda714dac42c0c1c8303cf1b109b18cdfd04f8a578432895ac8e1ee4.7453657267693130414343455353544f4b454e
 # echo "Specify a TXIN with with additional lovelace (for tx fees):"
 # read TXIN2
-TXIN2=9914b7f8ed1f07a708ebb35faacb3d8d88424b711cedf93fd2e688cb861b97fd#0
+TXIN2=83563d7029d148c8bb7b6ce45cae0bab4f0dac8968e3021b8bbeb97cb6cb272f#0
 # echo "Amount of lovelace in this bounty:"
 # read BOUNTY_LOVELACE
 BOUNTY_LOVELACE=10000000
@@ -77,12 +77,12 @@ CLI transaction build \
 --testnet-magic 1 \
 --out-file commitment-tx.draft
 
-# CLI transaction sign \
-# --signing-key-file $CONTRIBUTORKEY \
-# --testnet-magic 1 \
-# --tx-body-file commitment-tx.draft \
-# --out-file commitment-tx.signed
+CLI transaction sign \
+--signing-key-file $CONTRIBUTORKEY \
+--testnet-magic 1 \
+--tx-body-file commitment-tx.draft \
+--out-file commitment-tx.signed
 
-# CLI transaction submit \
-# --tx-file commitment-tx.signed \
-# --testnet-magic 1
+CLI transaction submit \
+--tx-file commitment-tx.signed \
+--testnet-magic 1
